@@ -1,0 +1,12 @@
+{
+  "skip": "Skip",
+  "next": "Next",
+  "back": "Back",
+  "getStarted": "Get Started",
+  "onboarding1Title": "All your health records in one place",
+  "onboarding1Desc": "MediVault allows patients to keep their doctor visits, lab reports, and prescriptions seamlessly organized in one private, secure application.",
+  "onboarding2Title": "Keep your medical history organized",
+  "onboarding2Desc": "Your doctor visits, diagnoses, medications, and medical reports are automatically categorized by medical specialty for instant clinical access.",
+  "onboarding3Title": "Share your history securely",
+  "onboarding3Desc": "Control exactly what medical information you want to share with your doctor using a time-limited secure link or quick QR code scan."
+}
