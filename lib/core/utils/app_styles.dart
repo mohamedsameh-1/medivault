@@ -46,4 +46,41 @@ abstract class AppStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.badgeGreenText,
   );
+
+  static TextStyle w600S14DarkNavy = GoogleFonts.inter(
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w600,
+    color: AppColors.darkNavyText,
+  );
+
+  static TextStyle w400S14Hint = GoogleFonts.inter(
+    fontSize: 14.sp,
+    fontWeight: FontWeight.w400,
+    color: AppColors.iconGrey,
+  );
+
+  static TextStyle w500S12StrengthGrey = GoogleFonts.inter(
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w500,
+    color: AppColors.secondaryGrey,
+  );
+
+  static TextStyle w600S12StrengthBlue = GoogleFonts.inter(
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w600,
+    color: AppColors.strengthBlueText,
+  );
+
+  static TextStyle w400S13Disclaimer = GoogleFonts.inter(
+    fontSize: 13.sp,
+    fontWeight: FontWeight.w400,
+    color: AppColors.secondaryGrey,
+    height: 1.4,
+  );
+
+  static TextStyle w600S13DisclaimerBold = GoogleFonts.inter(
+    fontSize: 13.sp,
+    fontWeight: FontWeight.w600,
+    color: AppColors.darkNavyText,
+  );
 }

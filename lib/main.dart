@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/di/di.dart';
 import 'core/utils/app_routes.dart';
 import 'core/utils/app_theme.dart';
+import 'feature/auth/ui/views/login_view.dart';
+import 'feature/auth/ui/views/register_view.dart';
 import 'feature/onboarding/ui/views/onboarding_view.dart';
 
 void main() async {
@@ -41,6 +43,8 @@ class MyApp extends StatelessWidget {
           initialRoute: AppRoutes.onboardingView,
           routes: {
             AppRoutes.onboardingView: (context) => const OnboardingView(),
+            AppRoutes.loginView: (context) => const LoginView(),
+            AppRoutes.registerView: (context) => const RegisterView(),
           },
         );
       },

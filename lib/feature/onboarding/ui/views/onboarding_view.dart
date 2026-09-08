@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/utils/app_colors.dart';
+import '../../../../core/utils/app_routes.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/app_styles.dart';
 import '../../../../core/widgets/custom_elevate_btn.dart';
@@ -38,7 +39,12 @@ class OnboardingView extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: cubit.skip,
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.loginView,
+                          );
+                        },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
                             horizontal: 16.w,
@@ -122,8 +128,10 @@ class OnboardingView extends StatelessWidget {
                                       : AppStrings.next.tr(),
                                   onPressed: () {
                                     if (isLastPage) {
-                                      // Action on finish onboarding
-                                      /// will go to login view
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        AppRoutes.loginView,
+                                      );
                                     } else {
                                       cubit.nextPage();
                                     }
