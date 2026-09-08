@@ -28,5 +28,23 @@
   "confirmPassword": "Confirm Password",
   "repeatPassword": "Repeat password",
   "disclaimerText": "I acknowledge that MediVault is a secure personal record vault and does not provide medical diagnoses or clinical emergency advice.",
-  "alreadyHaveAccount": "Already have an account?"
+  "alreadyHaveAccount": "Already have an account?",
+  "validation": {
+    "name_required": "Name is required",
+    "name_min_length": "Name must be at least 2 characters",
+    "email_required": "Email is required",
+    "email_invalid": "Please enter a valid email address",
+    "password_required": "Password is required",
+    "password_min_length": "Password must be at least 8 characters",
+    "password_uppercase": "Password must contain at least one uppercase letter",
+    "password_lowercase": "Password must contain at least one lowercase letter",
+    "password_number": "Password must contain at least one number",
+    "confirm_password_required": "Please confirm your password",
+    "passwords_not_match": "Passwords do not match"
+  },
+  "errors": {
+    "no_internet_connection": "No internet connection. Please check your connection.",
+    "login_failed": "Login failed. Please try again.",
+    "registration_failed": "Registration failed. Please try again."
+  }
 }

@@ -40,13 +40,11 @@ class CustomTextField extends StatelessWidget {
           labelWidget!,
           SizedBox(height: 8.h),
         ] else if (label != null) ...[
-          Text(
-            label!,
-            style: AppStyles.w600S14DarkNavy,
-          ),
+          Text(label!, style: AppStyles.w600S14DarkNavy),
           SizedBox(height: 8.h),
         ],
         TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
@@ -67,7 +65,10 @@ class CustomTextField extends StatelessWidget {
                 ? Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.w),
                     child: IconTheme(
-                      data: IconThemeData(color: AppColors.iconGrey, size: 20.sp),
+                      data: IconThemeData(
+                        color: AppColors.iconGrey,
+                        size: 20.sp,
+                      ),
                       child: prefixIcon!,
                     ),
                   )
@@ -80,7 +81,10 @@ class CustomTextField extends StatelessWidget {
                 ? Padding(
                     padding: EdgeInsets.only(right: 12.w),
                     child: IconTheme(
-                      data: IconThemeData(color: AppColors.iconGrey, size: 20.sp),
+                      data: IconThemeData(
+                        color: AppColors.iconGrey,
+                        size: 20.sp,
+                      ),
                       child: suffixIcon!,
                     ),
                   )
@@ -105,17 +109,11 @@ class CustomTextField extends StatelessWidget {
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
-              borderSide: const BorderSide(
-                color: Colors.red,
-                width: 1,
-              ),
+              borderSide: const BorderSide(color: Colors.red, width: 1),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
-              borderSide: const BorderSide(
-                color: Colors.red,
-                width: 1.5,
-              ),
+              borderSide: const BorderSide(color: Colors.red, width: 1.5),
             ),
           ),
         ),

@@ -10,7 +10,8 @@ abstract class AppColors {
   static const Color black = Color(0xFF000000);
   static const Color indicatorInactive = Color(0xFFCBD5E1);
   static const Color badgeGreenBg = Color(0xFFD1FAE5);
-  static const Color badgeGreenText = Color(0xFF047857);
+  static const Color green = Color(0xFF047857);
+  static const Color red = Color(0xFFD32F2F);
 
   // New UI colors for Auth forms
   static const Color screenBg = Color(0xFFF8FAFC);

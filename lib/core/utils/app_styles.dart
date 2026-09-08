@@ -44,7 +44,7 @@ abstract class AppStyles {
   static TextStyle w500S12BadgeGreen = GoogleFonts.inter(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
-    color: AppColors.badgeGreenText,
+    color: AppColors.green,
   );
 
   static TextStyle w600S14DarkNavy = GoogleFonts.inter(

@@ -28,5 +28,23 @@
   "confirmPassword": "تأكيد كلمة المرور",
   "repeatPassword": "كرر كلمة المرور",
   "disclaimerText": "أقر بأن MediVault هو خزينة سجلات شخصية آمنة ولا يقدم تشخيصات طبية أو نصائح استشارية في الحالات الطارئة.",
-  "alreadyHaveAccount": "لديك حساب بالفعل؟"
+  "alreadyHaveAccount": "لديك حساب بالفعل؟",
+  "validation": {
+    "name_required": "الاسم مطلوب",
+    "name_min_length": "يجب أن يحتوي الاسم على حرفين على الأقل",
+    "email_required": "البريد الإلكتروني مطلوب",
+    "email_invalid": "يرجى إدخال بريد إلكتروني صالح",
+    "password_required": "كلمة المرور مطلوبة",
+    "password_min_length": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+    "password_uppercase": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل",
+    "password_lowercase": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل",
+    "password_number": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل",
+    "confirm_password_required": "يرجى تأكيد كلمة المرور",
+    "passwords_not_match": "كلمتا المرور غير متطابقتين"
+  },
+  "errors": {
+    "no_internet_connection": "لا يوجد اتصال بالإنترنت. يرجى التحقق من اتصالك.",
+    "login_failed": "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+    "registration_failed": "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى."
+  }
 }

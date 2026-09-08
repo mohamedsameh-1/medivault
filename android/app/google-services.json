@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "429712783527",
+    "project_id": "medivault-e4dac",
+    "storage_bucket": "medivault-e4dac.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429712783527:android:cb5d6708bcc8955f4fc382",
+        "android_client_info": {
+          "package_name": "com.example.medivault"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0qlRsYyaY1vDTHkbjOAxwX6iKm8CPGGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
