@@ -112,7 +112,7 @@ class _SetupViewState extends State<SetupBody> {
                   }
                   if (state is SetupSuccess) {
                     Navigator.pop(context);
-                    Navigator.pushNamed(context, AppRoutes.homeView);
+                    Navigator.pushNamed(context, AppRoutes.navigationView);
                   }
 
                   if (state is SetupFailure) {

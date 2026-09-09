@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/feature/home/ui/views/home_view.dart';
+import 'package:medivault/feature/navigation/view/navigation.dart';
 import 'package:medivault/feature/setup/presentation/views/setup_view.dart';
 import 'package:medivault/firebase_options.dart';
 import 'core/di/di.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
             AppRoutes.registerView: (context) => const RegisterView(),
             AppRoutes.setupView: (context) => const SetupView(),
             AppRoutes.homeView: (context) => const HomeView(),
+            AppRoutes.navigationView: (context) => const NavigationView(),
           },
         );
       },
