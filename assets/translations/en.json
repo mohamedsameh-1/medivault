@@ -46,5 +46,20 @@
     "no_internet_connection": "No internet connection. Please check your connection.",
     "login_failed": "Login failed. Please try again.",
     "registration_failed": "Registration failed. Please try again."
+  },
+  "setup": {
+    "title": "Health Profile Setup",
+    "subtitle": "Basic information to personalize your vault.",
+    "basic_information": "Basic Information",
+    "identify_records": "Used to identify your records.",
+    "date_of_birth": "Date of Birth",
+    "select_date": "Select date",
+    "gender_identity": "Gender Identity",
+    "female": "Female",
+    "male": "Male",
+    "blood_type": "Blood Type",
+    "height": "Height",
+    "weight": "Weight",
+    "continue_to_vault": "Continue to Vault"
   }
 }

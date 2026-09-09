@@ -6,6 +6,7 @@ abstract class AppColors {
   static const Color darkNavyText = Color(0xFF0F172A);
   static const Color secondaryGrey = Color(0xFF64748B);
   static const Color lightBlueButton = Color(0xFFE8EEF9);
+  static const Color primaryTealLight = Color(0xFFE0F2F1);
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color indicatorInactive = Color(0xFFCBD5E1);
