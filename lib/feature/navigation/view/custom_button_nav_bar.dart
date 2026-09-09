@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -39,7 +40,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   Expanded(
                     child: _NavItem(
                       icon: Icons.home_outlined,
-                      label: 'Home',
+                      label: 'home'.tr(),
                       isSelected: currentIndex == 0,
                       onTap: () => onItemSelected(0),
                     ),
@@ -48,7 +49,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   Expanded(
                     child: _NavItem(
                       icon: Icons.history,
-                      label: 'History',
+                      label: 'history'.tr(),
                       isSelected: currentIndex == 1,
                       onTap: () => onItemSelected(1),
                     ),
@@ -59,7 +60,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   Expanded(
                     child: _NavItem(
                       icon: Icons.description_outlined,
-                      label: 'Reports',
+                      label: 'reports'.tr(),
                       isSelected: currentIndex == 2,
                       onTap: () => onItemSelected(2),
                     ),
@@ -68,7 +69,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   Expanded(
                     child: _NavItem(
                       icon: Icons.person_outline,
-                      label: 'Profile',
+                      label: 'profile_nav'.tr(),
                       isSelected: currentIndex == 3,
                       onTap: () => onItemSelected(3),
                     ),
@@ -110,7 +111,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   SizedBox(height: 7.h),
 
                   Text(
-                    'Add Visit',
+                    'add_visit'.tr(),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,

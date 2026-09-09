@@ -61,5 +61,30 @@
     "height": "الطول",
     "weight": "الوزن",
     "continue_to_vault": "المتابعة إلى الخزنة"
+  },
+  "home": "الرئيسية",
+  "history": "السجل",
+  "reports": "التقارير",
+  "profile_nav": "الملف الشخصي",
+  "add_visit": "إضافة زيارة",
+  "profile": {
+    "title": "الملف الشخصي",
+    "account": "الحساب",
+    "personal_information": "المعلومات الشخصية",
+    "delete_account": "حذف الحساب",
+    "delete_account_subtitle": "حذف الخزنة الطبية والبيانات نهائيًا",
+    "privacy_and_sharing": "الخصوصية والمشاركة",
+    "sharing_permissions": "المشاركة والصلاحيات",
+    "sharing_permissions_subtitle": "المشاركات النشطة وسجل الوصول وإلغاء المشاركة",
+    "app_settings": "إعدادات التطبيق",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "theme_subtitle": "إعدادات المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "age": "العمر",
+    "height": "الطول",
+    "weight": "الوزن",
+    "logout": "تسجيل الخروج"
   }
 }

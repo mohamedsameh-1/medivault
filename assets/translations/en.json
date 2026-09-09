@@ -61,5 +61,30 @@
     "height": "Height",
     "weight": "Weight",
     "continue_to_vault": "Continue to Vault"
+  },
+  "home": "Home",
+  "history": "History",
+  "reports": "Reports",
+  "profile_nav": "Profile",
+  "add_visit": "Add Visit",
+  "profile": {
+    "title": "Profile",
+    "account": "Account",
+    "personal_information": "Personal Information",
+    "delete_account": "Delete Account",
+    "delete_account_subtitle": "Permanent removal of medical vault & data",
+    "privacy_and_sharing": "Privacy & Sharing",
+    "sharing_permissions": "Sharing & Permissions",
+    "sharing_permissions_subtitle": "Active shares, access history, Revoke",
+    "app_settings": "App Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "theme_subtitle": "Appearance preferences",
+    "light": "Light",
+    "dark": "Dark",
+    "age": "AGE",
+    "height": "HEIGHT",
+    "weight": "WEIGHT",
+    "logout": "Log Out"
   }
 }
