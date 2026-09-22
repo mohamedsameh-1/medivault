@@ -24,6 +24,8 @@ dependencies:
   dartz: ^0.10.1
   connectivity_plus: ^7.3.1
   cloud_firestore: ^6.9.0
+  skeletonizer: ^3.0.0
+  animated_text_kit: ^4.3.0
 
 dev_dependencies:
   flutter_test:

@@ -13,6 +13,7 @@ import 'core/utils/app_theme.dart';
 import 'feature/auth/ui/views/login_view.dart';
 import 'feature/auth/ui/views/register_view.dart';
 import 'feature/onboarding/ui/views/onboarding_view.dart';
+import 'feature/profile/view/edit_profile_view.dart';
 import 'core/utils/bloc_observer.dart';
 
 void main() async {
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
             AppRoutes.setupView: (context) => const SetupView(),
             AppRoutes.homeView: (context) => const HomeView(),
             AppRoutes.navigationView: (context) => const NavigationView(),
+            AppRoutes.editProfileView: (context) => const EditProfileView(),
           },
         );
       },

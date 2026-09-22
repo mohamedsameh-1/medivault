@@ -26,7 +26,7 @@ class DateOfBirthField extends StatelessWidget {
             Icon(
               Icons.calendar_today_outlined,
               size: 18.sp,
-              color: AppColors.secondaryGrey,
+              color: AppColors.primaryTeal,
             ),
             SizedBox(width: 11.w),
             Text(date, style: AppStyles.w400S14Grey),

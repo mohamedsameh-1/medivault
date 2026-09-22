@@ -5,4 +5,6 @@ abstract class AppRoutes {
   static const String setupView = '/setup';
   static const String homeView = '/home';
   static const String navigationView = '/navigation';
+  static const String editProfileView = '/edit-profile';
 }
+

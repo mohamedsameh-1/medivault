@@ -69,8 +69,9 @@
   "add_visit": "Add Visit",
   "profile": {
     "title": "Profile",
+    "name": "Name",
     "account": "Account",
-    "personal_information": "Personal Information",
+    "personal_information": "Edit Personal Information",
     "delete_account": "Delete Account",
     "delete_account_subtitle": "Permanent removal of medical vault & data",
     "privacy_and_sharing": "Privacy & Sharing",
@@ -85,6 +86,20 @@
     "age": "AGE",
     "height": "HEIGHT",
     "weight": "WEIGHT",
-    "logout": "Log Out"
-  }
+    "logout": "Log Out",
+    "logout_confirmation": "Are you sure you want to log out?",
+    "delete_account_confirmation": "Are you sure you want to delete your account?",
+    "profile_updated_successfully": "Profile updated successfully",
+    "select_language": "Select Language",
+    "english": "English",
+    "arabic": "Arabic"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "save_changes": "Save Changes",
+  "loading": "Loading...",
+  "cm": "cm",
+  "kg": "kg"
 }

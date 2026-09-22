@@ -87,12 +87,6 @@ class _SetupViewState extends State<SetupBody> {
                     _selectedGender = gender;
                   });
                 },
-                // selectedBloodType: _selectedBloodType,
-                // onBloodTypeChanged: (bloodType) {
-                //   setState(() {
-                //     _selectedBloodType = bloodType;
-                //   });
-                // },
                 heightController: _heightController,
                 weightController: _weightController,
               ),
@@ -105,7 +99,7 @@ class _SetupViewState extends State<SetupBody> {
                     showDialog(
                       context: context,
                       builder: (context) => CustomMessageDialog(
-                        message: 'Loading...',
+                        message: 'loading'.tr(),
                         type: MessageType.loading,
                       ),
                     );

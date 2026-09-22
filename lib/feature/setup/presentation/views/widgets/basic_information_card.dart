@@ -15,9 +15,6 @@ class BasicInformationCard extends StatelessWidget {
   final String selectedGender;
   final ValueChanged<String> onGenderChanged;
 
-  // final String selectedBloodType;
-  // final ValueChanged<String> onBloodTypeChanged;
-
   final TextEditingController heightController;
   final TextEditingController weightController;
 
@@ -27,8 +24,6 @@ class BasicInformationCard extends StatelessWidget {
     required this.onDateTap,
     required this.selectedGender,
     required this.onGenderChanged,
-    // required this.selectedBloodType,
-    // required this.onBloodTypeChanged,
     required this.heightController,
     required this.weightController,
   });
@@ -60,17 +55,6 @@ class BasicInformationCard extends StatelessWidget {
             selectedGender: selectedGender,
             onChanged: onGenderChanged,
           ),
-
-          // SizedBox(height: 20.h),
-
-          // _buildFieldLabel('setup.blood_type'.tr()),
-
-          // SizedBox(height: 7.h),
-
-          // BloodTypeSelector(
-          //   selectedBloodType: selectedBloodType,
-          //   onChanged: onBloodTypeChanged,
-          // ),
           SizedBox(height: 22.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +63,7 @@ class BasicInformationCard extends StatelessWidget {
                 child: MeasurementField(
                   label: 'setup.height'.tr(),
                   controller: heightController,
-                  unit: 'cm',
+                  unit: 'cm'.tr(),
                 ),
               ),
               SizedBox(width: 12.w),
@@ -87,7 +71,7 @@ class BasicInformationCard extends StatelessWidget {
                 child: MeasurementField(
                   label: 'setup.weight'.tr(),
                   controller: weightController,
-                  unit: 'kg',
+                  unit: 'kg'.tr(),
                 ),
               ),
             ],

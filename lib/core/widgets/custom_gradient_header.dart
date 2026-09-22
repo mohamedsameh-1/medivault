@@ -9,7 +9,7 @@ class CustomGradientHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 250.h,
+      height: 175.h,
       decoration: BoxDecoration(
         // color: AppColors.primaryTeal,
         borderRadius: BorderRadius.only(

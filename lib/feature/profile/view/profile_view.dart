@@ -1,4 +1,7 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medivault/core/di/di.dart';
+import 'package:medivault/feature/profile/ui/viewmodel/profile_cubit.dart';
 import 'package:medivault/feature/profile/view/widgets/profile_body.dart';
 
 class ProfileView extends StatelessWidget {
@@ -6,6 +9,9 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProfileBody();
+    return BlocProvider<ProfileCubit>(
+      create: (context) => getIt<ProfileCubit>()..getProfileData(),
+      child: const ProfileBody(),
+    );
   }
 }

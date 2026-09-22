@@ -18,6 +18,9 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Subscribe to locale changes so bottom bar labels rebuild immediately
+    context.locale;
+
     return SizedBox(
       height: 82.h,
       child: Stack(

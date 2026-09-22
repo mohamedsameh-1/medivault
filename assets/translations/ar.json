@@ -19,7 +19,7 @@
   "login": "تسجيل الدخول",
   "dontHaveAccount": "ليس لديك حساب؟",
   "createAccount": "إنشاء حساب",
-  "createYourAccount": "أنشئ حسابك",
+  "createYourAccount": "أنشأ حسابك",
   "registerSubtitle": "ابدأ في إدارة وإمتلاك تاريخك الصحي الشخصي بأمان.",
   "fullName": "الاسم الكامل",
   "enterYourName": "أدخل اسمك الكامل",
@@ -69,8 +69,9 @@
   "add_visit": "إضافة زيارة",
   "profile": {
     "title": "الملف الشخصي",
+    "name": "الاسم",
     "account": "الحساب",
-    "personal_information": "المعلومات الشخصية",
+    "personal_information": "تعديل المعلومات الشخصية",
     "delete_account": "حذف الحساب",
     "delete_account_subtitle": "حذف الخزنة الطبية والبيانات نهائيًا",
     "privacy_and_sharing": "الخصوصية والمشاركة",
@@ -85,6 +86,20 @@
     "age": "العمر",
     "height": "الطول",
     "weight": "الوزن",
-    "logout": "تسجيل الخروج"
-  }
+    "logout": "تسجيل الخروج",
+    "logout_confirmation": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "delete_account_confirmation": "هل أنت متأكد أنك تريد حذف حسابك؟",
+    "profile_updated_successfully": "تم تحديث الملف الشخصي بنجاح",
+    "select_language": "اختر اللغة",
+    "english": "English (الإنجليزية)",
+    "arabic": "العربية (Arabic)"
+  },
+  "common": {
+    "cancel": "إلغاء",
+    "confirm": "تأكيد"
+  },
+  "save_changes": "حفظ التغييرات",
+  "loading": "تحميل...",
+  "cm": "سم",
+  "kg": "كجم"
 }
