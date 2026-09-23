@@ -10,6 +10,7 @@ import 'package:medivault/firebase_options.dart';
 import 'core/di/di.dart';
 import 'core/utils/app_routes.dart';
 import 'core/utils/app_theme.dart';
+import 'core/widgets/splash_view.dart';
 import 'feature/auth/ui/views/login_view.dart';
 import 'feature/auth/ui/views/register_view.dart';
 import 'feature/onboarding/ui/views/onboarding_view.dart';
@@ -50,8 +51,9 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          initialRoute: AppRoutes.onboardingView,
+          initialRoute: AppRoutes.splashView,
           routes: {
+            AppRoutes.splashView: (context) => const SplashView(),
             AppRoutes.onboardingView: (context) => const OnboardingView(),
             AppRoutes.loginView: (context) => const LoginView(),
             AppRoutes.registerView: (context) => const RegisterView(),

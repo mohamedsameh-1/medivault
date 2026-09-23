@@ -6,6 +6,7 @@ import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/app_styles.dart';
+import '../../../../core/utils/shared_preference.dart';
 import '../../../../core/widgets/custom_elevate_btn.dart';
 import '../viewmodel/onboarding_cubit.dart';
 import '../viewmodel/onboarding_state.dart';
@@ -39,11 +40,14 @@ class OnboardingView extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            AppRoutes.loginView,
-                          );
+                        onPressed: () async {
+                          await SharedPreference.setOnboardingCompleted(true);
+                          if (context.mounted) {
+                            Navigator.pushReplacementNamed(
+                              context,
+                              AppRoutes.loginView,
+                            );
+                          }
                         },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.symmetric(
@@ -126,12 +130,15 @@ class OnboardingView extends StatelessWidget {
                                   title: isLastPage
                                       ? AppStrings.getStarted.tr()
                                       : AppStrings.next.tr(),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (isLastPage) {
-                                      Navigator.pushReplacementNamed(
-                                        context,
-                                        AppRoutes.loginView,
-                                      );
+                                      await SharedPreference.setOnboardingCompleted(true);
+                                      if (context.mounted) {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRoutes.loginView,
+                                        );
+                                      }
                                     } else {
                                       cubit.nextPage();
                                     }

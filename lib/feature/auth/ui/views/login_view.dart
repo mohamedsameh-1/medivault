@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +41,37 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  Future<void> _handlePostLoginNavigation(
+    BuildContext context,
+    String? userId,
+  ) async {
+    if (userId != null) {
+      try {
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get();
+        final data = doc.data();
+        final bool isSetupComplete = doc.exists &&
+            data != null &&
+            data['dateOfBirth'] != null &&
+            data['gender'] != null;
+
+        if (context.mounted) {
+          if (isSetupComplete) {
+            Navigator.pushReplacementNamed(context, AppRoutes.navigationView);
+          } else {
+            Navigator.pushReplacementNamed(context, AppRoutes.setupView);
+          }
+        }
+        return;
+      } catch (_) {}
+    }
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.setupView);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LoginCubit>(
@@ -55,7 +87,7 @@ class _LoginViewState extends State<LoginView> {
               ),
             );
           } else if (state is LoginSuccessState) {
-            Navigator.pushReplacementNamed(context, AppRoutes.setupView);
+            _handlePostLoginNavigation(context, state.userEntity.uId);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(AppStrings.loginSubtitle.tr()),
