@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:medivault/core/utils/app_colors.dart';
+import 'package:medivault/core/utils/app_styles.dart';
+import '../models/attachment_model.dart';
+
+class AttachmentCardWidget extends StatelessWidget {
+  final AttachmentModel attachment;
+  final VoidCallback onDelete;
+
+  const AttachmentCardWidget({
+    super.key,
+    required this.attachment,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10.r),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F6FF),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: AppColors.fieldBorder, width: 1.w),
+      ),
+      child: Row(
+        children: [
+          // Thumbnail / File Type Icon Box
+          Container(
+            width: 46.w,
+            height: 46.h,
+            decoration: BoxDecoration(
+              color: attachment.isPdf
+                  ? const Color(0xFFDBEAFE)
+                  : const Color(0xFFD1FAE5),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(
+              attachment.isPdf
+                  ? Icons.picture_as_pdf_outlined
+                  : Icons.receipt_long_outlined,
+              color: attachment.isPdf
+                  ? AppColors.strengthBlueText
+                  : AppColors.primaryTeal,
+              size: 24.r,
+            ),
+          ),
+          SizedBox(width: 12.w),
+
+          // File Info Column
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  attachment.fileName,
+                  style: AppStyles.w600S14DarkNavy.copyWith(
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    Icon(
+                      attachment.isPdf
+                          ? Icons.analytics_outlined
+                          : Icons.receipt_outlined,
+                      size: 13.r,
+                      color: AppColors.primaryTeal,
+                    ),
+                    SizedBox(width: 4.w),
+                    Text(
+                      attachment.categoryTag,
+                      style: AppStyles.w600S14PrimaryTeal.copyWith(
+                        fontSize: 11.sp,
+                      ),
+                    ),
+                    Text(
+                      ' • ',
+                      style: AppStyles.w400S14Grey.copyWith(fontSize: 11.sp),
+                    ),
+                    Text(
+                      attachment.fileSize,
+                      style: AppStyles.w400S14Grey.copyWith(fontSize: 11.sp),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // Delete Button
+          IconButton(
+            onPressed: onDelete,
+            icon: Icon(
+              Icons.delete_outline,
+              color: AppColors.secondaryGrey,
+              size: 20.r,
+            ),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          ),
+        ],
+      ),
+    );
+  }
+}

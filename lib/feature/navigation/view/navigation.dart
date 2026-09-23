@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:medivault/core/utils/app_colors.dart';
+import 'package:medivault/core/utils/app_routes.dart';
 import 'package:medivault/feature/history/views/history_view.dart';
 import 'package:medivault/feature/home/ui/views/home_view.dart';
 import 'package:medivault/feature/navigation/view/custom_button_nav_bar.dart';
@@ -37,8 +36,7 @@ class _HomeViewState extends State<NavigationView> {
           });
         },
         onAddVisitPressed: () {
-          // Navigate to Add Visit
-          print('Add Visit');
+          Navigator.pushNamed(context, AppRoutes.selectSpecialtyView);
         },
       ),
     );

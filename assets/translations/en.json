@@ -101,5 +101,121 @@
   "save_changes": "Save Changes",
   "loading": "Loading...",
   "cm": "cm",
-  "kg": "kg"
+  "kg": "kg",
+  "select_medical_specialty": "Select Medical Specialty",
+  "step_1_of_2": "Step 1 of 2",
+  "continue_to_visit_details": "Continue to Visit Details",
+  "select_specialty": "Select Specialty",
+  "subtitle_of_select_specialty": "Choose the primary specialty for this clinic visit to route your records, labs, and doctor notes correctly.",
+  "visit_details": "Visit Details",
+  "step_2_of_2": "Step 2 of 2",
+  "category": "Category",
+  "consultation_information": "Consultation Information",
+  "subtitle_of_consultation_information": "Document your clinical encounter accurately for comprehensive medical timelines.",
+  "select_visit_date": "Select Visit Date",
+  "visit_date": "Visit Date",
+  "doctor_name": "Doctor's Name",
+  "clinic_hospital": "Clinic/Hospital",
+  "symptoms": "Symptoms",
+  "diagnosis": "Diagnosis",
+  "advisory_notes": "Advisory Notes",
+  "prescriptions": "Prescriptions",
+  "attachments": "Attachments",
+  "enter_the_doctor's_name": "Enter the doctor's name",
+  "enter_clinic_hospital": "Enter clinic or hospital name",
+  "reason_for_visit": "Reason for Visit",
+  "enter_reason_for_visit": "Enter reason for visit",
+  "describe_symptoms_or_follow_up_goals_discussed_during_consultation": "Describe symptoms or follow-up goals discussed during consultation",
+  "enter_diagnosis": "Enter diagnosis",
+  "describe_doctor's_diagnosis_or_clinical_notes": "Describe doctor's diagnosis or clinical notes",
+  "note_of_doctor_diagonosis": "Enter the exact official diagnosis given by your licensed physician. MediVault stores verified patient telemetry and does not self-generate diagnostic conclusions.",
+  "doctor's_advisory_notes": "Doctor's Advisory Notes",
+  "enter_advisory_notes": "Enter advisory notes",
+  "prescriptions_&_medication_notes": "Prescriptions & Medication Notes",
+  "enter_prescriptions_&_medications": "Enter prescriptions & medications",
+  "medical_attachments": "Medical Attachments",
+  "take_photo": "Take Photo",
+  "choose_file": "Choose File",
+  "save_visit": "Save Visit",
+  "visit_details_saved": "Visit Details saved",
+  "doctor_diagnosis": "Doctor's Diagnosis",
+  "specialties": {
+    "cardiology": {
+      "title": "Cardiology",
+      "description": "Heart, blood pressure & vascular"
+    },
+    "orthopedics": {
+      "title": "Orthopedics",
+      "description": "Bones, joints & ligaments"
+    },
+    "dermatology": {
+      "title": "Dermatology",
+      "description": "Skin, hair & rashes"
+    },
+    "neurology": {
+      "title": "Neurology",
+      "description": "Brain, nerves & spine"
+    },
+    "pediatrics": {
+      "title": "Pediatrics",
+      "description": "Child & infant healthcare"
+    },
+    "ophthalmology": {
+      "title": "Ophthalmology",
+      "description": "Eye care & vision exams"
+    },
+    "pulmonology": {
+      "title": "Pulmonology",
+      "description": "Lungs & respiratory care"
+    },
+    "dentistry": {
+      "title": "Dentistry",
+      "description": "Teeth, gums & oral hygiene"
+    },
+    "vascular_surgery": {
+      "title": "Vascular Surgery",
+      "description": "Arteries, veins & blood flow"
+    },
+    "gastroenterology": {
+      "title": "Gastroenterology",
+      "description": "Stomach, intestines & digestion"
+    },
+    "urology": {
+      "title": "Urology",
+      "description": "Urinary system & reproductive health"
+    },
+    "gynecology_obstetrics": {
+      "title": "Gynecology & Obstetrics",
+      "description": "Women’s health & pregnancy care"
+    },
+    "ent_otolaryngology": {
+      "title": "ENT / Otolaryngology",
+      "description": "Ear, nose & throat care"
+    },
+    "nephrology": {
+      "title": "Nephrology",
+      "description": "Kidneys & kidney diseases"
+    },
+    "endocrinology": {
+      "title": "Endocrinology",
+      "description": "Hormones, glands & diabetes"
+    },
+    "oncology": {
+      "title": "Oncology",
+      "description": "Cancer diagnosis & treatment"
+    },
+    "psychiatry": {
+      "title": "Psychiatry",
+      "description": "Mental health & wellbeing"
+    },
+    "rheumatology": {
+      "title": "Rheumatology",
+      "description": "Joints, muscles & autoimmune diseases"
+    },
+    "other_specialties": {
+      "title": "Other Specialties",
+      "description": "Other medical & healthcare specialties"
+    }
+  },
+  "selected_specialty": "Selected Specialty"
 }

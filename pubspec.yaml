@@ -27,6 +27,7 @@ dependencies:
   shared_preferences: ^2.5.3
   skeletonizer: ^3.0.0
   animated_text_kit: ^4.3.0
+  font_awesome_flutter: ^11.0.0
 
 dev_dependencies:
   flutter_test:

@@ -11,6 +11,9 @@ import 'core/di/di.dart';
 import 'core/utils/app_routes.dart';
 import 'core/utils/app_theme.dart';
 import 'core/widgets/splash_view.dart';
+import 'feature/add_visit/ui/views/models/specialty_model.dart';
+import 'feature/add_visit/ui/views/select_specialty_view.dart';
+import 'feature/add_visit/ui/views/visit_details_view.dart';
 import 'feature/auth/ui/views/login_view.dart';
 import 'feature/auth/ui/views/register_view.dart';
 import 'feature/onboarding/ui/views/onboarding_view.dart';
@@ -52,6 +55,15 @@ class MyApp extends StatelessWidget {
           supportedLocales: context.supportedLocales,
           locale: context.locale,
           initialRoute: AppRoutes.splashView,
+          onGenerateRoute: (settings) {
+            if (settings.name == AppRoutes.visitDetailsView) {
+              final specialty = settings.arguments as SpecialtyModel?;
+              return MaterialPageRoute(
+                builder: (context) => VisitDetailsView(specialty: specialty),
+              );
+            }
+            return null;
+          },
           routes: {
             AppRoutes.splashView: (context) => const SplashView(),
             AppRoutes.onboardingView: (context) => const OnboardingView(),
@@ -61,6 +73,7 @@ class MyApp extends StatelessWidget {
             AppRoutes.homeView: (context) => const HomeView(),
             AppRoutes.navigationView: (context) => const NavigationView(),
             AppRoutes.editProfileView: (context) => const EditProfileView(),
+            AppRoutes.selectSpecialtyView: (context) => const SelectSpecialtyView(),
           },
         );
       },

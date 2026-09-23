@@ -101,5 +101,120 @@
   "save_changes": "حفظ التغييرات",
   "loading": "تحميل...",
   "cm": "سم",
-  "kg": "كجم"
+  "kg": "كجم",
+  "select_medical_specialty": "اختر التخصص الطبي",
+  "step_1_of_2": "الخطوة 1 من 2",
+  "continue_to_visit_details": "المتابعة إلى تفاصيل الزيارة",
+  "select_specialty": "اختر التخصص",
+  "subtitle_of_select_specialty": "اختر التخصص الطبي لهذه الزيارة لتوجيه سجلاتك ومختبراتك وملاحظات الطبيب بشكل صحيح.",
+  "visit_details": "تفاصيل الزيارة",
+  "step_2_of_2": "الخطوة 2 من 2",
+  "category": "الفئة",
+  "consultation_information": "معلومات الاستشارة",
+  "subtitle_of_consultation_information": "قم بتوثيق مقابلتك السريرية بدقة للحصول على جداول زمنية طبية شاملة.",
+  "select_visit_date": "اختر تاريخ الزيارة",
+  "visit_date": "تاريخ الزيارة",
+  "doctor_name": "اسم الطبيب",
+  "clinic_hospital": "العيادة/المستشفى",
+  "symptoms": "الأعراض",
+  "diagnosis": "التشخيص",
+  "advisory_notes": "الملاحظات الاستشارية",
+  "prescriptions": "الوصفات الطبية",
+  "attachments": "المرفقات",
+  "enter_the_doctor's_name": "أدخل اسم الطبيب",
+  "enter_clinic_hospital": "أدخل اسم العيادة أو المستشفى",
+  "reason_for_visit": "سبب الزيارة",
+  "enter_reason_for_visit": "أدخل سبب الزيارة",
+  "describe_symptoms_or_follow_up_goals_discussed_during_consultation": "صف الأعراض أو أهداف المتابعة التي تم مناقشتها خلال الاستشارة",
+  "doctor_diagnosis": "تشخيص الطبيب",
+  "describe_doctor's_diagnosis_or_clinical_notes": "صف تشخيص الطبيب أو الملاحظات السريرية",
+  "note_of_doctor_diagonosis": "أدخل التشخيص الرسمي الدقيق الذي قدمه طبيبك المرخص. يقوم MediVault بتخزين بيانات المريض الموثوقة ولا يُنشئ استنتاجات تشخيصية بنفسه.",
+  "doctor's_advisory_notes": "ملاحظات الطبيب",
+  "enter_advisory_notes": "أدخل ملاحظات الطبيب",
+  "prescriptions_&_medication_notes": "الوصفات الطبية والملاحظات",
+  "enter_prescriptions_&_medications": "أدخل الوصفات الطبية والملاحظات",
+  "medical_attachments": "المرفقات الطبية",
+  "take_photo": "التقاط صورة",
+  "choose_file": "اختر ملف",
+  "save_visit": "حفظ الزيارة",
+  "visit_details_saved": "تم حفظ تفاصيل الزيارة",
+  "specialties": {
+    "cardiology": {
+      "title": "أمراض القلب",
+      "description": "القلب وضغط الدم والأوعية الدموية"
+    },
+    "orthopedics": {
+      "title": "جراحة العظام",
+      "description": "العظام والمفاصل والأربطة"
+    },
+    "dermatology": {
+      "title": "الأمراض الجلدية",
+      "description": "الجلد والشعر والطفح الجلدي"
+    },
+    "neurology": {
+      "title": "أمراض الأعصاب",
+      "description": "الدماغ والأعصاب والعمود الفقري"
+    },
+    "pediatrics": {
+      "title": "طب الأطفال",
+      "description": "رعاية الأطفال والرضع"
+    },
+    "ophthalmology": {
+      "title": "طب العيون",
+      "description": "رعاية العيون وفحوصات النظر"
+    },
+    "pulmonology": {
+      "title": "أمراض الرئة",
+      "description": "الرئتان ورعاية الجهاز التنفسي"
+    },
+    "dentistry": {
+      "title": "طب الأسنان",
+      "description": "الأسنان واللثة ونظافة الفم"
+    },
+    "vascular_surgery": {
+      "title": "جراحة الأوعية الدموية",
+      "description": "الشرايين والأوردة وتدفق الدم"
+    },
+    "gastroenterology": {
+      "title": "الجهاز الهضمي",
+      "description": "المعدة والأمعاء والهضم"
+    },
+    "urology": {
+      "title": "المسالك البولية",
+      "description": "الجهاز البولي والصحة التناسلية"
+    },
+    "gynecology_obstetrics": {
+      "title": "أمراض النساء والتوليد",
+      "description": "صحة المرأة ورعاية الحمل"
+    },
+    "ent_otolaryngology": {
+      "title": "الأنف والأذن والحنجرة",
+      "description": "رعاية الأذن والأنف والحنجرة"
+    },
+    "nephrology": {
+      "title": "أمراض الكلى",
+      "description": "الكلى وأمراض الكلى"
+    },
+    "endocrinology": {
+      "title": "الغدد الصماء",
+      "description": "الهرمونات والغدد والسكري"
+    },
+    "oncology": {
+      "title": "طب الأورام",
+      "description": "تشخيص السرطان وعلاجه"
+    },
+    "psychiatry": {
+      "title": "الطب النفسي",
+      "description": "الصحة النفسية والعقلية"
+    },
+    "rheumatology": {
+      "title": "أمراض الروماتيزم",
+      "description": "المفاصل والعضلات وأمراض المناعة الذاتية"
+    },
+    "other_specialties": {
+      "title": "تخصصات أخرى",
+      "description": "التخصصات والخدمات الطبية الأخرى"
+    }
+  },
+  "selected_specialty": "التخصص المختار"
 }
