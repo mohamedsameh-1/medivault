@@ -111,7 +111,7 @@
   "step_2_of_2": "Step 2 of 2",
   "category": "Category",
   "consultation_information": "Consultation Information",
-  "subtitle_of_consultation_information": "Document your clinical encounter accurately for comprehensive medical timelines.",
+  "subtitle_of_consultation_information": "Keep a record of your doctor visits to maintain a complete medical history",
   "select_visit_date": "Select Visit Date",
   "visit_date": "Visit Date",
   "doctor_name": "Doctor's Name",
@@ -125,7 +125,7 @@
   "enter_clinic_hospital": "Enter clinic or hospital name",
   "reason_for_visit": "Reason for Visit",
   "enter_reason_for_visit": "Enter reason for visit",
-  "describe_symptoms_or_follow_up_goals_discussed_during_consultation": "Describe symptoms or follow-up goals discussed during consultation",
+  "describe_symptoms_or_follow_up_goals_discussed_during_consultation": "Describe your symptoms, concerns, or the reason for this visit.",
   "enter_diagnosis": "Enter diagnosis",
   "describe_doctor's_diagnosis_or_clinical_notes": "Describe doctor's diagnosis or clinical notes",
   "note_of_doctor_diagonosis": "Enter the exact official diagnosis given by your licensed physician. MediVault stores verified patient telemetry and does not self-generate diagnostic conclusions.",
@@ -217,5 +217,16 @@
       "description": "Other medical & healthcare specialties"
     }
   },
-  "selected_specialty": "Selected Specialty"
+  "selected_specialty": "Selected Specialty",
+  "please_fill_all_required_fields": "Please fill in all required fields.",
+  "visit_date_required": "Visit date is required.",
+  "doctor_name_required": "Doctor's name is required.",
+  "clinic_hospital_required": "Clinic or hospital name is required.",
+  "symptoms_required": "Reason for visit or symptoms is required.",
+  "diagnosis_required": "Doctor's diagnosis is required.",
+  "failed_to_pick_image": "Failed to take photo. Please check camera permissions.",
+  "failed_to_pick_file": "Failed to pick file.",
+  "failed_to_upload_attachment": "Failed to upload attachment.",
+  "failed_to_save_visit": "Failed to save visit details.",
+  "user_not_authenticated": "User is not authenticated. Please log in again."
 }

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_styles.dart';
-import '../models/attachment_model.dart';
+import '../../../domain/entities/visit_attachment_entity.dart';
 
 class AttachmentCardWidget extends StatelessWidget {
-  final AttachmentModel attachment;
+  final VisitAttachmentEntity attachment;
   final VoidCallback onDelete;
 
   const AttachmentCardWidget({
@@ -14,12 +14,26 @@ class AttachmentCardWidget extends StatelessWidget {
     required this.onDelete,
   });
 
+  // String _formatFileSize(int bytes) {
+  //   if (bytes <= 0) return '0 B';
+  //   if (bytes < 1024 * 1024) {
+  //     final kb = (bytes / 1024).toStringAsFixed(1);
+  //     return '$kb KB';
+  //   }
+  //   final mb = (bytes / (1024 * 1024)).toStringAsFixed(1);
+  //   return '$mb MB';
+  // }
+
   @override
   Widget build(BuildContext context) {
+    final bool isPdf = attachment.fileType.toLowerCase() == 'pdf';
+    final String categoryTag = isPdf ? 'Lab & ECG' : 'Rx/Recip';
+    // final String formattedSize = _formatFileSize(attachment.fileSize);
+
     return Container(
       padding: EdgeInsets.all(10.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFF0F6FF),
+        color: AppColors.bannerBg,
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: AppColors.fieldBorder, width: 1.w),
       ),
@@ -30,18 +44,14 @@ class AttachmentCardWidget extends StatelessWidget {
             width: 46.w,
             height: 46.h,
             decoration: BoxDecoration(
-              color: attachment.isPdf
-                  ? const Color(0xFFDBEAFE)
-                  : const Color(0xFFD1FAE5),
+              color: isPdf ? const Color(0xFFDBEAFE) : AppColors.badgeGreenBg,
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: Icon(
-              attachment.isPdf
+              isPdf
                   ? Icons.picture_as_pdf_outlined
                   : Icons.receipt_long_outlined,
-              color: attachment.isPdf
-                  ? AppColors.strengthBlueText
-                  : AppColors.primaryTeal,
+              color: isPdf ? AppColors.strengthBlueText : AppColors.primaryTeal,
               size: 24.r,
             ),
           ),
@@ -66,15 +76,13 @@ class AttachmentCardWidget extends StatelessWidget {
                 Row(
                   children: [
                     Icon(
-                      attachment.isPdf
-                          ? Icons.analytics_outlined
-                          : Icons.receipt_outlined,
+                      isPdf ? Icons.analytics_outlined : Icons.receipt_outlined,
                       size: 13.r,
                       color: AppColors.primaryTeal,
                     ),
                     SizedBox(width: 4.w),
                     Text(
-                      attachment.categoryTag,
+                      categoryTag,
                       style: AppStyles.w600S14PrimaryTeal.copyWith(
                         fontSize: 11.sp,
                       ),
@@ -83,10 +91,10 @@ class AttachmentCardWidget extends StatelessWidget {
                       ' • ',
                       style: AppStyles.w400S14Grey.copyWith(fontSize: 11.sp),
                     ),
-                    Text(
-                      attachment.fileSize,
-                      style: AppStyles.w400S14Grey.copyWith(fontSize: 11.sp),
-                    ),
+                    // Text(
+                    //   formattedSize,
+                    //   style: AppStyles.w400S14Grey.copyWith(fontSize: 11.sp),
+                    // ),
                   ],
                 ),
               ],

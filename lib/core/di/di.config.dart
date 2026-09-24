@@ -13,9 +13,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
+import 'package:firebase_storage/firebase_storage.dart' as _i457;
 import 'package:get_it/get_it.dart' as _i174;
+import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:medivault/core/di/register_module.dart' as _i33;
+import 'package:medivault/feature/add_visit/data/datasources/contract/add_visit_remote_data_source.dart'
+    as _i2;
+import 'package:medivault/feature/add_visit/data/datasources/impl/add_visit_remote_data_source_impl.dart'
+    as _i95;
+import 'package:medivault/feature/add_visit/data/repo/add_visit_repo_impl.dart'
+    as _i74;
+import 'package:medivault/feature/add_visit/domain/repo/add_visit_repo.dart'
+    as _i537;
+import 'package:medivault/feature/add_visit/domain/usecase/save_visit_use_case.dart'
+    as _i993;
+import 'package:medivault/feature/add_visit/ui/viewmodel/visit_details_cubit.dart'
+    as _i752;
 import 'package:medivault/feature/auth/data/datasources/contract/auth_data_source.dart'
     as _i532;
 import 'package:medivault/feature/auth/data/datasources/impl/auth_data_source_impl.dart'
@@ -63,15 +77,28 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
+    gh.factory<_i183.ImagePicker>(() => registerModule.imagePicker);
     gh.singleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.singleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.singleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
+    gh.singleton<_i457.FirebaseStorage>(() => registerModule.storage);
+    gh.factory<_i2.AddVisitRemoteDataSource>(
+      () => _i95.AddVisitRemoteDataSourceImpl(
+        firebaseAuth: gh<_i59.FirebaseAuth>(),
+        firestore: gh<_i974.FirebaseFirestore>(),
+        storage: gh<_i457.FirebaseStorage>(),
+        connectivity: gh<_i895.Connectivity>(),
+      ),
+    );
     gh.factory<_i929.ProfileDataSource>(
       () => _i36.ProfileDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
         firestore: gh<_i974.FirebaseFirestore>(),
         connectivity: gh<_i895.Connectivity>(),
       ),
+    );
+    gh.factory<_i537.AddVisitRepo>(
+      () => _i74.AddVisitRepoImpl(gh<_i2.AddVisitRemoteDataSource>()),
     );
     gh.factory<_i947.SetupRemoteDataSource>(
       () =>
@@ -85,6 +112,9 @@ extension GetItInjectableX on _i174.GetIt {
         firebaseAuth: gh<_i59.FirebaseAuth>(),
         connectivity: gh<_i895.Connectivity>(),
       ),
+    );
+    gh.factory<_i993.SaveVisitUseCase>(
+      () => _i993.SaveVisitUseCase(gh<_i537.AddVisitRepo>()),
     );
     gh.factory<_i608.AuthRepo>(
       () => _i595.AuthRepoImpl(gh<_i532.AuthDataSource>()),
@@ -117,6 +147,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1062.UpdateProfileUseCase>(
       () => _i1062.UpdateProfileUseCase(gh<_i729.ProfileRepo>()),
+    );
+    gh.factory<_i752.VisitDetailsCubit>(
+      () => _i752.VisitDetailsCubit(
+        gh<_i993.SaveVisitUseCase>(),
+        gh<_i183.ImagePicker>(),
+      ),
     );
     gh.factory<_i477.RegisterCubit>(
       () => _i477.RegisterCubit(gh<_i385.RegisterUseCase>()),

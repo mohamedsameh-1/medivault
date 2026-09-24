@@ -111,7 +111,7 @@
   "step_2_of_2": "الخطوة 2 من 2",
   "category": "الفئة",
   "consultation_information": "معلومات الاستشارة",
-  "subtitle_of_consultation_information": "قم بتوثيق مقابلتك السريرية بدقة للحصول على جداول زمنية طبية شاملة.",
+  "subtitle_of_consultation_information": "سجّل تفاصيل زيارتك للطبيب للحفاظ على سجل طبي شامل",
   "select_visit_date": "اختر تاريخ الزيارة",
   "visit_date": "تاريخ الزيارة",
   "doctor_name": "اسم الطبيب",
@@ -125,7 +125,7 @@
   "enter_clinic_hospital": "أدخل اسم العيادة أو المستشفى",
   "reason_for_visit": "سبب الزيارة",
   "enter_reason_for_visit": "أدخل سبب الزيارة",
-  "describe_symptoms_or_follow_up_goals_discussed_during_consultation": "صف الأعراض أو أهداف المتابعة التي تم مناقشتها خلال الاستشارة",
+  "describe_symptoms_or_follow_up_goals_discussed_during_consultation": "اذكر الأعراض أو الشكاوى أو سبب هذه الزيارة.",
   "doctor_diagnosis": "تشخيص الطبيب",
   "describe_doctor's_diagnosis_or_clinical_notes": "صف تشخيص الطبيب أو الملاحظات السريرية",
   "note_of_doctor_diagonosis": "أدخل التشخيص الرسمي الدقيق الذي قدمه طبيبك المرخص. يقوم MediVault بتخزين بيانات المريض الموثوقة ولا يُنشئ استنتاجات تشخيصية بنفسه.",
@@ -216,5 +216,16 @@
       "description": "التخصصات والخدمات الطبية الأخرى"
     }
   },
-  "selected_specialty": "التخصص المختار"
+  "selected_specialty": "التخصص المختار",
+  "please_fill_all_required_fields": "يرجى ملء جميع الحقول المطلوبة.",
+  "visit_date_required": "تاريخ الزيارة مطلوب.",
+  "doctor_name_required": "اسم الطبيب مطلوب.",
+  "clinic_hospital_required": "اسم العيادة أو المستشفى مطلوب.",
+  "symptoms_required": "سبب الزيارة أو الأعراض مطلوب.",
+  "diagnosis_required": "تشخيص الطبيب مطلوب.",
+  "failed_to_pick_image": "فشل التقاط الصورة. يرجى التحقق من أذونات الكاميرا.",
+  "failed_to_pick_file": "فشل اختيار الملف.",
+  "failed_to_upload_attachment": "فشل تحميل المرفق.",
+  "failed_to_save_visit": "فشل حفظ تفاصيل الزيارة.",
+  "user_not_authenticated": "المستخدم غير مسجل الدخول. يرجى إعادة تسجيل الدخول."
 }
