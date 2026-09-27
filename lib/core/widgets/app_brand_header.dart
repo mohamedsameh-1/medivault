@@ -1,9 +1,8 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/core/utils/app_assets.dart';
 import 'package:medivault/core/utils/app_styles.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_colors.dart';
 
 class AppBrandHeader extends StatelessWidget {
@@ -25,20 +24,30 @@ class AppBrandHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AnimatedTextKit(
-                  isRepeatingAnimation: false,
-                  animatedTexts: [
-                    TyperAnimatedText(
-                      'MediVault',
-                      textStyle: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.white,
-                      ),
-                      speed: const Duration(milliseconds: 150),
-                    ),
-                  ],
+                Text(
+                  'MediVault',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.5,
+                    color: AppColors.white,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
+                // AnimatedTextKit(
+                //   isRepeatingAnimation: false,
+                //   animatedTexts: [
+                //     TyperAnimatedText(
+                //       'MediVault',
+                //       textStyle: TextStyle(
+                //         fontSize: 20.sp,
+                //         fontWeight: FontWeight.w600,
+                //         color: AppColors.white,
+                //       ),
+                //       speed: const Duration(milliseconds: 150),
+                //     ),
+                //   ],
+                // ),
                 Text(
                   subtitle,
                   style: AppStyles.w400S13Disclaimer.copyWith(

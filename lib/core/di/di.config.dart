@@ -18,6 +18,8 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:medivault/core/di/register_module.dart' as _i33;
+import 'package:medivault/core/services/visit_direct_share_service.dart' as _i989;
+import 'package:medivault/core/services/visit_share_service.dart' as _i988;
 import 'package:medivault/feature/add_visit/data/datasources/contract/add_visit_remote_data_source.dart'
     as _i2;
 import 'package:medivault/feature/add_visit/data/datasources/impl/add_visit_remote_data_source_impl.dart'
@@ -44,6 +46,24 @@ import 'package:medivault/feature/auth/ui/viewmodel/login/login_cubit.dart'
     as _i114;
 import 'package:medivault/feature/auth/ui/viewmodel/register/register_cubit.dart'
     as _i477;
+import 'package:medivault/feature/history/data/datasources/contract/history_remote_data_source.dart'
+    as _i311;
+import 'package:medivault/feature/history/data/datasources/impl/history_remote_data_source_impl.dart'
+    as _i58;
+import 'package:medivault/feature/history/data/repo/history_repo_impl.dart'
+    as _i320;
+import 'package:medivault/feature/history/domain/repo/history_repo.dart'
+    as _i889;
+import 'package:medivault/feature/history/domain/usecase/get_visit_counts_use_case.dart'
+    as _i194;
+import 'package:medivault/feature/history/domain/usecase/get_visit_details_use_case.dart'
+    as _i276;
+import 'package:medivault/feature/history/domain/usecase/get_visits_by_specialty_use_case.dart'
+    as _i161;
+import 'package:medivault/feature/history/domain/usecase/update_visit_use_case.dart'
+    as _i1012;
+import 'package:medivault/feature/history/ui/viewmodel/history_cubit.dart'
+    as _i286;
 import 'package:medivault/feature/profile/data/datasources/contract/profile_data_source.dart'
     as _i929;
 import 'package:medivault/feature/profile/data/datasources/impl/profile_data_source_impl.dart'
@@ -78,12 +98,23 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     gh.factory<_i183.ImagePicker>(() => registerModule.imagePicker);
+    gh.factory<_i988.VisitShareService>(() => _i988.VisitShareService());
+    gh.factory<_i989.VisitDirectShareService>(
+        () => _i989.VisitDirectShareService());
     gh.singleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.singleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.singleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
     gh.singleton<_i457.FirebaseStorage>(() => registerModule.storage);
     gh.factory<_i2.AddVisitRemoteDataSource>(
       () => _i95.AddVisitRemoteDataSourceImpl(
+        firebaseAuth: gh<_i59.FirebaseAuth>(),
+        firestore: gh<_i974.FirebaseFirestore>(),
+        storage: gh<_i457.FirebaseStorage>(),
+        connectivity: gh<_i895.Connectivity>(),
+      ),
+    );
+    gh.factory<_i311.HistoryRemoteDataSource>(
+      () => _i58.HistoryRemoteDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
         firestore: gh<_i974.FirebaseFirestore>(),
         storage: gh<_i457.FirebaseStorage>(),
@@ -99,6 +130,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i537.AddVisitRepo>(
       () => _i74.AddVisitRepoImpl(gh<_i2.AddVisitRemoteDataSource>()),
+    );
+    gh.factory<_i889.HistoryRepo>(
+      () => _i320.HistoryRepoImpl(gh<_i311.HistoryRemoteDataSource>()),
     );
     gh.factory<_i947.SetupRemoteDataSource>(
       () =>
@@ -118,6 +152,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i608.AuthRepo>(
       () => _i595.AuthRepoImpl(gh<_i532.AuthDataSource>()),
+    );
+    gh.factory<_i194.GetVisitCountsUseCase>(
+      () => _i194.GetVisitCountsUseCase(gh<_i889.HistoryRepo>()),
+    );
+    gh.factory<_i276.GetVisitDetailsUseCase>(
+      () => _i276.GetVisitDetailsUseCase(gh<_i889.HistoryRepo>()),
+    );
+    gh.factory<_i161.GetVisitsBySpecialtyUseCase>(
+      () => _i161.GetVisitsBySpecialtyUseCase(gh<_i889.HistoryRepo>()),
+    );
+    gh.factory<_i1012.UpdateVisitUseCase>(
+      () => _i1012.UpdateVisitUseCase(gh<_i889.HistoryRepo>()),
     );
     gh.factory<_i165.SetupRepository>(
       () => _i165.SetupRepository(
@@ -152,6 +198,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.VisitDetailsCubit(
         gh<_i993.SaveVisitUseCase>(),
         gh<_i183.ImagePicker>(),
+      ),
+    );
+    gh.factory<_i286.HistoryCubit>(
+      () => _i286.HistoryCubit(
+        gh<_i194.GetVisitCountsUseCase>(),
+        gh<_i161.GetVisitsBySpecialtyUseCase>(),
+        gh<_i276.GetVisitDetailsUseCase>(),
+        gh<_i1012.UpdateVisitUseCase>(),
       ),
     );
     gh.factory<_i477.RegisterCubit>(

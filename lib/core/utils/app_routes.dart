@@ -9,5 +9,8 @@ abstract class AppRoutes {
   static const String editProfileView = '/edit-profile';
   static const String selectSpecialtyView = '/select-specialty';
   static const String visitDetailsView = '/visit-details';
+  static const String specialtyHistoryView = '/specialty-history';
+  static const String historyVisitDetailsView = '/history-visit-details';
+  static const String editVisitView = '/edit-visit';
 }
 

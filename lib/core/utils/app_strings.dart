@@ -31,4 +31,59 @@ abstract class AppStrings {
   static const String repeatPassword = 'repeatPassword';
   static const String disclaimerText = 'disclaimerText';
   static const String alreadyHaveAccount = 'alreadyHaveAccount';
+
+  // History & Visit Strings
+  static const String editVisitForm = 'edit_visit_form';
+  static const String editVisitBannerDesc = 'edit_visit_banner_desc';
+  static const String historySubtitle = 'history_subtitle';
+  static const String timelineHistory = 'timeline_history';
+  static const String consultationInformation = 'consultation_information';
+  static const String totalRecordsVisits = 'total_records_visits';
+  static const String noVisitsRecordedYet = 'no_visits_recorded_yet';
+  static const String noVisitsRecordedDesc = 'no_visits_recorded_desc';
+  static const String visitsCount = 'visits_count';
+  static const String edit = 'edit';
+  static const String visitUpdatedSuccessfully = 'visit_updated_successfully';
+  static const String saving = 'saving';
+  static const String visitDate = 'visit_date';
+  static const String selectVisitDate = 'select_visit_date';
+  static const String doctorName = 'doctor_name';
+  static const String enterTheDoctorsName = "enter_the_doctor's_name";
+  static const String doctorNameRequired = 'doctor_name_required';
+  static const String clinicHospital = 'clinic_hospital';
+  static const String enterClinicHospital = 'enter_clinic_hospital';
+  static const String clinicHospitalRequired = 'clinic_hospital_required';
+  static const String symptoms = 'symptoms';
+  static const String describeSymptomsOrFollowUpGoalsDiscussedDuringConsultation = 'describe_symptoms_or_follow_up_goals_discussed_during_consultation';
+  static const String symptomsRequired = 'symptoms_required';
+  static const String doctorDiagnosis = 'doctor_diagnosis';
+  static const String enterDiagnosis = 'enter_diagnosis';
+  static const String diagnosisRequired = 'diagnosis_required';
+  static const String advisoryNotes = 'advisory_notes';
+  static const String enterAdvisoryNotes = 'enter_advisory_notes';
+  static const String prescriptions = 'prescriptions';
+  static const String enterPrescriptionsMedications = 'enter_prescriptions_&_medications';
+  static const String medicalAttachments = 'medical_attachments';
+  static const String takePhoto = 'take_photo';
+  static const String chooseFile = 'choose_file';
+  static const String saveChanges = 'save_changes';
+  static const String reasonForVisit = 'reason_for_visit';
+  static const String share = 'share';
+  static const String shareVisitReport = 'share_visit_report';
+  static const String generatingPdf = 'generating_pdf';
+  static const String failedToShareVisit = 'failed_to_share_visit';
+  static const String medicalVisitReport = 'medical_visit_report';
+  static const String shareVisitOptions = 'share_visit_options';
+  static const String shareAsText = 'share_as_text';
+  static const String shareAsTextDesc = 'share_as_text_desc';
+  static const String shareImages = 'share_images';
+  static const String shareImagesDesc = 'share_images_desc';
+  static const String noImagesToShare = 'no_images_to_share';
+  static const String failedToShareText = 'failed_to_share_text';
+  static const String failedToShareImages = 'failed_to_share_images';
+  static const String preparingImages = 'preparing_images';
+  static const String loading = 'loading';
 }
+
+
+

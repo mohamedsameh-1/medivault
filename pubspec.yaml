@@ -31,6 +31,11 @@ dependencies:
   firebase_storage: ^13.6.0
   image_picker: ^1.2.3
   file_picker: ^10.3.8
+  lottie: ^3.6.1
+  pdf: ^3.11.1
+  path_provider: ^2.1.5
+  share_plus: ^10.1.4
+  arabic_reshaper: ^0.0.1
 
 dev_dependencies:
   flutter_test:
@@ -46,3 +51,5 @@ flutter:
     - assets/images/
     - assets/svg/
     - assets/translations/
+    - assets/lottie/
+    - assets/fonts/

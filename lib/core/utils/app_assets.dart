@@ -26,4 +26,5 @@ abstract class AppAssets {
   static const String psychiatry = 'assets/images/Psychiatry.webp';
   static const String rheumatology = 'assets/images/Rheumatology.webp';
   static const String otherSpecialties = 'assets/images/other.webp';
+  static const String emptyBoxLottie = 'assets/lottie/empty_box.json';
 }

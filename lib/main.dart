@@ -17,8 +17,12 @@ import 'feature/add_visit/ui/views/visit_details_view.dart';
 import 'feature/auth/ui/views/login_view.dart';
 import 'feature/auth/ui/views/register_view.dart';
 import 'feature/onboarding/ui/views/onboarding_view.dart';
-import 'feature/profile/view/edit_profile_view.dart';
+import 'feature/profile/ui/view/edit_profile_view.dart';
 import 'core/utils/bloc_observer.dart';
+import 'feature/add_visit/domain/entities/visit_entity.dart';
+import 'feature/history/views/edit_visit_view.dart';
+import 'feature/history/views/history_visit_details_view.dart';
+import 'feature/history/views/specialty_history_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,10 +60,93 @@ class MyApp extends StatelessWidget {
           locale: context.locale,
           initialRoute: AppRoutes.splashView,
           onGenerateRoute: (settings) {
+            if (settings.name == AppRoutes.specialtyHistoryView) {
+              final args = settings.arguments as Map<String, dynamic>? ?? {};
+              final specialty = args['specialty'] as SpecialtyModel? ??
+                  SpecialtyModel.defaultSpecialties.first;
+              final visitCount = args['visitCount'] as int? ?? 0;
+              return MaterialPageRoute(
+                builder: (context) => SpecialtyHistoryView(
+                  specialty: specialty,
+                  visitCount: visitCount,
+                ),
+              );
+            }
+            if (settings.name == AppRoutes.historyVisitDetailsView) {
+              final args = settings.arguments as Map<String, dynamic>? ?? {};
+              final specialty = args['specialty'] as SpecialtyModel? ??
+                  SpecialtyModel.defaultSpecialties.first;
+              final visit = args['visit'] ?? args['visitData'];
+              Map<String, dynamic> visitDataMap = {};
+              if (visit is Map<String, dynamic>) {
+                visitDataMap = visit;
+              } else if (visit is VisitEntity) {
+                visitDataMap = {
+                  'visit': visit,
+                  'date': DateFormat('MMM dd, yyyy').format(visit.visitDate),
+                  'doctorName': visit.doctorName,
+                  'clinicName': visit.clinicHospital,
+                  'reasonForVisit': visit.symptoms,
+                  'diagnosis': visit.diagnosis,
+                  'advisoryNotes': visit.advisoryNotes,
+                  'prescriptions': visit.prescriptions,
+                  'attachments': visit.attachments,
+                };
+              } else {
+                visitDataMap = args;
+              }
+              return MaterialPageRoute(
+                builder: (context) => HistoryVisitDetailsView(
+                  specialty: specialty,
+                  visitData: visitDataMap,
+                ),
+              );
+            }
             if (settings.name == AppRoutes.visitDetailsView) {
+              if (settings.arguments is Map) {
+                final args = settings.arguments as Map<String, dynamic>;
+                final specialty = args['specialty'] as SpecialtyModel? ??
+                    SpecialtyModel.defaultSpecialties.first;
+                final visit = args['visit'] ?? args['visitData'];
+                Map<String, dynamic> visitDataMap = {};
+                if (visit is Map<String, dynamic>) {
+                  visitDataMap = visit;
+                } else if (visit is VisitEntity) {
+                  visitDataMap = {
+                    'visit': visit,
+                    'date': DateFormat('MMM dd, yyyy').format(visit.visitDate),
+                    'doctorName': visit.doctorName,
+                    'clinicName': visit.clinicHospital,
+                    'reasonForVisit': visit.symptoms,
+                    'diagnosis': visit.diagnosis,
+                    'advisoryNotes': visit.advisoryNotes,
+                    'prescriptions': visit.prescriptions,
+                    'attachments': visit.attachments,
+                  };
+                } else {
+                  visitDataMap = args;
+                }
+                return MaterialPageRoute(
+                  builder: (context) => HistoryVisitDetailsView(
+                    specialty: specialty,
+                    visitData: visitDataMap,
+                  ),
+                );
+              }
               final specialty = settings.arguments as SpecialtyModel?;
               return MaterialPageRoute(
                 builder: (context) => VisitDetailsView(specialty: specialty),
+              );
+            }
+            if (settings.name == AppRoutes.editVisitView) {
+              final args = settings.arguments as Map<String, dynamic>? ?? {};
+              final specialty = args['specialty'] as SpecialtyModel?;
+              final visitData = args['visitData'] as Map<String, dynamic>?;
+              return MaterialPageRoute(
+                builder: (context) => EditVisitView(
+                  specialty: specialty,
+                  visitData: visitData,
+                ),
               );
             }
             return null;
@@ -73,7 +160,8 @@ class MyApp extends StatelessWidget {
             AppRoutes.homeView: (context) => const HomeView(),
             AppRoutes.navigationView: (context) => const NavigationView(),
             AppRoutes.editProfileView: (context) => const EditProfileView(),
-            AppRoutes.selectSpecialtyView: (context) => const SelectSpecialtyView(),
+            AppRoutes.selectSpecialtyView: (context) =>
+                const SelectSpecialtyView(),
           },
         );
       },

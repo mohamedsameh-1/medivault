@@ -11,12 +11,12 @@ import 'package:medivault/core/widgets/custom_message_dialog.dart';
 import 'package:medivault/feature/profile/domain/entities/profile_entity.dart';
 import 'package:medivault/feature/profile/ui/viewmodel/profile_cubit.dart';
 import 'package:medivault/feature/profile/ui/viewmodel/profile_state.dart';
-import 'package:medivault/feature/profile/view/widgets/delete_account_tile.dart';
+import 'package:medivault/feature/profile/ui/view/widgets/delete_account_tile.dart';
 import 'package:medivault/core/widgets/app_brand_header.dart';
-import 'package:medivault/feature/profile/view/widgets/profile_info_card.dart';
-import 'package:medivault/feature/profile/view/widgets/profile_section.dart';
-import 'package:medivault/feature/profile/view/widgets/profile_setting_type.dart';
-import 'package:medivault/feature/profile/view/widgets/language_selection_bottom_sheet.dart';
+import 'package:medivault/feature/profile/ui/view/widgets/profile_info_card.dart';
+import 'package:medivault/feature/profile/ui/view/widgets/profile_section.dart';
+import 'package:medivault/feature/profile/ui/view/widgets/profile_setting_type.dart';
+import 'package:medivault/feature/profile/ui/view/widgets/language_selection_bottom_sheet.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ProfileBody extends StatelessWidget {
@@ -218,7 +218,8 @@ class ProfileBody extends StatelessWidget {
                                 subtitle: context.locale.languageCode == 'ar'
                                     ? 'العربية'
                                     : 'English (US)',
-                                trailingText: context.locale.languageCode == 'ar'
+                                trailingText:
+                                    context.locale.languageCode == 'ar'
                                     ? 'العربية'
                                     : 'English',
                                 onTap: () {
