@@ -62,8 +62,8 @@ class CustomBottomNavBar extends StatelessWidget {
 
                   Expanded(
                     child: _NavItem(
-                      icon: Icons.description_outlined,
-                      label: 'reports'.tr(),
+                      icon: Icons.medical_services_outlined,
+                      label: 'surgeries'.tr(),
                       isSelected: currentIndex == 2,
                       onTap: () => onItemSelected(2),
                     ),

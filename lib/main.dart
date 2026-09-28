@@ -23,6 +23,11 @@ import 'feature/add_visit/domain/entities/visit_entity.dart';
 import 'feature/history/views/edit_visit_view.dart';
 import 'feature/history/views/history_visit_details_view.dart';
 import 'feature/history/views/specialty_history_view.dart';
+import 'feature/surgeries/domain/entities/surgery_entity.dart';
+import 'feature/surgeries/ui/views/add_surgery_view.dart';
+import 'feature/surgeries/ui/views/edit_surgery_view.dart';
+import 'feature/surgeries/ui/views/surgeries_view.dart';
+import 'feature/surgeries/ui/views/surgery_details_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -149,6 +154,28 @@ class MyApp extends StatelessWidget {
                 ),
               );
             }
+            if (settings.name == AppRoutes.surgeryDetailsView) {
+              final args = settings.arguments as Map<String, dynamic>? ?? {};
+              final surgery = args['surgery'] as SurgeryEntity?;
+              final surgeryData = args['surgeryData'] as Map<String, dynamic>?;
+              return MaterialPageRoute(
+                builder: (context) => SurgeryDetailsView(
+                  surgery: surgery,
+                  surgeryData: surgeryData,
+                ),
+              );
+            }
+            if (settings.name == AppRoutes.editSurgeryView) {
+              final args = settings.arguments as Map<String, dynamic>? ?? {};
+              final surgery = args['surgery'] as SurgeryEntity?;
+              final surgeryData = args['surgeryData'] as Map<String, dynamic>?;
+              return MaterialPageRoute(
+                builder: (context) => EditSurgeryView(
+                  surgery: surgery,
+                  surgeryData: surgeryData,
+                ),
+              );
+            }
             return null;
           },
           routes: {
@@ -162,6 +189,11 @@ class MyApp extends StatelessWidget {
             AppRoutes.editProfileView: (context) => const EditProfileView(),
             AppRoutes.selectSpecialtyView: (context) =>
                 const SelectSpecialtyView(),
+            AppRoutes.surgeriesView: (context) => const SurgeriesView(),
+            AppRoutes.addSurgeryView: (context) => const AddSurgeryView(),
+            AppRoutes.surgeryDetailsView: (context) =>
+                const SurgeryDetailsView(),
+            AppRoutes.editSurgeryView: (context) => const EditSurgeryView(),
           },
         );
       },

@@ -83,6 +83,37 @@ abstract class AppStrings {
   static const String failedToShareImages = 'failed_to_share_images';
   static const String preparingImages = 'preparing_images';
   static const String loading = 'loading';
+
+  // Surgeries Strings
+  static const String surgeries = 'surgeries';
+  static const String surgeriesTrackSubtitle = 'surgeries_track_subtitle';
+  static const String addSurgeryRecord = 'add_surgery_record';
+  static const String addYourFirstSurgery = 'add_your_first_surgery';
+  static const String noSurgeriesRecordedYet = 'no_surgeries_recorded_yet';
+  static const String noSurgeriesRecordedDesc = 'no_surgeries_recorded_desc';
+  static const String totalCount = 'total_count';
+  static const String allSurgeries = 'all_surgeries';
+  static const String addSurgery = 'add_surgery';
+  static const String surgeryName = 'surgery_name';
+  static const String surgeryNameHint = 'surgery_name_hint';
+  static const String surgeryDate = 'surgery_date';
+  static const String medicalSpecialty = 'medical_specialty';
+  static const String selectSurgicalSpecialty = 'select_surgical_specialty';
+  static const String diagnosisReasonForProcedure = 'diagnosis_reason_for_procedure';
+  static const String diagnosisReasonHint = 'diagnosis_reason_hint';
+  static const String hospitalSurgicalCenter = 'hospital_surgical_center';
+  static const String hospitalSurgicalCenterHint = 'hospital_surgical_center_hint';
+  static const String anesthesiaType = 'anesthesia_type';
+  static const String anesthesiaTypeHint = 'anesthesia_type_hint';
+  static const String surgeonName = 'surgeon_name';
+  static const String surgeonNameHint = 'surgeon_name_hint';
+  static const String notes = 'notes';
+  static const String notesHint = 'notes_hint';
+  static const String saveSurgeryRecord = 'save_surgery_record';
+  static const String editSurgeryForm = 'edit_surgery_form';
+  static const String editSurgeryBannerDesc = 'edit_surgery_banner_desc';
+  static const String surgeryDetails = 'surgery_details';
+  static const String surgeryInformation = 'surgery_information';
 }
 
 

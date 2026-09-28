@@ -4,7 +4,7 @@ import 'package:medivault/feature/history/views/history_view.dart';
 import 'package:medivault/feature/home/ui/views/home_view.dart';
 import 'package:medivault/feature/navigation/view/custom_button_nav_bar.dart';
 import 'package:medivault/feature/profile/ui/view/profile_view.dart';
-import 'package:medivault/feature/report/view/report_view.dart';
+import 'package:medivault/feature/surgeries/ui/views/surgeries_view.dart';
 
 class NavigationView extends StatefulWidget {
   const NavigationView({super.key});
@@ -19,7 +19,7 @@ class _HomeViewState extends State<NavigationView> {
   final List<Widget> _pages = const [
     HomeView(),
     HistoryView(),
-    ReportView(),
+    SurgeriesView(),
     ProfileView(),
   ];
 
