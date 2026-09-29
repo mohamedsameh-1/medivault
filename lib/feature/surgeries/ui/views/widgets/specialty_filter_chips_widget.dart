@@ -24,7 +24,7 @@ class SpecialtyFilterChipsWidget extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: specialties.length,
-        separatorBuilder: (_, __) => SizedBox(width: 8.w),
+        separatorBuilder: (context, index) => SizedBox(width: 8.w),
         itemBuilder: (context, index) {
           final specialty = specialties[index];
           final isSelected = specialty == selectedSpecialty;
@@ -32,6 +32,16 @@ class SpecialtyFilterChipsWidget extends StatelessWidget {
           String displayTitle = specialty;
           if (specialty == 'All') {
             displayTitle = AppStrings.allSurgeries.tr();
+          } else {
+            final translationKey = 'specialties.$specialty.title';
+            final translated = translationKey.tr();
+            if (translated != translationKey) {
+              displayTitle = translated;
+            } else {
+              displayTitle =
+                  specialty[0].toUpperCase() +
+                  specialty.substring(1).replaceAll('_', ' ');
+            }
           }
 
           return GestureDetector(
@@ -43,7 +53,9 @@ class SpecialtyFilterChipsWidget extends StatelessWidget {
                 color: isSelected ? AppColors.primaryTeal : AppColors.white,
                 borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
-                  color: isSelected ? AppColors.primaryTeal : AppColors.fieldBorder,
+                  color: isSelected
+                      ? AppColors.primaryTeal
+                      : AppColors.fieldBorder,
                   width: 1,
                 ),
               ),

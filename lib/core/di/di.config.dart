@@ -18,7 +18,8 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:medivault/core/di/register_module.dart' as _i33;
-import 'package:medivault/core/services/visit_direct_share_service.dart' as _i989;
+import 'package:medivault/core/services/visit_direct_share_service.dart'
+    as _i628;
 import 'package:medivault/core/services/visit_share_service.dart' as _i988;
 import 'package:medivault/feature/add_visit/data/datasources/contract/add_visit_remote_data_source.dart'
     as _i2;
@@ -88,6 +89,26 @@ import 'package:medivault/feature/setup/data/repo/setup_repository.dart'
     as _i165;
 import 'package:medivault/feature/setup/presentation/viewmodel/setup_cubit.dart'
     as _i655;
+import 'package:medivault/feature/surgeries/data/datasources/contract/surgeries_remote_data_source.dart'
+    as _i819;
+import 'package:medivault/feature/surgeries/data/datasources/impl/surgeries_remote_data_source_impl.dart'
+    as _i78;
+import 'package:medivault/feature/surgeries/data/repo/surgeries_repo_impl.dart'
+    as _i189;
+import 'package:medivault/feature/surgeries/domain/repo/surgeries_repo.dart'
+    as _i91;
+import 'package:medivault/feature/surgeries/domain/usecase/add_surgery_use_case.dart'
+    as _i112;
+import 'package:medivault/feature/surgeries/domain/usecase/delete_surgery_use_case.dart'
+    as _i875;
+import 'package:medivault/feature/surgeries/domain/usecase/get_surgeries_use_case.dart'
+    as _i456;
+import 'package:medivault/feature/surgeries/domain/usecase/get_surgery_details_use_case.dart'
+    as _i247;
+import 'package:medivault/feature/surgeries/domain/usecase/update_surgery_use_case.dart'
+    as _i18;
+import 'package:medivault/feature/surgeries/ui/viewmodel/surgeries_cubit.dart'
+    as _i606;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -98,9 +119,10 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     gh.factory<_i183.ImagePicker>(() => registerModule.imagePicker);
+    gh.factory<_i628.VisitDirectShareService>(
+      () => _i628.VisitDirectShareService(),
+    );
     gh.factory<_i988.VisitShareService>(() => _i988.VisitShareService());
-    gh.factory<_i989.VisitDirectShareService>(
-        () => _i989.VisitDirectShareService());
     gh.singleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.singleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.singleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
@@ -111,6 +133,14 @@ extension GetItInjectableX on _i174.GetIt {
         firestore: gh<_i974.FirebaseFirestore>(),
         storage: gh<_i457.FirebaseStorage>(),
         connectivity: gh<_i895.Connectivity>(),
+      ),
+    );
+    gh.factory<_i819.SurgeriesRemoteDataSource>(
+      () => _i78.SurgeriesRemoteDataSourceImpl(
+        gh<_i59.FirebaseAuth>(),
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i457.FirebaseStorage>(),
+        gh<_i895.Connectivity>(),
       ),
     );
     gh.factory<_i311.HistoryRemoteDataSource>(
@@ -128,6 +158,9 @@ extension GetItInjectableX on _i174.GetIt {
         connectivity: gh<_i895.Connectivity>(),
       ),
     );
+    gh.factory<_i91.SurgeriesRepo>(
+      () => _i189.SurgeriesRepoImpl(gh<_i819.SurgeriesRemoteDataSource>()),
+    );
     gh.factory<_i537.AddVisitRepo>(
       () => _i74.AddVisitRepoImpl(gh<_i2.AddVisitRemoteDataSource>()),
     );
@@ -138,6 +171,21 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i947.SetupRemoteDataSource(firestore: gh<_i974.FirebaseFirestore>()),
     );
+    gh.factory<_i112.AddSurgeryUseCase>(
+      () => _i112.AddSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i875.DeleteSurgeryUseCase>(
+      () => _i875.DeleteSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i456.GetSurgeriesUseCase>(
+      () => _i456.GetSurgeriesUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i247.GetSurgeryDetailsUseCase>(
+      () => _i247.GetSurgeryDetailsUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i18.UpdateSurgeryUseCase>(
+      () => _i18.UpdateSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
+    );
     gh.factory<_i729.ProfileRepo>(
       () => _i363.ProfileRepoImpl(gh<_i929.ProfileDataSource>()),
     );
@@ -145,6 +193,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i876.AuthDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
         connectivity: gh<_i895.Connectivity>(),
+      ),
+    );
+    gh.factory<_i606.SurgeriesCubit>(
+      () => _i606.SurgeriesCubit(
+        gh<_i456.GetSurgeriesUseCase>(),
+        gh<_i247.GetSurgeryDetailsUseCase>(),
+        gh<_i112.AddSurgeryUseCase>(),
+        gh<_i18.UpdateSurgeryUseCase>(),
+        gh<_i875.DeleteSurgeryUseCase>(),
       ),
     );
     gh.factory<_i993.SaveVisitUseCase>(

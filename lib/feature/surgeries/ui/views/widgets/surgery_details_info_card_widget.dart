@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_strings.dart';
+import 'package:medivault/core/utils/medical_special_list.dart';
 
 class SurgeryDetailsInfoCardWidget extends StatelessWidget {
   final String date;
@@ -87,7 +88,7 @@ class SurgeryDetailsInfoCardWidget extends StatelessWidget {
           _buildDivider(),
           _buildInfoSection(
             AppStrings.medicalSpecialty.tr().toUpperCase(),
-            medicalSpecialty,
+            MedicalSpecialties.getSpecialtyTitle(medicalSpecialty),
           ),
           _buildDivider(),
           _buildInfoSection(

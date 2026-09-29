@@ -114,6 +114,7 @@ abstract class AppStrings {
   static const String editSurgeryBannerDesc = 'edit_surgery_banner_desc';
   static const String surgeryDetails = 'surgery_details';
   static const String surgeryInformation = 'surgery_information';
+  static const String delete = 'delete';
 }
 
 

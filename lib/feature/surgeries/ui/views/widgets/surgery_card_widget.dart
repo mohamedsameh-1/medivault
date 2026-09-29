@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_styles.dart';
+import 'package:medivault/core/utils/medical_special_list.dart';
 import 'package:medivault/feature/surgeries/domain/entities/surgery_entity.dart';
 
 class SurgeryCardWidget extends StatelessWidget {
@@ -52,7 +53,9 @@ class SurgeryCardWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20.r),
                               ),
                               child: Text(
-                                surgery.specialty,
+                                MedicalSpecialties.getSpecialtyTitle(
+                                  surgery.specialty,
+                                ),
                                 style: TextStyle(
                                   fontSize: 11.sp,
                                   fontWeight: FontWeight.w600,
