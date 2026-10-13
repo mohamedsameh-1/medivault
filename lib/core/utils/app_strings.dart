@@ -54,7 +54,9 @@ abstract class AppStrings {
   static const String enterClinicHospital = 'enter_clinic_hospital';
   static const String clinicHospitalRequired = 'clinic_hospital_required';
   static const String symptoms = 'symptoms';
-  static const String describeSymptomsOrFollowUpGoalsDiscussedDuringConsultation = 'describe_symptoms_or_follow_up_goals_discussed_during_consultation';
+  static const String
+  describeSymptomsOrFollowUpGoalsDiscussedDuringConsultation =
+      'describe_symptoms_or_follow_up_goals_discussed_during_consultation';
   static const String symptomsRequired = 'symptoms_required';
   static const String doctorDiagnosis = 'doctor_diagnosis';
   static const String enterDiagnosis = 'enter_diagnosis';
@@ -62,7 +64,8 @@ abstract class AppStrings {
   static const String advisoryNotes = 'advisory_notes';
   static const String enterAdvisoryNotes = 'enter_advisory_notes';
   static const String prescriptions = 'prescriptions';
-  static const String enterPrescriptionsMedications = 'enter_prescriptions_&_medications';
+  static const String enterPrescriptionsMedications =
+      'enter_prescriptions_&_medications';
   static const String medicalAttachments = 'medical_attachments';
   static const String takePhoto = 'take_photo';
   static const String chooseFile = 'choose_file';
@@ -99,10 +102,12 @@ abstract class AppStrings {
   static const String surgeryDate = 'surgery_date';
   static const String medicalSpecialty = 'medical_specialty';
   static const String selectSurgicalSpecialty = 'select_surgical_specialty';
-  static const String diagnosisReasonForProcedure = 'diagnosis_reason_for_procedure';
+  static const String diagnosisReasonForProcedure =
+      'diagnosis_reason_for_procedure';
   static const String diagnosisReasonHint = 'diagnosis_reason_hint';
   static const String hospitalSurgicalCenter = 'hospital_surgical_center';
-  static const String hospitalSurgicalCenterHint = 'hospital_surgical_center_hint';
+  static const String hospitalSurgicalCenterHint =
+      'hospital_surgical_center_hint';
   static const String anesthesiaType = 'anesthesia_type';
   static const String anesthesiaTypeHint = 'anesthesia_type_hint';
   static const String surgeonName = 'surgeon_name';
@@ -115,7 +120,17 @@ abstract class AppStrings {
   static const String surgeryDetails = 'surgery_details';
   static const String surgeryInformation = 'surgery_information';
   static const String delete = 'delete';
+
+  // Home Strings
+  static const String home = 'home';
+  static const String homeGreeting = 'home_greeting';
+  static const String homeGreetingGeneric = 'home_greeting_generic';
+  static const String homeSubtitle = 'home_subtitle';
+  static const String recentSurgeries = 'recent_surgeries';
+  static const String recentDoctorVisits = 'recent_doctor_visits';
+  static const String seeAllWithCount = 'see_all_with_count';
+  static const String seeAll = 'see_all';
+  static const String consultation = 'consultation';
+  static const String noRecentSurgeriesHome = 'no_recent_surgeries_home';
+  static const String noRecentVisitsHome = 'no_recent_visits_home';
 }
-
-
-

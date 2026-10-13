@@ -104,10 +104,10 @@ class SurgeryModel extends SurgeryEntity {
     SurgeryModel(
       id: '2',
       surgeryName: 'Laparoscopic Cholecystectomy',
-      specialty: 'orthopedics',
+      specialty: 'general_surgery',
       surgeryDate: DateTime(2025, 3, 4),
       doctorName: 'Dr. Mona El-Sayed',
-      hospitalName: 'Al-Noor Specialist Hospital',
+      hospitalName: 'Al-Noor Hospital',
     ),
     SurgeryModel(
       id: '3',

@@ -282,5 +282,15 @@
   "edit_surgery_form": "Edit Surgery Form",
   "edit_surgery_banner_desc": "Modify your surgical procedure record. Changes will automatically sync and update your timeline.",
   "surgery_details": "Surgery Details",
-  "surgery_information": "Surgery Information"
+  "surgery_information": "Surgery Information",
+  "home_greeting": "Welcome, {} 👋",
+  "home_greeting_generic": "Welcome 👋",
+  "home_subtitle": "Your personal health vault is up to date & synced",
+  "recent_surgeries": "Recent Surgeries",
+  "recent_doctor_visits": "Recent Doctor Visits",
+  "see_all_with_count": "See All ({}) →",
+  "see_all": "See All",
+  "consultation": "Consultation",
+  "no_recent_surgeries_home": "No recent surgeries recorded",
+  "no_recent_visits_home": "No recent doctor visits recorded"
 }

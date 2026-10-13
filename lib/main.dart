@@ -21,6 +21,7 @@ import 'feature/profile/ui/view/edit_profile_view.dart';
 import 'core/utils/bloc_observer.dart';
 import 'feature/add_visit/domain/entities/visit_entity.dart';
 import 'feature/history/views/edit_visit_view.dart';
+import 'feature/history/views/history_view.dart';
 import 'feature/history/views/history_visit_details_view.dart';
 import 'feature/history/views/specialty_history_view.dart';
 import 'feature/surgeries/domain/entities/surgery_entity.dart';
@@ -197,6 +198,7 @@ class MyApp extends StatelessWidget {
                 const SelectSpecialtyView(),
             AppRoutes.surgeriesView: (context) => const SurgeriesView(),
             AppRoutes.addSurgeryView: (context) => const AddSurgeryView(),
+            AppRoutes.historyView: (context) => const HistoryView(),
           },
         );
       },

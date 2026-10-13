@@ -16,5 +16,6 @@ abstract class AppRoutes {
   static const String addSurgeryView = '/add-surgery';
   static const String editSurgeryView = '/edit-surgery';
   static const String surgeryDetailsView = '/surgery-details';
+  static const String historyView = '/history';
 }
 

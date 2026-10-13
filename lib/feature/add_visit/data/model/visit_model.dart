@@ -74,4 +74,43 @@ class VisitModel extends VisitEntity {
       attachments: entity.attachments,
     );
   }
+
+  static List<VisitModel> dummyVisits = [
+    VisitModel(
+      id: '1',
+      specialtyId: 'cardiology',
+      visitDate: DateTime(2026, 9, 18),
+      doctorName: 'Dr. Ahmed Mansour',
+      clinicHospital: 'St. Jude Heart Institute',
+      symptoms: 'Routine cardiology follow-up & checkup',
+      diagnosis: 'Cardiology Consultation',
+    ),
+    VisitModel(
+      id: '2',
+      specialtyId: 'orthopedics',
+      visitDate: DateTime(2026, 8, 20),
+      doctorName: 'Dr. Mohamed Taha',
+      clinicHospital: 'Cairo Medical Center',
+      symptoms: 'Knee joint pain after workout',
+      diagnosis: 'Patellar tendonitis',
+    ),
+    VisitModel(
+      id: '3',
+      specialtyId: 'dermatology',
+      visitDate: DateTime(2026, 7, 15),
+      doctorName: 'Dr. Sara Hassan',
+      clinicHospital: 'Skin Health Clinic',
+      symptoms: 'Skin irritation and redness',
+      diagnosis: 'Contact dermatitis',
+    ),
+    VisitModel(
+      id: '4',
+      specialtyId: 'ophthalmology',
+      visitDate: DateTime(2026, 5, 10),
+      doctorName: 'Dr. Tarek Radwan',
+      clinicHospital: 'Eye Care International Center',
+      symptoms: 'Vision check and refraction',
+      diagnosis: 'Mild myopia',
+    ),
+  ];
 }

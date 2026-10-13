@@ -282,5 +282,15 @@
   "edit_surgery_form": "تعديل نموذج العملية",
   "edit_surgery_banner_desc": "قم بتعديل سجل الإجراء الجراحي الخاص بك. سيتم تحديث التغييرات وتزامنها تلقائياً.",
   "surgery_details": "تفاصيل العملية الجراحية",
-  "surgery_information": "معلومات العملية الجراحية"
+  "surgery_information": "معلومات العملية الجراحية",
+  "home_greeting": "أهلا، {} 👋",
+  "home_greeting_generic": "أهلا 👋",
+  "home_subtitle": "خزنتك الصحية الشخصية محدثة ومتزامنة",
+  "recent_surgeries": "العمليات الجراحية الأخيرة",
+  "recent_doctor_visits": "زيارات الأطباء الأخيرة",
+  "see_all_with_count": "عرض الكل ({}) ←",
+  "see_all": "عرض الكل",
+  "consultation": "استشارة",
+  "no_recent_surgeries_home": "لا توجد عمليات جراحية مسجلة حديثاً",
+  "no_recent_visits_home": "لا توجد زيارات أطباء مسجلة حديثاً"
 }

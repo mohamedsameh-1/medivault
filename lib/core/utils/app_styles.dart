@@ -83,4 +83,41 @@ abstract class AppStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.darkNavyText,
   );
+
+  static TextStyle w700S18DarkNavy = GoogleFonts.inter(
+    fontSize: 18.sp,
+    fontWeight: FontWeight.w700,
+    color: AppColors.darkNavyText,
+  );
+
+  static TextStyle w700S16DarkNavy = GoogleFonts.inter(
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w700,
+    color: AppColors.darkNavyText,
+  );
+
+  static TextStyle w700S11PrimaryTeal = GoogleFonts.inter(
+    fontSize: 11.sp,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.6,
+    color: AppColors.primaryTeal,
+  );
+
+  static TextStyle w500S12Grey = GoogleFonts.inter(
+    fontSize: 12.sp,
+    fontWeight: FontWeight.w500,
+    color: AppColors.secondaryGrey,
+  );
+
+  static TextStyle w400S13Grey = GoogleFonts.inter(
+    fontSize: 13.sp,
+    fontWeight: FontWeight.w400,
+    color: AppColors.secondaryGrey,
+  );
+
+  static TextStyle w600S13PrimaryTeal = GoogleFonts.inter(
+    fontSize: 13.sp,
+    fontWeight: FontWeight.w600,
+    color: AppColors.primaryTeal,
+  );
 }

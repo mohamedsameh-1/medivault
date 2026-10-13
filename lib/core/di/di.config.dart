@@ -65,6 +65,15 @@ import 'package:medivault/feature/history/domain/usecase/update_visit_use_case.d
     as _i1012;
 import 'package:medivault/feature/history/ui/viewmodel/history_cubit.dart'
     as _i286;
+import 'package:medivault/feature/home/data/datasources/contract/home_remote_data_source.dart'
+    as _i937;
+import 'package:medivault/feature/home/data/datasources/impl/home_remote_data_source_impl.dart'
+    as _i333;
+import 'package:medivault/feature/home/data/repo/home_repo_impl.dart' as _i810;
+import 'package:medivault/feature/home/domain/repo/home_repo.dart' as _i401;
+import 'package:medivault/feature/home/domain/usecase/get_home_data_use_case.dart'
+    as _i59;
+import 'package:medivault/feature/home/ui/viewmodel/home_cubit.dart' as _i610;
 import 'package:medivault/feature/profile/data/datasources/contract/profile_data_source.dart'
     as _i929;
 import 'package:medivault/feature/profile/data/datasources/impl/profile_data_source_impl.dart'
@@ -135,6 +144,13 @@ extension GetItInjectableX on _i174.GetIt {
         connectivity: gh<_i895.Connectivity>(),
       ),
     );
+    gh.factory<_i937.HomeRemoteDataSource>(
+      () => _i333.HomeRemoteDataSourceImpl(
+        gh<_i59.FirebaseAuth>(),
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i895.Connectivity>(),
+      ),
+    );
     gh.factory<_i819.SurgeriesRemoteDataSource>(
       () => _i78.SurgeriesRemoteDataSourceImpl(
         gh<_i59.FirebaseAuth>(),
@@ -189,6 +205,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i729.ProfileRepo>(
       () => _i363.ProfileRepoImpl(gh<_i929.ProfileDataSource>()),
     );
+    gh.factory<_i401.HomeRepo>(
+      () => _i810.HomeRepoImpl(gh<_i937.HomeRemoteDataSource>()),
+    );
     gh.factory<_i532.AuthDataSource>(
       () => _i876.AuthDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
@@ -206,6 +225,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i993.SaveVisitUseCase>(
       () => _i993.SaveVisitUseCase(gh<_i537.AddVisitRepo>()),
+    );
+    gh.factory<_i59.GetHomeDataUseCase>(
+      () => _i59.GetHomeDataUseCase(gh<_i401.HomeRepo>()),
     );
     gh.factory<_i608.AuthRepo>(
       () => _i595.AuthRepoImpl(gh<_i532.AuthDataSource>()),
@@ -250,6 +272,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1062.UpdateProfileUseCase>(
       () => _i1062.UpdateProfileUseCase(gh<_i729.ProfileRepo>()),
+    );
+    gh.factory<_i610.HomeCubit>(
+      () => _i610.HomeCubit(gh<_i59.GetHomeDataUseCase>()),
     );
     gh.factory<_i752.VisitDetailsCubit>(
       () => _i752.VisitDetailsCubit(
