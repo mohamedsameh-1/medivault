@@ -13,7 +13,7 @@ class SurgeryDetailsInfoCardWidget extends StatelessWidget {
   final String surgeonName;
   final String hospitalName;
   final String diagnosis;
-  final String anesthesiaType;
+  // final String anesthesiaType;
   final String notes;
 
   const SurgeryDetailsInfoCardWidget({
@@ -23,7 +23,7 @@ class SurgeryDetailsInfoCardWidget extends StatelessWidget {
     required this.surgeonName,
     required this.hospitalName,
     required this.diagnosis,
-    required this.anesthesiaType,
+    // required this.anesthesiaType,
     required this.notes,
     required this.medicalSpecialty,
   });

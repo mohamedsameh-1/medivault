@@ -47,4 +47,3 @@ class ProfileUpdateFailureState extends ProfileState {
   final Failure failure;
   ProfileUpdateFailureState({required this.failure});
 }
-

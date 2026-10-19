@@ -6,7 +6,7 @@ class SurgeryEntity {
   final String doctorName;
   final String hospitalName;
   final String? diagnosis;
-  final String? anesthesiaType;
+  // final String? anesthesiaType;
   final String? notes;
   final List<String> attachments;
   final DateTime? createdAt;
@@ -19,7 +19,7 @@ class SurgeryEntity {
     required this.doctorName,
     required this.hospitalName,
     this.diagnosis,
-    this.anesthesiaType,
+    // this.anesthesiaType,
     this.notes,
     this.attachments = const [],
     this.createdAt,
@@ -46,11 +46,10 @@ class SurgeryEntity {
       doctorName: doctorName ?? this.doctorName,
       hospitalName: hospitalName ?? this.hospitalName,
       diagnosis: diagnosis ?? this.diagnosis,
-      anesthesiaType: anesthesiaType ?? this.anesthesiaType,
+      // anesthesiaType: anesthesiaType ?? this.anesthesiaType,
       notes: notes ?? this.notes,
       attachments: attachments ?? this.attachments,
       createdAt: createdAt ?? this.createdAt,
     );
   }
 }
-

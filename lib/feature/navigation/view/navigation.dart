@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medivault/core/utils/app_routes.dart';
-import 'package:medivault/feature/history/views/history_view.dart';
+import 'package:medivault/feature/history/ui/views/history_view.dart';
 import 'package:medivault/feature/home/ui/views/home_view.dart';
 import 'package:medivault/feature/navigation/view/custom_button_nav_bar.dart';
 import 'package:medivault/feature/profile/ui/view/profile_view.dart';

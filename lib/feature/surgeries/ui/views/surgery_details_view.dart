@@ -4,15 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medivault/core/di/di.dart';
+import 'package:medivault/core/services/surgery_direct_share_service.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_routes.dart';
 import 'package:medivault/core/utils/app_strings.dart';
 import 'package:medivault/core/utils/app_styles.dart';
+import 'package:medivault/core/widgets/custom_elevate_btn.dart';
 import 'package:medivault/core/widgets/custom_message_dialog.dart';
 import 'package:medivault/feature/surgeries/domain/entities/surgery_entity.dart';
+import 'package:share_plus/share_plus.dart';
 import '../viewmodel/surgeries_cubit.dart';
 import '../viewmodel/surgeries_state.dart';
-import 'widgets/surgery_attachments_widget.dart';
 import 'widgets/surgery_details_info_card_widget.dart';
 
 class SurgeryDetailsView extends StatefulWidget {
@@ -111,7 +113,7 @@ class _SurgeryDetailsViewState extends State<SurgeryDetailsView> {
 
     final String diagnosis = _currentSurgery?.diagnosis ?? '';
 
-    final String anesthesia = _currentSurgery?.anesthesiaType ?? '';
+    // final String anesthesia = _currentSurgery?.anesthesiaType ?? '';
 
     final String notes = _currentSurgery?.notes ?? '';
 
@@ -256,30 +258,19 @@ class _SurgeryDetailsViewState extends State<SurgeryDetailsView> {
                           surgeonName: doctorName,
                           hospitalName: hospitalName,
                           diagnosis: diagnosis,
-                          anesthesiaType: anesthesia,
+                          // anesthesiaType: anesthesia,
                           notes: notes,
                         ),
                         SizedBox(height: 20.h),
 
-                        // 3. Attachments Section Container
-                        Container(
-                          padding: EdgeInsets.all(16.r),
-                          decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(16.r),
-                            border: Border.all(
-                              color: AppColors.bannerBg,
-                              width: 1,
-                            ),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: AppColors.checkboxBorder,
-                                blurRadius: 8,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: const SurgeryAttachmentsWidget(),
+                        // 3. button to share surgery
+                        CustomElevatedBtn(
+                          title: 'Share Surgery'.tr(),
+                          prefixIcon: Icon(Icons.share, color: AppColors.white),
+                          onPressed: () async {
+                            // await getIt<SurgeryDirectShareService>()
+                            //     .shareSurgeryAsText(surgery: _currentSurgery!);
+                          },
                         ),
                         SizedBox(height: 24.h),
                       ],

@@ -12,7 +12,7 @@ import 'package:medivault/core/widgets/custom_gradient_header.dart';
 import 'package:medivault/feature/add_visit/ui/views/models/specialty_model.dart';
 import 'package:medivault/feature/history/ui/viewmodel/history_cubit.dart';
 import 'package:medivault/feature/history/ui/viewmodel/history_state.dart';
-import 'package:medivault/feature/history/views/widgets/history_specialty_card_widget.dart';
+import 'package:medivault/feature/history/ui/views/widgets/history_specialty_card_widget.dart';
 
 class HistoryView extends StatelessWidget {
   const HistoryView({super.key});

@@ -2,7 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:medivault/core/di/di.dart';
+import 'package:medivault/core/utils/app_assets.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_routes.dart';
 import 'package:medivault/core/utils/app_strings.dart';
@@ -113,13 +115,7 @@ class HomeView extends StatelessWidget {
 
                             // Surgeries List or Empty Placeholder
                             if (homeData.recentSurgeries.isEmpty)
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.h),
-                                child: Text(
-                                  AppStrings.noRecentSurgeriesHome.tr(),
-                                  style: AppStyles.w400S14Grey,
-                                ),
-                              )
+                              const EmptySurgery()
                             else
                               ...homeData.recentSurgeries.map(
                                 (surgery) => Padding(
@@ -155,13 +151,7 @@ class HomeView extends StatelessWidget {
 
                             // Doctor Visits List or Empty Placeholder
                             if (homeData.recentVisits.isEmpty)
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.h),
-                                child: Text(
-                                  AppStrings.noRecentVisitsHome.tr(),
-                                  style: AppStyles.w400S14Grey,
-                                ),
-                              )
+                              const EmptyDoctorVisit()
                             else
                               ...homeData.recentVisits.map(
                                 (visit) => Padding(
@@ -202,6 +192,71 @@ class HomeView extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class EmptyDoctorVisit extends StatelessWidget {
+  const EmptyDoctorVisit({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: Column(
+        children: [
+          LottieBuilder.asset(
+            AppAssets.emptyBoxLottie,
+            height: 128.h,
+            width: 128.w,
+          ),
+          Text(
+            AppStrings.noRecentVisitsHome.tr(),
+            style: AppStyles.w400S14Grey,
+          ),
+
+          SizedBox(height: 16.h),
+
+          CustomElevatedBtn(
+            title: 'add_visit'.tr(),
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.selectSpecialtyView);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EmptySurgery extends StatelessWidget {
+  const EmptySurgery({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: Column(
+        children: [
+          LottieBuilder.asset(
+            AppAssets.emptyBoxLottie,
+            height: 128.h,
+            width: 128.w,
+          ),
+          Text(
+            AppStrings.noRecentSurgeriesHome.tr(),
+            style: AppStyles.w400S14Grey,
+          ),
+
+          SizedBox(height: 16.h),
+          CustomElevatedBtn(
+            title: AppStrings.addSurgery.tr(),
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.addSurgeryView);
+            },
+          ),
+        ],
       ),
     );
   }

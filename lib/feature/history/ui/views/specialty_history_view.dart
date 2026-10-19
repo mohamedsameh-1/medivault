@@ -12,8 +12,8 @@ import 'package:medivault/feature/add_visit/domain/entities/visit_entity.dart';
 import 'package:medivault/feature/add_visit/ui/views/models/specialty_model.dart';
 import 'package:medivault/feature/history/ui/viewmodel/history_cubit.dart';
 import 'package:medivault/feature/history/ui/viewmodel/history_state.dart';
-import 'package:medivault/feature/history/views/widgets/history_empty_state_widget.dart';
-import 'package:medivault/feature/history/views/widgets/visit_timeline_card_widget.dart';
+import 'package:medivault/feature/history/ui/views/widgets/history_empty_state_widget.dart';
+import 'package:medivault/feature/history/ui/views/widgets/visit_timeline_card_widget.dart';
 
 class SpecialtyHistoryView extends StatefulWidget {
   final SpecialtyModel specialty;

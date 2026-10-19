@@ -26,7 +26,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     final result = await _getProfileUseCase.invoke();
     result.fold(
       (failure) => emit(ProfileFailureState(failure: failure)),
-      (profileEntity) => emit(ProfileSuccessState(profileEntity: profileEntity)),
+      (profileEntity) =>
+          emit(ProfileSuccessState(profileEntity: profileEntity)),
     );
   }
 

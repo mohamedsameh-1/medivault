@@ -9,8 +9,8 @@ import 'package:medivault/core/utils/app_styles.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_attachment_entity.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_entity.dart';
 import 'package:medivault/feature/add_visit/ui/views/models/specialty_model.dart';
-import 'package:medivault/feature/history/views/widgets/share_visit_button_widget.dart';
-import 'package:medivault/feature/history/views/widgets/visit_attachment_tile_widget.dart';
+import 'package:medivault/feature/history/ui/views/widgets/share_visit_button_widget.dart';
+import 'package:medivault/feature/history/ui/views/widgets/visit_attachment_tile_widget.dart';
 
 class HistoryVisitDetailsView extends StatefulWidget {
   final SpecialtyModel specialty;

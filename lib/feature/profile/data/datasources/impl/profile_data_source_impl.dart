@@ -17,9 +17,9 @@ class ProfileDataSourceImpl implements ProfileDataSource {
     FirebaseAuth? firebaseAuth,
     FirebaseFirestore? firestore,
     Connectivity? connectivity,
-  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance,
-        _connectivity = connectivity ?? Connectivity();
+  }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _connectivity = connectivity ?? Connectivity();
 
   @override
   Future<Either<Failure, ProfileModel>> getProfileData() async {
@@ -34,9 +34,7 @@ class ProfileDataSourceImpl implements ProfileDataSource {
 
       final user = _firebaseAuth.currentUser;
       if (user == null) {
-        return Left(
-          const ServerFailure(failureMessage: 'User not logged in'),
-        );
+        return Left(const ServerFailure(failureMessage: 'User not logged in'));
       }
 
       final doc = await _firestore.collection('users').doc(user.uid).get();
@@ -71,9 +69,7 @@ class ProfileDataSourceImpl implements ProfileDataSource {
 
       final user = _firebaseAuth.currentUser;
       if (user == null) {
-        return Left(
-          const ServerFailure(failureMessage: 'User not logged in'),
-        );
+        return Left(const ServerFailure(failureMessage: 'User not logged in'));
       }
 
       await _firestore
@@ -110,9 +106,7 @@ class ProfileDataSourceImpl implements ProfileDataSource {
 
       final user = _firebaseAuth.currentUser;
       if (user == null) {
-        return Left(
-          const ServerFailure(failureMessage: 'User not logged in'),
-        );
+        return Left(const ServerFailure(failureMessage: 'User not logged in'));
       }
 
       await _firestore.collection('users').doc(user.uid).delete();

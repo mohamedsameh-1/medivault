@@ -100,47 +100,13 @@ class ProfileBody extends StatelessWidget {
                               name: profile?.fullName ?? 'User',
                               age: _calculateAge(profile?.dateOfBirth),
                               height: profile?.height != null
-                                  ? '${profile!.height!.toStringAsFixed(0)} cm'
+                                  ? '${profile!.height!.toStringAsFixed(0)} ${'cm'.tr()}'
                                   : '--',
                               weight: profile?.weight != null
-                                  ? '${profile!.weight!.toStringAsFixed(0)} kg'
+                                  ? '${profile!.weight!.toStringAsFixed(0)} ${'kg'.tr()}'
                                   : '--',
                             ),
                           ),
-
-                          // if (state is ProfileLoadingState)
-                          //   Skeletonizer(
-                          //     enabled: true,
-                          //     child: ProfileInfoCard(
-                          //       name: '',
-                          //       age: _calculateAge(profile?.dateOfBirth),
-                          //       height: profile?.height != null
-                          //           ? '${profile!.height!.toStringAsFixed(0)} cm'
-                          //           : '170 cm',
-                          //       weight: profile?.weight != null
-                          //           ? '${profile!.weight!.toStringAsFixed(0)} kg'
-                          //           : '62 kg',
-                          //     ),
-                          //   )
-                          // // const Center(
-                          // //   child: Padding(
-                          // //     padding: EdgeInsets.symmetric(vertical: 20),
-                          // //     child: CircularProgressIndicator(
-                          // //       color: AppColors.primaryTeal,
-                          // //     ),
-                          // //   ),
-                          // // )
-                          // else
-                          //   ProfileInfoCard(
-                          //     name: profile?.fullName ?? 'User',
-                          //     age: _calculateAge(profile?.dateOfBirth),
-                          //     height: profile?.height != null
-                          //         ? '${profile!.height!.toStringAsFixed(0)} cm'
-                          //         : '--',
-                          //     weight: profile?.weight != null
-                          //         ? '${profile!.weight!.toStringAsFixed(0)} kg'
-                          //         : '--',
-                          //   ),
                           SizedBox(height: 16.h),
 
                           ProfileSection(
@@ -150,17 +116,17 @@ class ProfileBody extends StatelessWidget {
                                 icon: Icons.badge_outlined,
                                 title: 'profile.personal_information'.tr(),
                                 onTap: () async {
-                                  final updatedProfile =
-                                      await Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.editProfileView,
-                                        arguments: profile,
-                                      );
-                                  if (updatedProfile is ProfileEntity &&
-                                      context.mounted) {
+                                  final result = await Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.editProfileView,
+                                    arguments: profile,
+                                  );
+                                  // EditProfileView pops with `true` on success.
+                                  // Refresh the parent cubit so the profile page updates.
+                                  if (result == true && context.mounted) {
                                     context
                                         .read<ProfileCubit>()
-                                        .updateProfileData(updatedProfile);
+                                        .getProfileData();
                                   }
                                 },
                               ),
@@ -171,7 +137,7 @@ class ProfileBody extends StatelessWidget {
                                 onTap: () {
                                   showDialog(
                                     context: context,
-                                    builder: (context) {
+                                    builder: (dialogContext) {
                                       return ConfirmationDialog(
                                         title: 'profile.delete_account'.tr(),
                                         content:
@@ -296,6 +262,6 @@ class ProfileBody extends StatelessWidget {
         (now.month == dob.month && now.day < dob.day)) {
       age--;
     }
-    return '$age yrs';
+    return '$age ${'profile.years'.tr()}';
   }
 }
