@@ -35,6 +35,14 @@ class UpdateVisitLoadingState extends HistoryState {}
 
 class UpdateVisitSuccessState extends HistoryState {}
 
+/// Delete Visit States
+class DeleteVisitLoadingState extends HistoryState {}
+
+class DeleteVisitSuccessState extends HistoryState {
+  final String? deletedVisitId;
+  DeleteVisitSuccessState({this.deletedVisitId});
+}
+
 /// Error / Failure State
 class HistoryFailureState extends HistoryState {
   final Failure failure;

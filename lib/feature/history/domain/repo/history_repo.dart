@@ -15,4 +15,7 @@ abstract class HistoryRepo {
 
   /// Updates an existing visit record.
   Future<Either<Failure, Unit>> updateVisit(VisitEntity visit);
+
+  /// Permanently deletes a visit record by its ID.
+  Future<Either<Failure, Unit>> deleteVisit(String visitId);
 }

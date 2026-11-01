@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/core/utils/auth_validators.dart';
 import 'package:medivault/core/widgets/custom_message_dialog.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import '../../../../core/di/di.dart';
 import '../../../../core/utils/app_assets.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -52,7 +53,8 @@ class _LoginViewState extends State<LoginView> {
             .doc(userId)
             .get();
         final data = doc.data();
-        final bool isSetupComplete = doc.exists &&
+        final bool isSetupComplete =
+            doc.exists &&
             data != null &&
             data['dateOfBirth'] != null &&
             data['gender'] != null;
@@ -89,9 +91,9 @@ class _LoginViewState extends State<LoginView> {
           } else if (state is LoginSuccessState) {
             _handlePostLoginNavigation(context, state.userEntity.uId);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppStrings.loginSubtitle.tr()),
-                backgroundColor: AppColors.green,
+              customSnackBar(
+                content: AppStrings.loginSubtitle.tr(),
+                backgroundColor: AppColors.primaryTeal,
               ),
             );
           }

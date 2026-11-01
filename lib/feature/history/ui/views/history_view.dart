@@ -79,8 +79,9 @@ class HistoryView extends StatelessWidget {
                             return HistorySpecialtyCardWidget(
                               specialty: specialty,
                               visitCount: visitCount,
-                              onTap: () {
-                                Navigator.pushNamed(
+                              onTap: () async {
+                                final cubit = context.read<HistoryCubit>();
+                                await Navigator.pushNamed(
                                   context,
                                   AppRoutes.specialtyHistoryView,
                                   arguments: {
@@ -88,6 +89,9 @@ class HistoryView extends StatelessWidget {
                                     'visitCount': visitCount,
                                   },
                                 );
+                                if (context.mounted) {
+                                  cubit.loadVisitCounts();
+                                }
                               },
                             );
                           }, childCount: specialties.length),

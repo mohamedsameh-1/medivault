@@ -103,11 +103,15 @@ class HomeView extends StatelessWidget {
                             HomeSectionHeaderWidget(
                               title: AppStrings.recentSurgeries.tr(),
                               count: homeData.totalSurgeriesCount,
-                              onSeeAllTap: () {
-                                Navigator.pushNamed(
+                              onSeeAllTap: () async {
+                                final homeCubit = context.read<HomeCubit>();
+                                await Navigator.pushNamed(
                                   context,
                                   AppRoutes.surgeriesView,
                                 );
+                                if (context.mounted) {
+                                  homeCubit.loadHomeData();
+                                }
                               },
                             ),
 
@@ -122,12 +126,18 @@ class HomeView extends StatelessWidget {
                                   padding: EdgeInsets.only(bottom: 12.h),
                                   child: HomeSurgeryCardWidget(
                                     surgery: surgery,
-                                    onTap: () {
-                                      Navigator.pushNamed(
+                                    onTap: () async {
+                                      final homeCubit =
+                                          context.read<HomeCubit>();
+                                      final result =
+                                          await Navigator.pushNamed(
                                         context,
                                         AppRoutes.surgeryDetailsView,
                                         arguments: surgery,
                                       );
+                                      if (result == true && context.mounted) {
+                                        homeCubit.loadHomeData();
+                                      }
                                     },
                                   ),
                                 ),
@@ -139,11 +149,15 @@ class HomeView extends StatelessWidget {
                             HomeSectionHeaderWidget(
                               title: AppStrings.recentDoctorVisits.tr(),
                               count: homeData.totalVisitsCount,
-                              onSeeAllTap: () {
-                                Navigator.pushNamed(
+                              onSeeAllTap: () async {
+                                final homeCubit = context.read<HomeCubit>();
+                                await Navigator.pushNamed(
                                   context,
                                   AppRoutes.historyView,
                                 );
+                                if (context.mounted) {
+                                  homeCubit.loadHomeData();
+                                }
                               },
                             ),
 
@@ -158,7 +172,9 @@ class HomeView extends StatelessWidget {
                                   padding: EdgeInsets.only(bottom: 12.h),
                                   child: HomeDoctorVisitCardWidget(
                                     visit: visit,
-                                    onTap: () {
+                                    onTap: () async {
+                                      final homeCubit =
+                                          context.read<HomeCubit>();
                                       final specialty = SpecialtyModel
                                           .defaultSpecialties
                                           .firstWhere(
@@ -167,15 +183,18 @@ class HomeView extends StatelessWidget {
                                                 .defaultSpecialties
                                                 .first,
                                           );
-                                      Navigator.pushNamed(
+                                      final result =
+                                          await Navigator.pushNamed(
                                         context,
                                         AppRoutes.historyVisitDetailsView,
-                                        // arguments: visit,
                                         arguments: {
                                           'visit': visit,
                                           'specialty': specialty,
                                         },
                                       );
+                                      if (result == true && context.mounted) {
+                                        homeCubit.loadHomeData();
+                                      }
                                     },
                                   ),
                                 ),

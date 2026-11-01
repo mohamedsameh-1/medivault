@@ -7,6 +7,7 @@ import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_routes.dart';
 import 'package:medivault/core/utils/app_styles.dart';
 import 'package:medivault/core/widgets/custom_elevate_btn.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import 'package:medivault/feature/add_visit/ui/views/widgets/step_progress_bar.dart';
 import 'package:medivault/feature/add_visit/ui/views/widgets/visit_details_form.dart';
 import '../viewmodel/visit_details_cubit.dart';
@@ -117,24 +118,24 @@ class _VisitDetailsContentState extends State<_VisitDetailsContent> {
       listener: (context, state) {
         if (state is VisitDetailsValidationFailureState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.messageKey.tr()),
+            customSnackBar(
+              content: state.messageKey.tr(),
               backgroundColor: AppColors.red,
-              duration: const Duration(seconds: 2),
+              duration: const Duration(seconds: 3),
             ),
           );
         } else if (state is VisitDetailsFailureState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.failure.failureMessage.tr()),
+            customSnackBar(
+              content: state.failure.failureMessage.tr(),
               backgroundColor: AppColors.red,
               duration: const Duration(seconds: 3),
             ),
           );
         } else if (state is VisitDetailsSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('visit_details_saved'.tr()),
+            customSnackBar(
+              content: 'visit_details_saved'.tr(),
               backgroundColor: AppColors.primaryTeal,
               duration: const Duration(seconds: 2),
             ),

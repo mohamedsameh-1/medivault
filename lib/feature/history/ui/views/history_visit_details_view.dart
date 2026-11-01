@@ -1,14 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:medivault/core/di/di.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_routes.dart';
 import 'package:medivault/core/utils/app_strings.dart';
 import 'package:medivault/core/utils/app_styles.dart';
+import 'package:medivault/core/widgets/confirmation_dialog.dart';
+import 'package:medivault/core/widgets/custom_message_dialog.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_attachment_entity.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_entity.dart';
 import 'package:medivault/feature/add_visit/ui/views/models/specialty_model.dart';
+import 'package:medivault/feature/history/ui/viewmodel/history_cubit.dart';
+import 'package:medivault/feature/history/ui/viewmodel/history_state.dart';
 import 'package:medivault/feature/history/ui/views/widgets/share_visit_button_widget.dart';
 import 'package:medivault/feature/history/ui/views/widgets/visit_attachment_tile_widget.dart';
 
@@ -46,7 +52,27 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
   }
 
   void _handlePop() {
-    Navigator.of(context).pop(_wasUpdated ? (_currentVisit ?? true) : null);
+    Navigator.of(context).pop(_wasUpdated ? true : null);
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext blocContext) {
+    showDialog(
+      context: context,
+      builder: (_) => ConfirmationDialog(
+        icon: Icons.delete_outline,
+        title: AppStrings.deleteVisitConfirmTitle.tr(),
+        content: AppStrings.deleteVisitConfirmMessage.tr(),
+        cancelText: AppStrings.cancel.tr(),
+        confirmText: AppStrings.delete.tr(),
+        confirmColor: AppColors.red,
+        onConfirm: () {
+          final visitId = _currentVisit?.id ?? _visitData['visitId'] as String?;
+          if (visitId != null && visitId.isNotEmpty) {
+            blocContext.read<HistoryCubit>().deleteVisitRecord(visitId);
+          }
+        },
+      ),
+    );
   }
 
   @override
@@ -75,270 +101,334 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
         if (didPop) return;
         _handlePop();
       },
-      child: Scaffold(
-        backgroundColor: AppColors.screenBg,
-        appBar: AppBar(
-          backgroundColor: AppColors.screenBg,
-          elevation: 0,
-          centerTitle: false,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              color: AppColors.darkNavyText,
-              size: 20.r,
-            ),
-            onPressed: _handlePop,
-          ),
-          title: Text(
-            'visit_details'.tr(),
-            style: AppStyles.w700S24DarkNavy.copyWith(fontSize: 18.sp),
-          ),
-          actions: [
-            // Edit Action Button in AppBar
-            Padding(
-              padding: EdgeInsets.only(
-                right: context.locale.languageCode == 'en' ? 16.w : 0,
-                left: context.locale.languageCode == 'ar' ? 16.w : 0,
-              ),
-              child: Center(
-                child: InkWell(
-                  onTap: () async {
-                    final result = await Navigator.pushNamed(
-                      context,
-                      AppRoutes.editVisitView,
-                      arguments: {
-                        'specialty': widget.specialty,
-                        'visitData': _currentVisit != null
-                            ? {'visit': _currentVisit}
-                            : _visitData,
-                      },
-                    );
-                    if (result is VisitEntity) {
-                      setState(() {
-                        _currentVisit = result;
-                        _visitData['visit'] = result;
-                        _wasUpdated = true;
-                      });
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(20.r),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 14.w,
-                      vertical: 6.h,
+      child: BlocProvider(
+        create: (_) => getIt<HistoryCubit>(),
+        child: Builder(
+          builder: (blocContext) => BlocConsumer<HistoryCubit, HistoryState>(
+            listener: (context, state) {
+              if (state is DeleteVisitLoadingState) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => CustomMessageDialog(
+                    message: AppStrings.loading.tr(),
+                    type: MessageType.loading,
+                  ),
+                );
+              } else if (state is DeleteVisitSuccessState) {
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).pop(); // close loading dialog
+
+                Navigator.of(context).pop(true); // pop details screen
+              } else if (state is HistoryFailureState) {
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).pop(); // close loading dialog if open
+
+                showDialog(
+                  context: context,
+                  builder: (_) => CustomMessageDialog(
+                    message: state.failure.failureMessage,
+                    type: MessageType.error,
+                  ),
+                );
+              }
+            },
+
+            builder: (blocContext, _) {
+              return Scaffold(
+                backgroundColor: AppColors.screenBg,
+                appBar: AppBar(
+                  backgroundColor: AppColors.screenBg,
+                  elevation: 0,
+                  centerTitle: false,
+                  leading: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios_new,
+                      color: AppColors.darkNavyText,
+                      size: 20.r,
                     ),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryTeal,
-                      borderRadius: BorderRadius.circular(20.r),
+                    onPressed: _handlePop,
+                  ),
+                  title: Text(
+                    'visit_details'.tr(),
+                    style: AppStyles.w700S24DarkNavy.copyWith(fontSize: 18.sp),
+                  ),
+                  actions: [
+                    /// delete button
+                    IconButton(
+                      onPressed: () =>
+                          _showDeleteConfirmationDialog(blocContext),
+                      icon: Icon(
+                        Icons.delete_outline,
+                        color: AppColors.red,
+                        size: 20.r,
+                      ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.edit_outlined,
-                          size: 14.r,
-                          color: AppColors.bannerBg,
-                        ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          AppStrings.edit.tr(),
-                          style: GoogleFonts.inter(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.bannerBg,
+                    // Edit Action Button in AppBar
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: context.locale.languageCode == 'en' ? 16.w : 0,
+                        left: context.locale.languageCode == 'ar' ? 16.w : 0,
+                      ),
+                      child: Center(
+                        child: InkWell(
+                          onTap: () async {
+                            final result = await Navigator.pushNamed(
+                              context,
+                              AppRoutes.editVisitView,
+                              arguments: {
+                                'specialty': widget.specialty,
+                                'visitData': _currentVisit != null
+                                    ? {'visit': _currentVisit}
+                                    : _visitData,
+                              },
+                            );
+                            if (result is VisitEntity) {
+                              setState(() {
+                                _currentVisit = result;
+                                _visitData['visit'] = result;
+                                _wasUpdated = true;
+                              });
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(20.r),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 14.w,
+                              vertical: 6.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryTeal,
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.edit_outlined,
+                                  size: 14.r,
+                                  color: AppColors.bannerBg,
+                                ),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  AppStrings.edit.tr(),
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.bannerBg,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 1. Specialty Category Card
-                _buildCategoryCard(),
-                SizedBox(height: 20.h),
-
-                // 2. Consultation Information Header
-                Row(
-                  children: [
-                    Icon(
-                      Icons.medical_information_outlined,
-                      size: 20.r,
-                      color: AppColors.primaryTeal,
-                    ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      'consultation_information'.tr(),
-                      style: GoogleFonts.inter(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.darkNavyText,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 12.h),
-
-                // Consultation Information Content Card
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16.r),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(color: AppColors.bannerBg, width: 1),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: AppColors.checkboxBorder,
-                        blurRadius: 8,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildInfoSection(
-                        AppStrings.visitDate.tr().toUpperCase(),
-                        date,
-                      ),
-                      _buildDivider(),
-                      _buildInfoSection(
-                        AppStrings.doctorName.tr().toUpperCase(),
-                        doctorName,
-                      ),
-                      _buildDivider(),
-                      _buildInfoSection(
-                        AppStrings.clinicHospital.tr().toUpperCase(),
-                        clinicName,
-                      ),
-                      _buildDivider(),
-                      _buildInfoSection(
-                        AppStrings.symptoms.tr().toUpperCase(),
-                        reason,
-                      ),
-                      _buildDivider(),
-                      _buildInfoSection(
-                        AppStrings.doctorDiagnosis.tr().toUpperCase(),
-                        diagnosis,
-                      ),
-                      if (advisory.isNotEmpty) ...[
-                        _buildDivider(),
-                        _buildInfoSection(
-                          AppStrings.advisoryNotes.tr().toUpperCase(),
-                          advisory,
-                        ),
-                      ],
-                      if (prescriptions.isNotEmpty) ...[
-                        _buildDivider(),
-                        _buildInfoSection(
-                          AppStrings.prescriptions.tr().toUpperCase(),
-                          prescriptions,
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                SizedBox(height: 24.h),
-
-                // 3. Medical Attachments Section
-                if (attachments.isNotEmpty) ...[
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.attach_file_rounded,
-                        size: 20.r,
-                        color: AppColors.primaryTeal,
-                      ),
-                      SizedBox(width: 8.w),
-                      Text(
-                        'medical_attachments'.tr(),
-                        style: GoogleFonts.inter(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.darkNavyText,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12.h),
-
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(16.r),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(
-                        color: AppColors.fieldBorder,
-                        width: 1,
-                      ),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: AppColors.darkNavyText,
-                          blurRadius: 8,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
+                body: SafeArea(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 12.h,
                     ),
                     child: Column(
-                      children: List.generate(attachments.length, (index) {
-                        final item = attachments[index];
-                        String name = '';
-                        String type = '';
-                        bool isImage = true;
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 1. Specialty Category Card
+                        _buildCategoryCard(),
+                        SizedBox(height: 20.h),
 
-                        if (item is VisitAttachmentEntity) {
-                          name = item.fileName;
-                          isImage =
-                              item.fileType.toLowerCase() == 'image' ||
-                              name.endsWith('.jpg') ||
-                              name.endsWith('.png') ||
-                              name.endsWith('.jpeg');
-                          type = item.fileSize != null
-                              ? '${(item.fileSize! / 1024).toStringAsFixed(1)} KB • ${isImage ? "Image" : "PDF"}'
-                              : (isImage ? 'Image Attachment' : 'PDF Document');
-                        } else if (item is Map) {
-                          name = item['name'] ?? '';
-                          type = item['type'] ?? '';
-                          isImage = item['isImage'] ?? true;
-                        }
+                        // 2. Consultation Information Header
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.medical_information_outlined,
+                              size: 20.r,
+                              color: AppColors.primaryTeal,
+                            ),
+                            SizedBox(width: 8.w),
+                            Text(
+                              'consultation_information'.tr(),
+                              style: GoogleFonts.inter(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.darkNavyText,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
 
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            bottom: index == attachments.length - 1 ? 0 : 10.h,
+                        // Consultation Information Content Card
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16.r),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(
+                              color: AppColors.bannerBg,
+                              width: 1,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: AppColors.checkboxBorder,
+                                blurRadius: 8,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          child: VisitAttachmentTileWidget(
-                            name: name,
-                            type: type,
-                            isImage: isImage,
-                            onView: () {},
-                            onDelete: () {},
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildInfoSection(
+                                AppStrings.visitDate.tr().toUpperCase(),
+                                date,
+                              ),
+                              _buildDivider(),
+                              _buildInfoSection(
+                                AppStrings.doctorName.tr().toUpperCase(),
+                                doctorName,
+                              ),
+                              _buildDivider(),
+                              _buildInfoSection(
+                                AppStrings.clinicHospital.tr().toUpperCase(),
+                                clinicName,
+                              ),
+                              _buildDivider(),
+                              _buildInfoSection(
+                                AppStrings.symptoms.tr().toUpperCase(),
+                                reason,
+                              ),
+                              _buildDivider(),
+                              _buildInfoSection(
+                                AppStrings.doctorDiagnosis.tr().toUpperCase(),
+                                diagnosis,
+                              ),
+                              if (advisory.isNotEmpty) ...[
+                                _buildDivider(),
+                                _buildInfoSection(
+                                  AppStrings.advisoryNotes.tr().toUpperCase(),
+                                  advisory,
+                                ),
+                              ],
+                              if (prescriptions.isNotEmpty) ...[
+                                _buildDivider(),
+                                _buildInfoSection(
+                                  AppStrings.prescriptions.tr().toUpperCase(),
+                                  prescriptions,
+                                ),
+                              ],
+                            ],
                           ),
-                        );
-                      }),
+                        ),
+                        SizedBox(height: 24.h),
+
+                        // 3. Medical Attachments Section
+                        if (attachments.isNotEmpty) ...[
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.attach_file_rounded,
+                                size: 20.r,
+                                color: AppColors.primaryTeal,
+                              ),
+                              SizedBox(width: 8.w),
+                              Text(
+                                'medical_attachments'.tr(),
+                                style: GoogleFonts.inter(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.darkNavyText,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 12.h),
+
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16.r),
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              borderRadius: BorderRadius.circular(16.r),
+                              border: Border.all(
+                                color: AppColors.fieldBorder,
+                                width: 1,
+                              ),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: AppColors.darkNavyText,
+                                  blurRadius: 8,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: List.generate(attachments.length, (
+                                index,
+                              ) {
+                                final item = attachments[index];
+                                String name = '';
+                                String type = '';
+                                bool isImage = true;
+
+                                if (item is VisitAttachmentEntity) {
+                                  name = item.fileName;
+                                  isImage =
+                                      item.fileType.toLowerCase() == 'image' ||
+                                      name.endsWith('.jpg') ||
+                                      name.endsWith('.png') ||
+                                      name.endsWith('.jpeg');
+                                  type = item.fileSize != null
+                                      ? '${(item.fileSize! / 1024).toStringAsFixed(1)} KB • ${isImage ? "Image" : "PDF"}'
+                                      : (isImage
+                                            ? 'Image Attachment'
+                                            : 'PDF Document');
+                                } else if (item is Map) {
+                                  name = item['name'] ?? '';
+                                  type = item['type'] ?? '';
+                                  isImage = item['isImage'] ?? true;
+                                }
+
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: index == attachments.length - 1
+                                        ? 0
+                                        : 10.h,
+                                  ),
+                                  child: VisitAttachmentTileWidget(
+                                    name: name,
+                                    type: type,
+                                    isImage: isImage,
+                                    onView: () {},
+                                    onDelete: () {},
+                                  ),
+                                );
+                              }),
+                            ),
+                          ),
+                          SizedBox(height: 24.h),
+                        ],
+
+                        ///Share visit Details
+                        ShareVisitButtonWidget(
+                          visitEntity: _currentVisit,
+                          visitData: _visitData,
+                          specialty: widget.specialty,
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 24.h),
-                ],
-
-                ///Share visit Details
-                ShareVisitButtonWidget(
-                  visitEntity: _currentVisit,
-                  visitData: _visitData,
-                  specialty: widget.specialty,
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

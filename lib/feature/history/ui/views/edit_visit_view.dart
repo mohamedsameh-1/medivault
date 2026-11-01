@@ -12,6 +12,7 @@ import 'package:medivault/core/utils/app_strings.dart';
 import 'package:medivault/core/utils/app_styles.dart';
 import 'package:medivault/core/utils/app_validator.dart';
 import 'package:medivault/core/widgets/custom_elevate_btn.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import 'package:medivault/core/widgets/custom_text_field.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_attachment_entity.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_entity.dart';
@@ -185,12 +186,18 @@ class _EditVisitViewState extends State<EditVisitView> {
         listener: (context, state) {
           if (state is UpdateVisitSuccessState) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppStrings.visitUpdatedSuccessfully.tr())),
+              customSnackBar(
+                content: AppStrings.visitUpdatedSuccessfully.tr(),
+                backgroundColor: AppColors.primaryTeal,
+              ),
             );
             Navigator.of(context).pop(_lastUpdatedVisit);
           } else if (state is HistoryFailureState) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.failure.failureMessage)),
+              customSnackBar(
+                content: state.failure.failureMessage,
+                backgroundColor: AppColors.red,
+              ),
             );
           }
         },

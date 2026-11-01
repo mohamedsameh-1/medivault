@@ -11,6 +11,7 @@ import 'package:medivault/core/utils/app_styles.dart';
 import 'package:medivault/core/utils/medical_special_list.dart';
 import 'package:medivault/core/widgets/custom_elevate_btn.dart';
 import 'package:medivault/core/widgets/custom_message_dialog.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import 'package:medivault/core/widgets/custom_text_field.dart';
 import 'package:medivault/feature/surgeries/domain/entities/surgery_entity.dart';
 import 'package:medivault/feature/surgeries/ui/views/widgets/surgery_attachments_widget.dart';
@@ -151,8 +152,8 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
   void _onSaveChanges(BuildContext context) {
     if (_surgeryNameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppStrings.surgeryNameHint.tr()),
+        customSnackBar(
+          content: AppStrings.surgeryNameHint.tr(),
           backgroundColor: AppColors.red,
         ),
       );

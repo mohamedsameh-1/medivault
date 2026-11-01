@@ -67,9 +67,9 @@ class _SpecialtyHistoryViewState extends State<SpecialtyHistoryView> {
               }
 
               final bool isEmpty = visits.isEmpty;
-              final int count = visits.isEmpty
-                  ? widget.visitCount
-                  : visits.length;
+              final int count = state is HistoryVisitsBySpecialtySuccessState
+                  ? visits.length
+                  : widget.visitCount;
 
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -119,7 +119,9 @@ class _SpecialtyHistoryViewState extends State<SpecialtyHistoryView> {
                                   'visit': visit,
                                 },
                               );
-                              if (result != null) {
+                              if (result == true ||
+                                  result == 'deleted' ||
+                                  (result is String && result == visit.id)) {
                                 cubit.loadVisitsBySpecialty(
                                   widget.specialty.id,
                                 );

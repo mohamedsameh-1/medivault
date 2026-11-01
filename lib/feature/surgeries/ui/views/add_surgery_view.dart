@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:medivault/core/di/di.dart';
 import 'package:medivault/core/utils/medical_special_list.dart';
 import 'package:medivault/core/widgets/custom_message_dialog.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_strings.dart';
 import '../../../../core/utils/app_styles.dart';
@@ -116,8 +117,8 @@ class _AddSurgeryViewState extends State<AddSurgeryView> {
   void _submitForm(BuildContext context) {
     if (_surgeryNameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppStrings.surgeryNameHint.tr()),
+        customSnackBar(
+          content: AppStrings.surgeryNameHint.tr(),
           backgroundColor: AppColors.red,
         ),
       );
@@ -126,8 +127,8 @@ class _AddSurgeryViewState extends State<AddSurgeryView> {
 
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select surgery date'),
+        customSnackBar(
+          content: 'Please select surgery date',
           backgroundColor: AppColors.red,
         ),
       );
@@ -391,10 +392,7 @@ class _AddSurgeryViewState extends State<AddSurgeryView> {
         hintStyle: AppStyles.w400S14Hint,
         filled: true,
         fillColor: AppColors.fieldFill,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 14.h,
-        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14.r),
           borderSide: const BorderSide(color: AppColors.fieldBorder, width: 1),
@@ -410,14 +408,15 @@ class _AddSurgeryViewState extends State<AddSurgeryView> {
       items: MedicalSpecialties.specialtiesFilteration
           .where((id) => id != 'All')
           .map((id) {
-        return DropdownMenuItem<String>(
-          value: id,
-          child: Text(
-            MedicalSpecialties.getSpecialtyTitle(id),
-            style: AppStyles.w600S14DarkNavy,
-          ),
-        );
-      }).toList(),
+            return DropdownMenuItem<String>(
+              value: id,
+              child: Text(
+                MedicalSpecialties.getSpecialtyTitle(id),
+                style: AppStyles.w600S14DarkNavy,
+              ),
+            );
+          })
+          .toList(),
       onChanged: (value) {
         setState(() {
           _selectedSpecialty = value;

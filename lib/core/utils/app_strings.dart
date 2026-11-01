@@ -120,6 +120,12 @@ abstract class AppStrings {
   static const String surgeryDetails = 'surgery_details';
   static const String surgeryInformation = 'surgery_information';
   static const String delete = 'delete';
+  static const String deleteVisit = 'delete_visit';
+  static const String deleteVisitConfirmTitle = 'delete_visit_confirm_title';
+  static const String deleteVisitConfirmMessage =
+      'delete_visit_confirm_message';
+  static const String deleteVisitSuccess = 'delete_visit_success';
+  static const String cancel = 'cancel';
 
   // Home Strings
   static const String home = 'home';
@@ -133,4 +139,5 @@ abstract class AppStrings {
   static const String consultation = 'consultation';
   static const String noRecentSurgeriesHome = 'no_recent_surgeries_home';
   static const String noRecentVisitsHome = 'no_recent_visits_home';
+  static const String shareSurgeryReport = 'share_surgery_report';
 }

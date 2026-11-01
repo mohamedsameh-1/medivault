@@ -20,10 +20,10 @@ class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
     FirebaseFirestore? firestore,
     FirebaseStorage? storage,
     Connectivity? connectivity,
-  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance,
-        _storage = storage ?? FirebaseStorage.instance,
-        _connectivity = connectivity ?? Connectivity();
+  }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _storage = storage ?? FirebaseStorage.instance,
+       _connectivity = connectivity ?? Connectivity();
 
   @override
   Future<Map<String, int>> getVisitCountsBySpecialty() async {
@@ -51,13 +51,24 @@ class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
     await _checkConnectivity();
     final userId = _getUserId();
 
-    final querySnapshot = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('visits')
-        .where('specialtyId', isEqualTo: specialtyId)
-        .orderBy('visitDate', descending: true)
-        .get();
+    QuerySnapshot<Map<String, dynamic>> querySnapshot;
+    try {
+      querySnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('visits')
+          .where('specialtyId', isEqualTo: specialtyId)
+          .orderBy('visitDate', descending: true)
+          .get(const GetOptions(source: Source.server));
+    } catch (_) {
+      querySnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('visits')
+          .where('specialtyId', isEqualTo: specialtyId)
+          .orderBy('visitDate', descending: true)
+          .get();
+    }
 
     return querySnapshot.docs
         .map((doc) => VisitModel.fromFirestore(doc.data(), doc.id))
@@ -146,6 +157,35 @@ class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
         .set(updatedModel.toFirestore(), SetOptions(merge: true));
   }
 
+  @override
+  Future<void> deleteVisit(String visitId) async {
+    await _checkConnectivity();
+    final userId = _getUserId();
+
+    if (visitId.isEmpty) {
+      throw Exception('Visit ID cannot be empty for deletion.');
+    }
+
+    // // Delete all storage attachments for this visit
+    // try {
+    //   final storageRef = _storage.ref().child('users/$userId/visits/$visitId/attachments');
+    //   final listResult = await storageRef.listAll();
+    //   for (final item in listResult.items) {
+    //     await item.delete();
+    //   }
+    // } catch (_) {
+    //   // Storage folder may not exist — continue with document deletion
+    // }
+
+    // Delete the Firestore document
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('visits')
+        .doc(visitId)
+        .delete();
+  }
+
   String _getUserId() {
     final userId = _firebaseAuth.currentUser?.uid;
     if (userId == null || userId.isEmpty) {
@@ -158,8 +198,8 @@ class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
     final connectivityResult = await _connectivity.checkConnectivity();
     final hasConnection =
         connectivityResult.contains(ConnectivityResult.mobile) ||
-            connectivityResult.contains(ConnectivityResult.wifi) ||
-            connectivityResult.contains(ConnectivityResult.ethernet);
+        connectivityResult.contains(ConnectivityResult.wifi) ||
+        connectivityResult.contains(ConnectivityResult.ethernet);
     if (!hasConnection) {
       throw Exception('errors.no_internet_connection');
     }

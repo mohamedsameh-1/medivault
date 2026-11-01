@@ -295,5 +295,12 @@
   "see_all": "عرض الكل",
   "consultation": "استشارة",
   "no_recent_surgeries_home": "لا توجد عمليات جراحية مسجلة حديثاً",
-  "no_recent_visits_home": "لا توجد زيارات أطباء مسجلة حديثاً"
+  "no_recent_visits_home": "لا توجد زيارات أطباء مسجلة حديثاً",
+  "delete": "حذف",
+  "delete_visit": "حذف الزيارة",
+  "delete_visit_confirm_title": "حذف الزيارة",
+  "delete_visit_confirm_message": "هل أنت متأكد من أنك تريد حذف سجل هذه الزيارة نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+  "delete_visit_success": "تم حذف الزيارة بنجاح",
+  "cancel": "إلغاء",
+  "share_surgery_report": "مشاركه تقارير العملية"
 }

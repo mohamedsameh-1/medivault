@@ -6,6 +6,7 @@ import 'package:medivault/core/di/di.dart';
 import 'package:medivault/core/services/visit_direct_share_service.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_strings.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_entity.dart';
 import 'package:medivault/feature/add_visit/ui/views/models/specialty_model.dart';
 
@@ -74,15 +75,8 @@ class _ShareVisitButtonWidgetState extends State<ShareVisitButtonWidget> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppStrings.failedToShareVisit.tr(),
-              style: GoogleFonts.inter(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.white,
-              ),
-            ),
+          customSnackBar(
+            content: AppStrings.failedToShareVisit.tr(),
             backgroundColor: AppColors.red,
           ),
         );

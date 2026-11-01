@@ -6,6 +6,7 @@ import 'package:medivault/core/di/di.dart';
 import 'package:medivault/core/utils/medical_special_list.dart';
 import 'package:medivault/core/widgets/app_brand_header.dart';
 import 'package:medivault/core/widgets/custom_gradient_header.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../../../core/utils/app_strings.dart';
@@ -70,8 +71,8 @@ class _SurgeriesViewState extends State<SurgeriesView> {
                   context.read<SurgeriesCubit>().fetchSurgeries();
                 } else if (state is GetSurgeriesFailureState) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.failure.failureMessage.tr()),
+                    customSnackBar(
+                      content: state.failure.failureMessage.tr(),
                       backgroundColor: AppColors.red,
                     ),
                   );
@@ -109,9 +110,7 @@ class _SurgeriesViewState extends State<SurgeriesView> {
                                         Text(
                                           AppStrings.surgeries.tr(),
                                           style: AppStyles.w700S28DarkNavy
-                                              .copyWith(
-                                            fontSize: 26.sp,
-                                          ),
+                                              .copyWith(fontSize: 26.sp),
                                         ),
                                         SizedBox(height: 4.h),
                                         Text(
@@ -133,8 +132,7 @@ class _SurgeriesViewState extends State<SurgeriesView> {
                                     ),
                                     decoration: BoxDecoration(
                                       color: AppColors.primaryTeal,
-                                      borderRadius:
-                                          BorderRadius.circular(20.r),
+                                      borderRadius: BorderRadius.circular(20.r),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -197,36 +195,37 @@ class _SurgeriesViewState extends State<SurgeriesView> {
                                         ),
                                       )
                                     : (filtered.isEmpty
-                                        ? SurgeryEmptyStateWidget()
-                                        : ListView.separated(
-                                            itemCount: filtered.length,
-                                            separatorBuilder: (context, index) =>
-                                                SizedBox(height: 12.h),
-                                            padding: EdgeInsets.only(
-                                              bottom: 24.h,
-                                            ),
-                                            itemBuilder: (context, index) {
-                                              final surgery = filtered[index];
-                                              return SurgeryCardWidget(
-                                                surgery: surgery,
-                                                onTap: () async {
-                                                  final cubit = context
-                                                      .read<SurgeriesCubit>();
-                                                  await Navigator.pushNamed(
-                                                    context,
-                                                    AppRoutes
-                                                        .surgeryDetailsView,
-                                                    arguments: {
-                                                      'surgery': surgery,
-                                                    },
-                                                  );
-                                                  if (context.mounted) {
-                                                    cubit.fetchSurgeries();
-                                                  }
-                                                },
-                                              );
-                                            },
-                                          )),
+                                          ? SurgeryEmptyStateWidget()
+                                          : ListView.separated(
+                                              itemCount: filtered.length,
+                                              separatorBuilder:
+                                                  (context, index) =>
+                                                      SizedBox(height: 12.h),
+                                              padding: EdgeInsets.only(
+                                                bottom: 24.h,
+                                              ),
+                                              itemBuilder: (context, index) {
+                                                final surgery = filtered[index];
+                                                return SurgeryCardWidget(
+                                                  surgery: surgery,
+                                                  onTap: () async {
+                                                    final cubit = context
+                                                        .read<SurgeriesCubit>();
+                                                    await Navigator.pushNamed(
+                                                      context,
+                                                      AppRoutes
+                                                          .surgeryDetailsView,
+                                                      arguments: {
+                                                        'surgery': surgery,
+                                                      },
+                                                    );
+                                                    if (context.mounted) {
+                                                      cubit.fetchSurgeries();
+                                                    }
+                                                  },
+                                                );
+                                              },
+                                            )),
                               ),
                             ],
                           ),

@@ -18,6 +18,8 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:medivault/core/di/register_module.dart' as _i33;
+import 'package:medivault/core/services/surgery_direct_share_service.dart'
+    as _i449;
 import 'package:medivault/core/services/visit_direct_share_service.dart'
     as _i628;
 import 'package:medivault/core/services/visit_share_service.dart' as _i988;
@@ -55,6 +57,8 @@ import 'package:medivault/feature/history/data/repo/history_repo_impl.dart'
     as _i320;
 import 'package:medivault/feature/history/domain/repo/history_repo.dart'
     as _i889;
+import 'package:medivault/feature/history/domain/usecase/delete_visit_use_case.dart'
+    as _i86;
 import 'package:medivault/feature/history/domain/usecase/get_visit_counts_use_case.dart'
     as _i194;
 import 'package:medivault/feature/history/domain/usecase/get_visit_details_use_case.dart'
@@ -128,6 +132,9 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     gh.factory<_i183.ImagePicker>(() => registerModule.imagePicker);
+    gh.factory<_i449.SurgeryDirectShareService>(
+      () => _i449.SurgeryDirectShareService(),
+    );
     gh.factory<_i628.VisitDirectShareService>(
       () => _i628.VisitDirectShareService(),
     );
@@ -232,6 +239,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i608.AuthRepo>(
       () => _i595.AuthRepoImpl(gh<_i532.AuthDataSource>()),
     );
+    gh.factory<_i86.DeleteVisitUseCase>(
+      () => _i86.DeleteVisitUseCase(gh<_i889.HistoryRepo>()),
+    );
     gh.factory<_i194.GetVisitCountsUseCase>(
       () => _i194.GetVisitCountsUseCase(gh<_i889.HistoryRepo>()),
     );
@@ -273,6 +283,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1062.UpdateProfileUseCase>(
       () => _i1062.UpdateProfileUseCase(gh<_i729.ProfileRepo>()),
     );
+    gh.factory<_i286.HistoryCubit>(
+      () => _i286.HistoryCubit(
+        gh<_i194.GetVisitCountsUseCase>(),
+        gh<_i161.GetVisitsBySpecialtyUseCase>(),
+        gh<_i276.GetVisitDetailsUseCase>(),
+        gh<_i1012.UpdateVisitUseCase>(),
+        gh<_i86.DeleteVisitUseCase>(),
+      ),
+    );
     gh.factory<_i610.HomeCubit>(
       () => _i610.HomeCubit(gh<_i59.GetHomeDataUseCase>()),
     );
@@ -280,14 +299,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i752.VisitDetailsCubit(
         gh<_i993.SaveVisitUseCase>(),
         gh<_i183.ImagePicker>(),
-      ),
-    );
-    gh.factory<_i286.HistoryCubit>(
-      () => _i286.HistoryCubit(
-        gh<_i194.GetVisitCountsUseCase>(),
-        gh<_i161.GetVisitsBySpecialtyUseCase>(),
-        gh<_i276.GetVisitDetailsUseCase>(),
-        gh<_i1012.UpdateVisitUseCase>(),
       ),
     );
     gh.factory<_i477.RegisterCubit>(

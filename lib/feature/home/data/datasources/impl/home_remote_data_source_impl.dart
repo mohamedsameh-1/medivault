@@ -74,12 +74,22 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     // 2. Fetch surgeries.
     // No local try-catch: FirebaseException propagates to HomeRepoImpl which
     // maps it to ServerFailure. An empty snapshot correctly returns [].
-    final surgeriesSnap = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('surgeries')
-        .orderBy('surgeryDate', descending: true)
-        .get();
+    QuerySnapshot<Map<String, dynamic>> surgeriesSnap;
+    try {
+      surgeriesSnap = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('surgeries')
+          .orderBy('surgeryDate', descending: true)
+          .get(const GetOptions(source: Source.server));
+    } catch (_) {
+      surgeriesSnap = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('surgeries')
+          .orderBy('surgeryDate', descending: true)
+          .get();
+    }
 
     final List<SurgeryEntity> allSurgeries = surgeriesSnap.docs
         .map((doc) => SurgeryModel.fromFirestore(doc.data(), doc.id))
@@ -87,12 +97,22 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
     // 3. Fetch visits.
     // Same propagation strategy as surgeries.
-    final visitsSnap = await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('visits')
-        .orderBy('visitDate', descending: true)
-        .get();
+    QuerySnapshot<Map<String, dynamic>> visitsSnap;
+    try {
+      visitsSnap = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('visits')
+          .orderBy('visitDate', descending: true)
+          .get(const GetOptions(source: Source.server));
+    } catch (_) {
+      visitsSnap = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('visits')
+          .orderBy('visitDate', descending: true)
+          .get();
+    }
 
     final List<VisitEntity> allVisits = visitsSnap.docs
         .map((doc) => VisitModel.fromFirestore(doc.data(), doc.id))

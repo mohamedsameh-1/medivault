@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/core/utils/auth_validators.dart';
 import 'package:medivault/core/widgets/custom_message_dialog.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import '../../../../core/di/di.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_routes.dart';
@@ -60,9 +61,9 @@ class _RegisterViewState extends State<RegisterView> {
           } else if (state is RegisterSuccessState) {
             Navigator.pushReplacementNamed(context, AppRoutes.setupView);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(AppStrings.registerSubtitle.tr()),
-                backgroundColor: AppColors.green,
+              customSnackBar(
+                content: AppStrings.registerSubtitle.tr(),
+                backgroundColor: AppColors.primaryTeal,
               ),
             );
           }

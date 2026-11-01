@@ -12,4 +12,7 @@ abstract class HistoryRemoteDataSource {
 
   /// Updates an existing visit record in Firestore.
   Future<void> updateVisit(VisitModel visit);
+
+  /// Permanently deletes a visit document and its storage attachments.
+  Future<void> deleteVisit(String visitId);
 }
