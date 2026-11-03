@@ -8,4 +8,8 @@ abstract class SurgeriesRepo {
   Future<Either<Failure, Unit>> addSurgery(SurgeryEntity surgery);
   Future<Either<Failure, Unit>> updateSurgery(SurgeryEntity surgery);
   Future<Either<Failure, Unit>> deleteSurgery(String surgeryId);
+  Future<Either<Failure, Unit>> deleteSurgeryImage({
+    required String surgeryId,
+    required String storagePath,
+  });
 }

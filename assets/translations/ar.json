@@ -263,7 +263,7 @@
   "add_your_first_surgery": "إضافة أول عملية جراحية",
   "no_surgeries_recorded_yet": "لم يتم تسجيل أي عمليات جراحية بعد",
   "no_surgeries_recorded_desc": "احتفظ بسجل جراحي منظم في مكان واحد آمن. يتيح تخزين الإجراءات السابقة للأطباء اتخاذ قرارات مدروسة في العلاجات المستقبلية والتخطيط للتخدير وحالات الطوارئ.",
-  "total_count": "{} الإجمالي",
+  "total_count": "الإجمالي ",
   "all_surgeries": "جميع العمليات",
   "add_surgery": "إضافة عملية جراحية",
   "surgery_name": "اسم العملية الجراحية",
@@ -301,6 +301,10 @@
   "delete_visit_confirm_title": "حذف الزيارة",
   "delete_visit_confirm_message": "هل أنت متأكد من أنك تريد حذف سجل هذه الزيارة نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
   "delete_visit_success": "تم حذف الزيارة بنجاح",
+  "delete_surgery": "حذف العملية الجراحية",
+  "delete_surgery_confirm_title": "حذف العملية الجراحية",
+  "delete_surgery_confirm_message": "هل أنت متأكد من أنك تريد حذف سجل هذه العملية الجراحية نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+  "delete_surgery_success": "تم حذف العملية الجراحية بنجاح",
   "cancel": "إلغاء",
   "share_surgery_report": "مشاركه تقارير العملية",
   "select_image": "اختر صورة",
@@ -314,5 +318,10 @@
   "delete_image_confirm_message": "هل أنت متأكد من رغبتك في حذف هذا المرفق نهائياً؟",
   "image_deleted_successfully": "تم حذف الصورة بنجاح",
   "preview": "معاينة",
-  "image": "صوره"
+  "image": "صوره",
+  "dateOfProcedure": "تاريخ الإجراء",
+  "please_add_surgery_name": "يرجى كتابه اسم العمليه",
+  "please_select_surgery_date": "يرجى كتابه تاريخ العمليه",
+  "please_select_medical_specialty": "يرجى اختيار التخصص الطبي",
+  "mm/dd/yyyy": "شهر/يوم/سنة"
 }

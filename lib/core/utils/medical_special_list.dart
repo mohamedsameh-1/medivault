@@ -15,7 +15,16 @@ class MedicalSpecialties {
     'pulmonology',
     'dentistry',
     'vascular_surgery',
-    'others',
+    "gastroenterology",
+    'urology',
+    'gynecology_obstetrics',
+    'ent_otolaryngology',
+    'nephrology',
+    'endocrinology',
+    'oncology',
+    'psychiatry',
+    'rheumatology',
+    'other_specialties',
   ];
 
   static const List<String> specialties = [

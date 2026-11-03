@@ -6,4 +6,8 @@ abstract class SurgeriesRemoteDataSource {
   Future<void> addSurgery(SurgeryModel surgery);
   Future<void> updateSurgery(SurgeryModel surgery);
   Future<void> deleteSurgery(String surgeryId);
+  Future<void> deleteSurgeryImage({
+    required String surgeryId,
+    required String storagePath,
+  });
 }

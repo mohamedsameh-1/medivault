@@ -60,7 +60,7 @@ class SurgeryDetailsInfoCardWidget extends StatelessWidget {
   Widget _buildDivider() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.h),
-      child: Divider(height: 1, thickness: 1, color: AppColors.primaryTeal),
+      child: Divider(height: 1, thickness: 1, color: AppColors.secondaryGrey),
     );
   }
 
@@ -85,31 +85,42 @@ class SurgeryDetailsInfoCardWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildInfoSection(AppStrings.surgeryDate.tr().toUpperCase(), date),
-          _buildDivider(),
-          _buildInfoSection(
-            AppStrings.medicalSpecialty.tr().toUpperCase(),
-            MedicalSpecialties.getSpecialtyTitle(medicalSpecialty),
-          ),
-          _buildDivider(),
-          _buildInfoSection(
-            AppStrings.surgeryName.tr().toUpperCase(),
-            surgeryName,
-          ),
-          _buildDivider(),
-          _buildInfoSection(
-            AppStrings.surgeonName.tr().toUpperCase(),
-            surgeonName,
-          ),
-          _buildDivider(),
-          _buildInfoSection(
-            AppStrings.hospitalSurgicalCenter.tr().toUpperCase(),
-            hospitalName,
-          ),
-          _buildDivider(),
-          _buildInfoSection(
-            AppStrings.diagnosisReasonForProcedure.tr().toUpperCase(),
-            diagnosis,
-          ),
+
+          if (medicalSpecialty.isNotEmpty) ...[
+            _buildDivider(),
+            _buildInfoSection(
+              AppStrings.medicalSpecialty.tr().toUpperCase(),
+              MedicalSpecialties.getSpecialtyTitle(medicalSpecialty),
+            ),
+          ],
+          if (surgeryName.isNotEmpty) ...[
+            _buildDivider(),
+            _buildInfoSection(
+              AppStrings.surgeryName.tr().toUpperCase(),
+              surgeryName,
+            ),
+          ],
+          if (surgeonName.isNotEmpty) ...[
+            _buildDivider(),
+            _buildInfoSection(
+              AppStrings.surgeonName.tr().toUpperCase(),
+              surgeonName,
+            ),
+          ],
+          if (hospitalName.isNotEmpty) ...[
+            _buildDivider(),
+            _buildInfoSection(
+              AppStrings.hospitalSurgicalCenter.tr().toUpperCase(),
+              hospitalName,
+            ),
+          ],
+          if (diagnosis.isNotEmpty) ...[
+            _buildDivider(),
+            _buildInfoSection(
+              AppStrings.diagnosisReasonForProcedure.tr().toUpperCase(),
+              diagnosis,
+            ),
+          ],
           if (notes.isNotEmpty) ...[
             _buildDivider(),
             _buildInfoSection(AppStrings.notes.tr().toUpperCase(), notes),

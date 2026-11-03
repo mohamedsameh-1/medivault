@@ -116,6 +116,8 @@ import 'package:medivault/feature/surgeries/domain/repo/surgeries_repo.dart'
     as _i91;
 import 'package:medivault/feature/surgeries/domain/usecase/add_surgery_use_case.dart'
     as _i112;
+import 'package:medivault/feature/surgeries/domain/usecase/delete_surgery_image_use_case.dart'
+    as _i136;
 import 'package:medivault/feature/surgeries/domain/usecase/delete_surgery_use_case.dart'
     as _i875;
 import 'package:medivault/feature/surgeries/domain/usecase/get_surgeries_use_case.dart'
@@ -154,23 +156,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i895.Connectivity>(),
       ),
     );
-    gh.factory<_i819.SurgeriesRemoteDataSource>(
-      () => _i78.SurgeriesRemoteDataSourceImpl(
-        gh<_i59.FirebaseAuth>(),
-        gh<_i974.FirebaseFirestore>(),
-        gh<_i457.FirebaseStorage>(),
-        gh<_i895.Connectivity>(),
-      ),
-    );
     gh.factory<_i929.ProfileDataSource>(
       () => _i36.ProfileDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
         firestore: gh<_i974.FirebaseFirestore>(),
         connectivity: gh<_i895.Connectivity>(),
       ),
-    );
-    gh.factory<_i91.SurgeriesRepo>(
-      () => _i189.SurgeriesRepoImpl(gh<_i819.SurgeriesRemoteDataSource>()),
     );
     gh.factory<_i133.SupabaseStorageService>(
       () => _i133.SupabaseStorageServiceImpl(
@@ -180,21 +171,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i947.SetupRemoteDataSource>(
       () =>
           _i947.SetupRemoteDataSource(firestore: gh<_i974.FirebaseFirestore>()),
-    );
-    gh.factory<_i112.AddSurgeryUseCase>(
-      () => _i112.AddSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
-    );
-    gh.factory<_i875.DeleteSurgeryUseCase>(
-      () => _i875.DeleteSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
-    );
-    gh.factory<_i456.GetSurgeriesUseCase>(
-      () => _i456.GetSurgeriesUseCase(gh<_i91.SurgeriesRepo>()),
-    );
-    gh.factory<_i247.GetSurgeryDetailsUseCase>(
-      () => _i247.GetSurgeryDetailsUseCase(gh<_i91.SurgeriesRepo>()),
-    );
-    gh.factory<_i18.UpdateSurgeryUseCase>(
-      () => _i18.UpdateSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
     );
     gh.factory<_i701.MediaPickerService>(
       () => _i701.MediaPickerServiceImpl(picker: gh<_i183.ImagePicker>()),
@@ -219,17 +195,16 @@ extension GetItInjectableX on _i174.GetIt {
         connectivity: gh<_i895.Connectivity>(),
       ),
     );
-    gh.factory<_i606.SurgeriesCubit>(
-      () => _i606.SurgeriesCubit(
-        gh<_i456.GetSurgeriesUseCase>(),
-        gh<_i247.GetSurgeryDetailsUseCase>(),
-        gh<_i112.AddSurgeryUseCase>(),
-        gh<_i18.UpdateSurgeryUseCase>(),
-        gh<_i875.DeleteSurgeryUseCase>(),
-      ),
-    );
     gh.factory<_i311.HistoryRemoteDataSource>(
       () => _i58.HistoryRemoteDataSourceImpl(
+        firebaseAuth: gh<_i59.FirebaseAuth>(),
+        firestore: gh<_i974.FirebaseFirestore>(),
+        storageService: gh<_i133.SupabaseStorageService>(),
+        connectivity: gh<_i895.Connectivity>(),
+      ),
+    );
+    gh.factory<_i819.SurgeriesRemoteDataSource>(
+      () => _i78.SurgeriesRemoteDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
         firestore: gh<_i974.FirebaseFirestore>(),
         storageService: gh<_i133.SupabaseStorageService>(),
@@ -239,11 +214,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i59.GetHomeDataUseCase>(
       () => _i59.GetHomeDataUseCase(gh<_i401.HomeRepo>()),
     );
+    gh.factory<_i91.SurgeriesRepo>(
+      () => _i189.SurgeriesRepoImpl(gh<_i819.SurgeriesRemoteDataSource>()),
+    );
     gh.factory<_i608.AuthRepo>(
       () => _i595.AuthRepoImpl(gh<_i532.AuthDataSource>()),
     );
     gh.factory<_i537.AddVisitRepo>(
       () => _i74.AddVisitRepoImpl(gh<_i2.AddVisitRemoteDataSource>()),
+    );
+    gh.factory<_i136.DeleteSurgeryImageUseCase>(
+      () => _i136.DeleteSurgeryImageUseCase(gh<_i91.SurgeriesRepo>()),
     );
     gh.factory<_i165.SetupRepository>(
       () => _i165.SetupRepository(
@@ -276,6 +257,31 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1062.UpdateProfileUseCase>(
       () => _i1062.UpdateProfileUseCase(gh<_i729.ProfileRepo>()),
+    );
+    gh.factory<_i112.AddSurgeryUseCase>(
+      () => _i112.AddSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i875.DeleteSurgeryUseCase>(
+      () => _i875.DeleteSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i456.GetSurgeriesUseCase>(
+      () => _i456.GetSurgeriesUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i247.GetSurgeryDetailsUseCase>(
+      () => _i247.GetSurgeryDetailsUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i18.UpdateSurgeryUseCase>(
+      () => _i18.UpdateSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
+    );
+    gh.factory<_i606.SurgeriesCubit>(
+      () => _i606.SurgeriesCubit(
+        gh<_i456.GetSurgeriesUseCase>(),
+        gh<_i247.GetSurgeryDetailsUseCase>(),
+        gh<_i112.AddSurgeryUseCase>(),
+        gh<_i18.UpdateSurgeryUseCase>(),
+        gh<_i875.DeleteSurgeryUseCase>(),
+        gh<_i136.DeleteSurgeryImageUseCase>(),
+      ),
     );
     gh.factory<_i610.HomeCubit>(
       () => _i610.HomeCubit(gh<_i59.GetHomeDataUseCase>()),

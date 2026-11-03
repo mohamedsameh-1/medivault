@@ -29,7 +29,7 @@ class VisitDetailsCubit extends Cubit<VisitDetailsState> {
       if (isClosed || file == null) return;
 
       final int size = await file.length();
-      final String rawName = file.path.split(Platform.pathSeparator).last;
+      final String rawName = file.path.split(RegExp(r'[\\/]')).last;
       final String fileName = rawName.isNotEmpty
           ? rawName
           : 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -61,7 +61,7 @@ class VisitDetailsCubit extends Cubit<VisitDetailsState> {
 
       for (final file in files) {
         final int size = await file.length();
-        final String rawName = file.path.split(Platform.pathSeparator).last;
+        final String rawName = file.path.split(RegExp(r'[\\/]')).last;
         final String fileName = rawName.isNotEmpty
             ? rawName
             : 'image_${DateTime.now().millisecondsSinceEpoch}.jpg';

@@ -16,6 +16,9 @@ class SupabaseConfig {
   /// Dedicated private storage bucket for visit images.
   static const String visitImagesBucket = 'visit-images';
 
+  /// Dedicated private storage bucket for surgery images (reuses visit-images with identical RLS policies).
+  static const String surgeryImagesBucket = visitImagesBucket;
+
   /// Default expiration duration in seconds for private signed URLs (1 hour).
   static const int signedUrlExpiresInSeconds = 3600;
 

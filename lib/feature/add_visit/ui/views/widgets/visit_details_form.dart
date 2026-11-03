@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_strings.dart';
 import 'package:medivault/core/utils/app_styles.dart';
-import 'package:medivault/core/widgets/custom_elevate_btn.dart';
 import 'package:medivault/core/widgets/custom_text_field.dart';
 import 'package:medivault/core/widgets/image_preview_dialog.dart';
 import 'package:medivault/core/widgets/media_source_bottom_sheet.dart';

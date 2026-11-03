@@ -111,9 +111,13 @@ abstract class AppStrings {
   static const String allSurgeries = 'all_surgeries';
   static const String addSurgery = 'add_surgery';
   static const String surgeryName = 'surgery_name';
+  static const String addSurgeryName = 'please_add_surgery_name';
   static const String surgeryNameHint = 'surgery_name_hint';
   static const String surgeryDate = 'surgery_date';
+  static const String selectSurgeryDate = 'please_select_surgery_date';
   static const String medicalSpecialty = 'medical_specialty';
+  static const String pleaseSelectMedicalSpecialty =
+      'please_select_medical_specialty';
   static const String selectSurgicalSpecialty = 'select_surgical_specialty';
   static const String diagnosisReasonForProcedure =
       'diagnosis_reason_for_procedure';
@@ -138,7 +142,14 @@ abstract class AppStrings {
   static const String deleteVisitConfirmMessage =
       'delete_visit_confirm_message';
   static const String deleteVisitSuccess = 'delete_visit_success';
+  static const String deleteSurgery = 'delete_surgery';
+  static const String deleteSurgeryConfirmTitle =
+      'delete_surgery_confirm_title';
+  static const String deleteSurgeryConfirmMessage =
+      'delete_surgery_confirm_message';
+  static const String deleteSurgerySuccess = 'delete_surgery_success';
   static const String cancel = 'cancel';
+  static const String dateOfProcedure = 'date_of_procedure';
 
   // Home Strings
   static const String home = 'home';

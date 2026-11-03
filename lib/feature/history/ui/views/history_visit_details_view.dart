@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,15 +82,40 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
   }
 
   Future<void> _handleViewAttachment(dynamic item) async {
+    String? localPath;
     String? storagePathOrUrl;
     String name = 'Attachment';
 
     if (item is VisitAttachmentEntity) {
+      localPath = item.localPath;
       storagePathOrUrl = item.fileUrl;
       name = item.fileName;
     } else if (item is Map) {
+      localPath = item['localPath'];
       storagePathOrUrl = item['fileUrl'] ?? item['path'];
       name = item['name'] ?? item['fileName'] ?? 'Attachment';
+    }
+
+    if (localPath != null && localPath.isNotEmpty) {
+      File localFile;
+      if (localPath.startsWith('file://')) {
+        try {
+          localFile = File(Uri.parse(localPath).toFilePath());
+        } catch (_) {
+          localFile = File(localPath.replaceFirst('file://', ''));
+        }
+      } else {
+        localFile = File(localPath);
+      }
+
+      if (localFile.existsSync()) {
+        ImagePreviewDialog.show(
+          context: context,
+          localPath: localFile.path,
+          title: name,
+        );
+        return;
+      }
     }
 
     if (storagePathOrUrl == null || storagePathOrUrl.isEmpty) {

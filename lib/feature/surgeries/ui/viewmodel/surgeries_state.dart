@@ -58,3 +58,14 @@ class DeleteSurgeryFailureState extends SurgeriesState {
   final Failure failure;
   DeleteSurgeryFailureState({required this.failure});
 }
+
+/// Delete Surgery Image States
+class DeleteSurgeryImageLoadingState extends SurgeriesState {
+  final String storagePath;
+  DeleteSurgeryImageLoadingState({required this.storagePath});
+}
+
+class DeleteSurgeryImageSuccessState extends SurgeriesState {
+  final String storagePath;
+  DeleteSurgeryImageSuccessState({required this.storagePath});
+}

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -112,9 +111,9 @@ class _EditVisitViewState extends State<EditVisitView> {
     try {
       final file = await getIt<MediaPickerService>().pickImageFromCamera();
 
-      if (file != null) {
+      if (file != null && mounted) {
         final int size = await file.length();
-        final rawName = file.path.split(Platform.pathSeparator).last;
+        final rawName = file.path.split(RegExp(r'[\\/]')).last;
         final String fileName = rawName.isNotEmpty
             ? rawName
             : 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -137,14 +136,14 @@ class _EditVisitViewState extends State<EditVisitView> {
   Future<void> _pickImagesFromGallery() async {
     try {
       final files = await getIt<MediaPickerService>().pickImagesFromGallery();
-      for (final file in files) {
-        final int size = await file.length();
-        final rawName = file.path.split(Platform.pathSeparator).last;
-        final String fileName = rawName.isNotEmpty
-            ? rawName
-            : 'image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      if (files.isNotEmpty && mounted) {
+        for (final file in files) {
+          final int size = await file.length();
+          final rawName = file.path.split(RegExp(r'[\\/]')).last;
+          final String fileName = rawName.isNotEmpty
+              ? rawName
+              : 'image_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-        setState(() {
           _attachments.add(
             VisitAttachmentEntity(
               id: '${DateTime.now().millisecondsSinceEpoch}_${_attachments.length}',
@@ -154,57 +153,33 @@ class _EditVisitViewState extends State<EditVisitView> {
               localPath: file.path,
             ),
           );
-        });
-      }
-    } catch (_) {}
-  }
-
-  Future<void> _pickFile() async {
-    try {
-      final dynamic picker = FilePicker.platform;
-      final dynamic result = await picker.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-        allowMultiple: false,
-      );
-
-      if (result != null &&
-          result.files != null &&
-          (result.files as List).isNotEmpty) {
-        final dynamic platformFile = (result.files as List).first;
-        final String path = platformFile.path?.toString() ?? '';
-
-        if (path.isNotEmpty) {
-          final File file = File(path);
-          final int size = await file.exists() ? await file.length() : 0;
-          final String ext =
-              platformFile.extension?.toString().toLowerCase() ?? '';
-          final isPdf = ext == 'pdf';
-
-          setState(() {
-            _attachments.add(
-              VisitAttachmentEntity(
-                id: DateTime.now().millisecondsSinceEpoch.toString(),
-                fileName: platformFile.name?.toString() ?? 'file',
-                fileType: isPdf ? 'pdf' : 'image',
-                fileSize: size,
-                localPath: path,
-              ),
-            );
-          });
         }
+        setState(() {});
       }
     } catch (_) {}
   }
 
   Future<void> _viewAttachment(VisitAttachmentEntity item) async {
     if (item.localPath != null && item.localPath!.isNotEmpty) {
-      ImagePreviewDialog.show(
-        context: context,
-        localPath: item.localPath,
-        title: item.fileName,
-      );
-      return;
+      File localFile;
+      if (item.localPath!.startsWith('file://')) {
+        try {
+          localFile = File(Uri.parse(item.localPath!).toFilePath());
+        } catch (_) {
+          localFile = File(item.localPath!.replaceFirst('file://', ''));
+        }
+      } else {
+        localFile = File(item.localPath!);
+      }
+
+      if (localFile.existsSync()) {
+        ImagePreviewDialog.show(
+          context: context,
+          localPath: localFile.path,
+          title: item.fileName,
+        );
+        return;
+      }
     }
 
     if (item.fileUrl != null && item.fileUrl!.isNotEmpty) {
@@ -320,7 +295,9 @@ class _EditVisitViewState extends State<EditVisitView> {
                             color: AppColors.bannerBg,
                             borderRadius: BorderRadius.circular(16.r),
                             border: Border.all(
-                              color: AppColors.primaryTeal.withOpacity(0.2),
+                              color: AppColors.primaryTeal.withValues(
+                                alpha: 0.2,
+                              ),
                               width: 1,
                             ),
                           ),
@@ -532,37 +509,19 @@ class _EditVisitViewState extends State<EditVisitView> {
                         SizedBox(height: 12.h),
 
                         // Upload Action Buttons Row
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildAttachmentButton(
-                                icon: Icons.camera_alt_outlined,
-                                label: AppStrings.takePhoto.tr(),
-                                onTap: _pickImageFromCamera,
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: _buildAttachmentButton(
-                                icon: Icons.photo_library_outlined,
-                                label: AppStrings.selectImage.tr(),
-                                onTap: () async {
-                                  final source =
-                                      await MediaSourceBottomSheet.show(
-                                        context,
-                                      );
-                                  if (source == MediaSourceType.camera) {
-                                    _pickImageFromCamera();
-                                  } else if (source ==
-                                      MediaSourceType.gallery) {
-                                    _pickImagesFromGallery();
-                                  } else if (source == MediaSourceType.file) {
-                                    _pickFile();
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                        _buildAttachmentButton(
+                          icon: Icons.photo_library_outlined,
+                          label: AppStrings.selectImage.tr(),
+                          onTap: () async {
+                            final source = await MediaSourceBottomSheet.show(
+                              context,
+                            );
+                            if (source == MediaSourceType.camera) {
+                              await _pickImageFromCamera();
+                            } else if (source == MediaSourceType.gallery) {
+                              await _pickImagesFromGallery();
+                            }
+                          },
                         ),
                         SizedBox(height: 16.h),
 
@@ -609,82 +568,61 @@ class _EditVisitViewState extends State<EditVisitView> {
                         SizedBox(height: 30.h),
 
                         // Bottom Actions: Cancel & Save Changes
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomElevatedBtn(
-                                title: AppStrings.back.tr(),
-                                backgroundColor: AppColors.lightBlueButton,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.darkNavyText,
-                                ),
-                                onPressed: () => Navigator.of(context).pop(),
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            Expanded(
-                              child: CustomElevatedBtn(
-                                title: isUpdating
-                                    ? AppStrings.saving.tr()
-                                    : AppStrings.saveChanges.tr(),
-                                backgroundColor: AppColors.primaryTeal,
-                                style: GoogleFonts.inter(
-                                  fontSize: 15.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.white,
-                                ),
-                                onPressed: () {
-                                  if (isUpdating) return;
-                                  if (!_formKey.currentState!.validate()) {
-                                    return;
-                                  }
+                        CustomElevatedBtn(
+                          title: isUpdating
+                              ? AppStrings.saving.tr()
+                              : AppStrings.saveChanges.tr(),
+                          backgroundColor: AppColors.primaryTeal,
+                          style: GoogleFonts.inter(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.white,
+                          ),
+                          onPressed: () {
+                            if (isUpdating) return;
+                            if (!_formKey.currentState!.validate()) {
+                              return;
+                            }
 
-                                  final data = widget.visitData ?? {};
-                                  final visitObj = data['visit'];
-                                  String visitId = '';
-                                  DateTime date = DateTime.now();
-                                  DateTime? createdAt = DateTime.now();
+                            final data = widget.visitData ?? {};
+                            final visitObj = data['visit'];
+                            String visitId = '';
+                            DateTime date = DateTime.now();
+                            DateTime? createdAt = DateTime.now();
 
-                                  if (visitObj is VisitEntity) {
-                                    visitId = visitObj.id ?? '';
-                                    date = visitObj.visitDate;
-                                    createdAt = visitObj.createdAt;
-                                  } else if (data.containsKey('id')) {
-                                    visitId = data['id'] ?? '';
-                                  }
+                            if (visitObj is VisitEntity) {
+                              visitId = visitObj.id ?? '';
+                              date = visitObj.visitDate;
+                              createdAt = visitObj.createdAt;
+                            } else if (data.containsKey('id')) {
+                              visitId = data['id'] ?? '';
+                            }
 
-                                  final updatedVisit = VisitEntity(
-                                    id: visitId,
-                                    specialtyId:
-                                        widget.specialty?.id ??
-                                        (visitObj is VisitEntity
-                                            ? visitObj.specialtyId
-                                            : 'cardiology'),
-                                    visitDate: date,
-                                    doctorName: _doctorController.text.trim(),
-                                    clinicHospital: _clinicController.text
-                                        .trim(),
-                                    symptoms: _reasonController.text.trim(),
-                                    diagnosis: _diagnosisController.text.trim(),
-                                    advisoryNotes: _advisoryController.text
-                                        .trim(),
-                                    prescriptions: _prescriptionController.text
-                                        .trim(),
-                                    createdAt: createdAt,
-                                    attachments: List.from(_attachments),
-                                  );
+                            final updatedVisit = VisitEntity(
+                              id: visitId,
+                              specialtyId:
+                                  widget.specialty?.id ??
+                                  (visitObj is VisitEntity
+                                      ? visitObj.specialtyId
+                                      : 'cardiology'),
+                              visitDate: date,
+                              doctorName: _doctorController.text.trim(),
+                              clinicHospital: _clinicController.text.trim(),
+                              symptoms: _reasonController.text.trim(),
+                              diagnosis: _diagnosisController.text.trim(),
+                              advisoryNotes: _advisoryController.text.trim(),
+                              prescriptions: _prescriptionController.text
+                                  .trim(),
+                              createdAt: createdAt,
+                              attachments: List.from(_attachments),
+                            );
 
-                                  _lastUpdatedVisit = updatedVisit;
+                            _lastUpdatedVisit = updatedVisit;
 
-                                  context
-                                      .read<HistoryCubit>()
-                                      .updateVisitRecord(updatedVisit);
-                                },
-                              ),
-                            ),
-                          ],
+                            context.read<HistoryCubit>().updateVisitRecord(
+                              updatedVisit,
+                            );
+                          },
                         ),
                         SizedBox(height: 24.h),
                       ],

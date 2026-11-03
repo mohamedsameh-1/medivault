@@ -1,17 +1,25 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:medivault/core/config/supabase_config.dart';
 import 'package:medivault/core/di/di.dart';
+import 'package:medivault/core/services/supabase_storage_service.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_routes.dart';
 import 'package:medivault/core/utils/app_strings.dart';
 import 'package:medivault/core/utils/app_styles.dart';
-import 'package:medivault/core/widgets/custom_elevate_btn.dart';
+import 'package:medivault/core/widgets/confirmation_dialog.dart';
 import 'package:medivault/core/widgets/custom_message_dialog.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
+import 'package:medivault/core/widgets/image_preview_dialog.dart';
+import 'package:medivault/feature/surgeries/domain/entities/surgery_attachment_entity.dart';
 import 'package:medivault/feature/surgeries/domain/entities/surgery_entity.dart';
 import 'package:medivault/feature/surgeries/ui/views/widgets/share_surgery_button_widget.dart';
+import 'package:medivault/feature/surgeries/ui/views/widgets/surgery_attachment_tile_widget.dart';
 import '../viewmodel/surgeries_cubit.dart';
 import '../viewmodel/surgeries_state.dart';
 import 'widgets/surgery_details_info_card_widget.dart';
@@ -57,48 +65,126 @@ class _SurgeryDetailsViewState extends State<SurgeryDetailsView> {
   void _confirmDelete(BuildContext context) {
     showDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          backgroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          title: Text(
-            'Delete Surgery Record',
-            style: AppStyles.w700S24DarkNavy.copyWith(fontSize: 18.sp),
-          ),
-          content: Text(
-            'Are you sure you want to delete this surgery record? This action cannot be undone.',
-            style: AppStyles.w400S14Grey.copyWith(fontSize: 14.sp),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: Text(
-                AppStrings.back.tr(),
-                style: AppStyles.w600S14DarkNavy,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                final String idToDelete = _currentSurgery?.id ?? '';
-                if (idToDelete.isNotEmpty) {
-                  context.read<SurgeriesCubit>().deleteSurgery(idToDelete);
-                }
-              },
-              child: Text(
-                AppStrings.delete.tr(),
-                style: TextStyle(
-                  color: AppColors.red,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.sp,
-                ),
-              ),
-            ),
-          ],
+      builder: (_) => ConfirmationDialog(
+        icon: Icons.delete_outline,
+        title: AppStrings.deleteSurgeryConfirmTitle.tr(),
+        content: AppStrings.deleteSurgeryConfirmMessage.tr(),
+        cancelText: AppStrings.cancel.tr(),
+        confirmText: AppStrings.delete.tr(),
+        confirmColor: AppColors.red,
+        onConfirm: () {
+          final String idToDelete = _currentSurgery?.id ?? '';
+          if (idToDelete.isNotEmpty) {
+            context.read<SurgeriesCubit>().deleteSurgery(idToDelete);
+          }
+        },
+      ),
+    );
+  }
+
+  Future<void> _handleViewAttachment(SurgeryAttachmentEntity item) async {
+    final name = item.fileName.isNotEmpty ? item.fileName : 'Attachment';
+
+    if (item.localPath != null && item.localPath!.isNotEmpty) {
+      File localFile;
+      if (item.localPath!.startsWith('file://')) {
+        try {
+          localFile = File(Uri.parse(item.localPath!).toFilePath());
+        } catch (_) {
+          localFile = File(item.localPath!.replaceFirst('file://', ''));
+        }
+      } else {
+        localFile = File(item.localPath!);
+      }
+
+      if (localFile.existsSync()) {
+        ImagePreviewDialog.show(
+          context: context,
+          localPath: localFile.path,
+          title: name,
         );
-      },
+        return;
+      }
+    }
+
+    final storagePathOrUrl = item.fileUrl ?? item.id;
+    if (storagePathOrUrl.isEmpty) return;
+
+    // Direct HTTP URL
+    if (storagePathOrUrl.startsWith('http://') ||
+        storagePathOrUrl.startsWith('https://')) {
+      ImagePreviewDialog.show(
+        context: context,
+        imageUrl: storagePathOrUrl,
+        title: name,
+      );
+      return;
+    }
+
+    // Private Supabase Storage path: generate temporary signed URL
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => CustomMessageDialog(
+        message: AppStrings.loading.tr(),
+        type: MessageType.loading,
+      ),
+    );
+
+    try {
+      final storageService = getIt<SupabaseStorageService>();
+      final signedUrl = await storageService.getSignedUrl(
+        bucket: SupabaseConfig.surgeryImagesBucket,
+        path: storagePathOrUrl,
+      );
+
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // dismiss loading
+        ImagePreviewDialog.show(
+          context: context,
+          imageUrl: signedUrl,
+          title: name,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // dismiss loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackBar(
+            content: e.toString().replaceFirst('Exception: ', ''),
+            backgroundColor: AppColors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _handleDeleteAttachment(
+    BuildContext blocContext,
+    SurgeryAttachmentEntity item,
+  ) {
+    final storagePath = item.fileUrl ?? item.id;
+    if (storagePath.isEmpty) return;
+
+    final surgeryId = _currentSurgery?.id;
+    if (surgeryId == null || surgeryId.isEmpty) return;
+
+    showDialog(
+      context: context,
+      builder: (_) => ConfirmationDialog(
+        icon: Icons.delete_outline,
+        title: AppStrings.deleteImage.tr(),
+        content: AppStrings.deleteImageConfirmMessage.tr(),
+        cancelText: AppStrings.cancel.tr(),
+        confirmText: AppStrings.delete.tr(),
+        confirmColor: AppColors.red,
+        onConfirm: () {
+          blocContext.read<SurgeriesCubit>().deleteSurgeryImage(
+            surgeryId: surgeryId,
+            storagePath: storagePath,
+          );
+        },
+      ),
     );
   }
 
@@ -210,14 +296,51 @@ class _SurgeryDetailsViewState extends State<SurgeryDetailsView> {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (_) => const CustomMessageDialog(
-                        message: 'Deleting Surgery...',
+                      builder: (_) => CustomMessageDialog(
+                        message: AppStrings.loading.tr(),
                         type: MessageType.loading,
                       ),
                     );
                   } else if (state is DeleteSurgerySuccessState) {
                     Navigator.of(context, rootNavigator: true).pop();
                     Navigator.of(context).pop(true);
+                  } else if (state is DeleteSurgeryImageLoadingState) {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => CustomMessageDialog(
+                        message: AppStrings.loading.tr(),
+                        type: MessageType.loading,
+                      ),
+                    );
+                  } else if (state is DeleteSurgeryImageSuccessState) {
+                    Navigator.of(context, rootNavigator: true).pop();
+                    setState(() {
+                      _wasUpdated = true;
+                      if (_currentSurgery != null) {
+                        final updatedAttachments = _currentSurgery!.attachments
+                            .where(
+                              (a) =>
+                                  a.fileUrl != state.storagePath &&
+                                  a.id != state.storagePath,
+                            )
+                            .toList();
+                        final updatedImagePaths = _currentSurgery!.imagePaths
+                            .where((p) => p != state.storagePath)
+                            .toList();
+                        _currentSurgery = _currentSurgery!.copyWith(
+                          attachments: updatedAttachments,
+                          imagePaths: updatedImagePaths,
+                        );
+                      }
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      customSnackBar(
+                        content: AppStrings.imageDeletedSuccessfully.tr(),
+                        backgroundColor: AppColors.primaryTeal,
+                      ),
+                    );
                   } else if (state is DeleteSurgeryFailureState) {
                     Navigator.of(context, rootNavigator: true).pop();
                     showDialog(
@@ -274,7 +397,89 @@ class _SurgeryDetailsViewState extends State<SurgeryDetailsView> {
                           ),
                           SizedBox(height: 20.h),
 
-                          // 3. button to share surgery
+                          // 3. Medical Attachments Section
+                          if (_currentSurgery != null &&
+                              _currentSurgery!.attachments.isNotEmpty) ...[
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.medical_services_outlined,
+                                  size: 20.r,
+                                  color: AppColors.primaryTeal,
+                                ),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  AppStrings.medicalAttachments.tr(),
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.darkNavyText,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 12.h),
+
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.all(16.r),
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(16.r),
+                                border: Border.all(
+                                  color: AppColors.fieldBorder,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: AppColors.checkboxBorder,
+                                    blurRadius: 8,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: List.generate(
+                                  _currentSurgery!.attachments.length,
+                                  (index) {
+                                    final item =
+                                        _currentSurgery!.attachments[index];
+                                    final String name = item.fileName;
+                                    final String type =
+                                        item.fileSize != null &&
+                                            item.fileSize! > 0
+                                        ? '${(item.fileSize! / 1024).toStringAsFixed(1)} KB • ${AppStrings.image.tr()}'
+                                        : 'Image Attachment';
+
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom:
+                                            index ==
+                                                _currentSurgery!
+                                                        .attachments
+                                                        .length -
+                                                    1
+                                            ? 0
+                                            : 10.h,
+                                      ),
+                                      child: SurgeryAttachmentTileWidget(
+                                        name: name,
+                                        type: type,
+                                        onView: () =>
+                                            _handleViewAttachment(item),
+                                        onDelete: () => _handleDeleteAttachment(
+                                          context,
+                                          item,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20.h),
+                          ],
+
+                          // 4. button to share surgery
                           ShareSurgeryButtonWidget(
                             surgeryEntity: _currentSurgery!,
                           ),

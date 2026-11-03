@@ -1,3 +1,5 @@
+import 'surgery_attachment_entity.dart';
+
 class SurgeryEntity {
   final String id;
   final String surgeryName;
@@ -8,7 +10,8 @@ class SurgeryEntity {
   final String? diagnosis;
   // final String? anesthesiaType;
   final String? notes;
-  final List<String> attachments;
+  final List<SurgeryAttachmentEntity> attachments;
+  final List<String> imagePaths;
   final DateTime? createdAt;
 
   const SurgeryEntity({
@@ -22,6 +25,7 @@ class SurgeryEntity {
     // this.anesthesiaType,
     this.notes,
     this.attachments = const [],
+    this.imagePaths = const [],
     this.createdAt,
   });
 
@@ -35,7 +39,8 @@ class SurgeryEntity {
     String? diagnosis,
     String? anesthesiaType,
     String? notes,
-    List<String>? attachments,
+    List<SurgeryAttachmentEntity>? attachments,
+    List<String>? imagePaths,
     DateTime? createdAt,
   }) {
     return SurgeryEntity(
@@ -49,6 +54,7 @@ class SurgeryEntity {
       // anesthesiaType: anesthesiaType ?? this.anesthesiaType,
       notes: notes ?? this.notes,
       attachments: attachments ?? this.attachments,
+      imagePaths: imagePaths ?? this.imagePaths,
       createdAt: createdAt ?? this.createdAt,
     );
   }

@@ -1,10 +1,12 @@
+import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:medivault/core/config/supabase_config.dart';
 import 'package:medivault/core/di/di.dart';
+import 'package:medivault/core/services/media_picker_service.dart';
+import 'package:medivault/core/services/supabase_storage_service.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_strings.dart';
 import 'package:medivault/core/utils/app_styles.dart';
@@ -13,6 +15,9 @@ import 'package:medivault/core/widgets/custom_elevate_btn.dart';
 import 'package:medivault/core/widgets/custom_message_dialog.dart';
 import 'package:medivault/core/widgets/custom_snack_bar.dart';
 import 'package:medivault/core/widgets/custom_text_field.dart';
+import 'package:medivault/core/widgets/image_preview_dialog.dart';
+import 'package:medivault/core/widgets/media_source_bottom_sheet.dart';
+import 'package:medivault/feature/surgeries/domain/entities/surgery_attachment_entity.dart';
 import 'package:medivault/feature/surgeries/domain/entities/surgery_entity.dart';
 import 'package:medivault/feature/surgeries/ui/views/widgets/surgery_attachments_widget.dart';
 
@@ -40,7 +45,7 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
 
   DateTime? _selectedDate;
   String? _selectedSpecialty;
-  List<String> _attachments = [];
+  List<SurgeryAttachmentEntity> _attachments = [];
 
   @override
   void initState() {
@@ -53,7 +58,7 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
 
     _selectedDate = surgery?.surgeryDate;
     _selectedSpecialty = surgery?.specialty;
-    _attachments = List<String>.from(surgery?.attachments ?? []);
+    _attachments = List<SurgeryAttachmentEntity>.from(surgery?.attachments ?? []);
 
     _surgeryNameController = TextEditingController(
       text: surgery?.surgeryName ?? '',
@@ -101,34 +106,148 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
     }
   }
 
-  Future<void> _takePhoto() async {
+  Future<void> _selectImage() async {
+    final source = await MediaSourceBottomSheet.show(context);
+    if (source == MediaSourceType.camera) {
+      await _pickImageFromCamera();
+    } else if (source == MediaSourceType.gallery) {
+      await _pickImagesFromGallery();
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
     try {
-      final picker = ImagePicker();
-      final image = await picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 85,
-      );
-      if (image != null) {
+      final mediaPicker = getIt<MediaPickerService>();
+      final file = await mediaPicker.pickImageFromCamera();
+      if (file != null && mounted) {
+        final int size = await file.length();
+        final String rawName = file.path.split(RegExp(r'[\\/]')).last;
+        final String fileName = rawName.isNotEmpty
+            ? rawName
+            : 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
         setState(() {
-          _attachments.add(image.path);
+          _attachments.add(
+            SurgeryAttachmentEntity(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              fileName: fileName,
+              fileType: 'image',
+              fileSize: size,
+              localPath: file.path,
+            ),
+          );
         });
       }
     } catch (_) {}
   }
 
-  Future<void> _chooseFile() async {
+  Future<void> _pickImagesFromGallery() async {
     try {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-        allowMultiple: false,
-      );
-      if (result != null && result.files.single.path != null) {
-        setState(() {
-          _attachments.add(result.files.single.path!);
-        });
+      final mediaPicker = getIt<MediaPickerService>();
+      final files = await mediaPicker.pickImagesFromGallery();
+      if (files.isNotEmpty && mounted) {
+        for (final file in files) {
+          final int size = await file.length();
+          final String rawName = file.path.split(RegExp(r'[\\/]')).last;
+          final String fileName = rawName.isNotEmpty
+              ? rawName
+              : 'image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+          _attachments.add(
+            SurgeryAttachmentEntity(
+              id: '${DateTime.now().millisecondsSinceEpoch}_${_attachments.length}',
+              fileName: fileName,
+              fileType: 'image',
+              fileSize: size,
+              localPath: file.path,
+            ),
+          );
+        }
+        setState(() {});
       }
     } catch (_) {}
+  }
+
+  void _removeAttachment(int index) {
+    if (index >= 0 && index < _attachments.length) {
+      setState(() {
+        _attachments.removeAt(index);
+      });
+    }
+  }
+
+  Future<void> _previewAttachment(SurgeryAttachmentEntity item) async {
+    if (item.localPath != null && item.localPath!.isNotEmpty) {
+      File localFile;
+      if (item.localPath!.startsWith('file://')) {
+        try {
+          localFile = File(Uri.parse(item.localPath!).toFilePath());
+        } catch (_) {
+          localFile = File(item.localPath!.replaceFirst('file://', ''));
+        }
+      } else {
+        localFile = File(item.localPath!);
+      }
+
+      if (localFile.existsSync()) {
+        ImagePreviewDialog.show(
+          context: context,
+          localPath: localFile.path,
+          title: item.fileName,
+        );
+        return;
+      }
+    }
+
+    final storagePathOrUrl = item.fileUrl;
+    if (storagePathOrUrl == null || storagePathOrUrl.isEmpty) return;
+
+    if (storagePathOrUrl.startsWith('http://') ||
+        storagePathOrUrl.startsWith('https://')) {
+      ImagePreviewDialog.show(
+        context: context,
+        imageUrl: storagePathOrUrl,
+        title: item.fileName,
+      );
+      return;
+    }
+
+    // Supabase private storage signed URL
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => CustomMessageDialog(
+        message: AppStrings.loading.tr(),
+        type: MessageType.loading,
+      ),
+    );
+
+    try {
+      final storageService = getIt<SupabaseStorageService>();
+      final signedUrl = await storageService.getSignedUrl(
+        bucket: SupabaseConfig.surgeryImagesBucket,
+        path: storagePathOrUrl,
+      );
+
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        ImagePreviewDialog.show(
+          context: context,
+          imageUrl: signedUrl,
+          title: item.fileName,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackBar(
+            content: e.toString().replaceFirst('Exception: ', ''),
+            backgroundColor: AppColors.red,
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildRequiredLabel(String labelText) {
@@ -171,7 +290,7 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
       hospitalName: _hospitalController.text.trim(),
       diagnosis: _diagnosisController.text.trim(),
       notes: _notesController.text.trim(),
-      attachments: _attachments,
+      attachments: List.from(_attachments),
     );
 
     context.read<SurgeriesCubit>().updateSurgery(updated);
@@ -179,10 +298,6 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
 
   @override
   Widget build(BuildContext context) {
-    // final String currentSpecialtyTitle = MedicalSpecialties.getSpecialtyTitle(
-    //   _selectedSpecialty ?? 'surgeries',
-    // );
-
     return BlocProvider<SurgeriesCubit>(
       create: (context) => getIt<SurgeriesCubit>(),
       child: Builder(
@@ -214,8 +329,8 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (_) => const CustomMessageDialog(
-                        message: 'Saving Changes...',
+                      builder: (_) => CustomMessageDialog(
+                        message: AppStrings.loading.tr(),
                         type: MessageType.loading,
                       ),
                     );
@@ -234,6 +349,8 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                   }
                 },
                 builder: (context, state) {
+                  final bool isLoading = state is EditSurgeryLoadingState;
+
                   return SafeArea(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -269,20 +386,21 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                                     ),
                                     hintText: AppStrings.surgeryNameHint.tr(),
                                     controller: _surgeryNameController,
+                                    enabled: !isLoading,
                                   ),
                                   SizedBox(height: 16.h),
 
-                                  // Surgery Date *
+                                  // Date of Procedure *
                                   GestureDetector(
-                                    onTap: _pickDate,
+                                    onTap: isLoading ? null : _pickDate,
                                     child: AbsorbPointer(
                                       child: CustomTextField(
                                         labelWidget: _buildRequiredLabel(
-                                          AppStrings.surgeryDate.tr(),
+                                          AppStrings.dateOfProcedure.tr(),
                                         ),
                                         hintText: 'mm/dd/yyyy',
                                         controller: _dateController,
-                                        suffixIcon: Icon(
+                                        prefixIcon: Icon(
                                           Icons.calendar_today_outlined,
                                           color: AppColors.iconGrey,
                                           size: 20.sp,
@@ -290,12 +408,24 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                                       ),
                                     ),
                                   ),
+                                  SizedBox(height: 16.h),
+
+                                  // Medical Specialty Dropdown
+                                  Text(
+                                    AppStrings.medicalSpecialty.tr(),
+                                    style: AppStyles.w600S14DarkNavy.copyWith(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  _buildSpecialtyDropdown(),
                                 ],
                               ),
                             ),
                             SizedBox(height: 16.h),
 
-                            // Medical Details Card
+                            // Surgical Team & Facility Card
                             Container(
                               padding: EdgeInsets.all(16.r),
                               decoration: BoxDecoration(
@@ -311,24 +441,14 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Medical Specialty Dropdown
-                                  Text(
-                                    AppStrings.medicalSpecialty.tr(),
-                                    style: AppStyles.w600S14DarkNavy.copyWith(
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8.h),
-                                  _buildSpecialtyDropdown(),
-                                  SizedBox(height: 16.h),
-
                                   // Surgeon Name
                                   CustomTextField(
                                     label: AppStrings.surgeonName.tr(),
                                     hintText: AppStrings.surgeonNameHint.tr(),
                                     controller: _surgeonController,
+                                    enabled: !isLoading,
                                     prefixIcon: Icon(
-                                      Icons.person_outline_rounded,
+                                      Icons.person_outline,
                                       color: AppColors.iconGrey,
                                       size: 20.sp,
                                     ),
@@ -343,6 +463,7 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                                         .hospitalSurgicalCenterHint
                                         .tr(),
                                     controller: _hospitalController,
+                                    enabled: !isLoading,
                                     prefixIcon: Icon(
                                       Icons.local_hospital_outlined,
                                       color: AppColors.iconGrey,
@@ -359,6 +480,7 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                                     hintText: AppStrings.diagnosisReasonHint
                                         .tr(),
                                     controller: _diagnosisController,
+                                    enabled: !isLoading,
                                     maxLines: 3,
                                   ),
                                   SizedBox(height: 16.h),
@@ -368,6 +490,7 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                                     label: AppStrings.notes.tr(),
                                     hintText: AppStrings.notesHint.tr(),
                                     controller: _notesController,
+                                    enabled: !isLoading,
                                     maxLines: 3,
                                   ),
                                 ],
@@ -389,17 +512,22 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
                                 ),
                               ),
                               child: SurgeryAttachmentsWidget(
-                                onTakePhoto: _takePhoto,
-                                onChooseFile: _chooseFile,
+                                attachments: _attachments,
+                                isLoading: isLoading,
+                                onSelectImage: _selectImage,
+                                onRemove: _removeAttachment,
+                                onPreview: _previewAttachment,
                               ),
                             ),
                             SizedBox(height: 24.h),
 
-                            // Bottom Action Buttons: Back & Save Changes
+                            // Bottom Action Buttons: Save Changes
                             CustomElevatedBtn(
                               title: AppStrings.saveChanges.tr(),
                               backgroundColor: AppColors.primaryTeal,
-                              onPressed: () => _onSaveChanges(context),
+                              onPressed: isLoading
+                                  ? () {}
+                                  : () => _onSaveChanges(context),
                               height: 52.h,
                             ),
                             SizedBox(height: 24.h),
@@ -427,7 +555,7 @@ class _EditSurgeryViewState extends State<EditSurgeryView> {
         : null;
 
     return DropdownButtonFormField<String>(
-      value: currentSelection,
+      initialValue: currentSelection,
       menuMaxHeight: 300.h,
       decoration: InputDecoration(
         hintText: AppStrings.selectSurgicalSpecialty.tr(),

@@ -51,6 +51,8 @@ class _SurgeriesViewState extends State<SurgeriesView> {
 
   @override
   Widget build(BuildContext context) {
+    final count = _surgeries.length;
+    final isArabic = context.locale.languageCode == 'ar';
     return BlocProvider<SurgeriesCubit>(
       create: (context) => getIt<SurgeriesCubit>()..fetchSurgeries(),
       child: Builder(
@@ -144,9 +146,15 @@ class _SurgeriesViewState extends State<SurgeriesView> {
                                         ),
                                         SizedBox(width: 6.w),
                                         Text(
-                                          AppStrings.totalCount.tr(
-                                            args: ['${_surgeries.length}'],
-                                          ),
+                                          // AppStrings.totalCount.tr(
+                                          //   args: ['${_surgeries.length}'],
+                                          // ),
+                                          isArabic
+                                              ? '${AppStrings.totalCount.tr()} $count'
+                                              : AppStrings.totalCount.tr(
+                                                  args: [count.toString()],
+                                                ),
+
                                           style: TextStyle(
                                             fontSize: 12.sp,
                                             fontWeight: FontWeight.w600,

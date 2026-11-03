@@ -95,4 +95,26 @@ class SurgeriesRepoImpl implements SurgeriesRepo {
       return Left(ServerFailure(failureMessage: message));
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> deleteSurgeryImage({
+    required String surgeryId,
+    required String storagePath,
+  }) async {
+    try {
+      await _remoteDataSource.deleteSurgeryImage(
+        surgeryId: surgeryId,
+        storagePath: storagePath,
+      );
+      return const Right(unit);
+    } on FirebaseException catch (e) {
+      return Left(ServerFailure(failureMessage: e.message ?? e.toString()));
+    } catch (e) {
+      final message = e.toString().replaceFirst('Exception: ', '');
+      if (message == 'errors.no_internet_connection') {
+        return Left(NetworkFailure(failureMessage: message));
+      }
+      return Left(ServerFailure(failureMessage: message));
+    }
+  }
 }

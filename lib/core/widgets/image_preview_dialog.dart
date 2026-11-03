@@ -106,40 +106,63 @@ class ImagePreviewDialog extends StatelessWidget {
 
   Widget _buildImage() {
     if (localPath != null && localPath!.isNotEmpty) {
-      final file = File(localPath!);
-      return Image.file(
-        file,
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
-      );
+      File file;
+      if (localPath!.startsWith('file://')) {
+        try {
+          file = File(Uri.parse(localPath!).toFilePath());
+        } catch (_) {
+          file = File(localPath!.replaceFirst('file://', ''));
+        }
+      } else {
+        file = File(localPath!);
+      }
+
+      if (file.existsSync()) {
+        return Image.file(
+          file,
+          fit: BoxFit.contain,
+          cacheWidth: 1920,
+          cacheHeight: 1920,
+          errorBuilder: (context, error, stackTrace) {
+            if (imageUrl != null && imageUrl!.isNotEmpty) {
+              return _buildNetworkImage();
+            }
+            return _buildErrorWidget();
+          },
+        );
+      }
     }
 
     if (imageUrl != null && imageUrl!.isNotEmpty) {
-      return Image.network(
-        imageUrl!,
-        fit: BoxFit.contain,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-            child: SizedBox(
-              width: 36.r,
-              height: 36.r,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                    : null,
-                color: AppColors.primaryTeal,
-              ),
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
-      );
+      return _buildNetworkImage();
     }
 
     return _buildErrorWidget();
+  }
+
+  Widget _buildNetworkImage() {
+    return Image.network(
+      imageUrl!,
+      fit: BoxFit.contain,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Center(
+          child: SizedBox(
+            width: 36.r,
+            height: 36.r,
+            child: CircularProgressIndicator(
+              strokeWidth: 3,
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                  : null,
+              color: AppColors.primaryTeal,
+            ),
+          ),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
+    );
   }
 
   Widget _buildErrorWidget() {

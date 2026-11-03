@@ -2,24 +2,29 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:injectable/injectable.dart';
-import '../contract/surgeries_remote_data_source.dart';
+import 'package:medivault/core/config/supabase_config.dart';
+import 'package:medivault/core/services/supabase_storage_service.dart';
+import 'package:medivault/feature/surgeries/domain/entities/surgery_attachment_entity.dart';
 import '../../model/surgery_model.dart';
+import '../contract/surgeries_remote_data_source.dart';
 
 @Injectable(as: SurgeriesRemoteDataSource)
 class SurgeriesRemoteDataSourceImpl implements SurgeriesRemoteDataSource {
   final FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
-  final FirebaseStorage _storage;
+  final SupabaseStorageService _storageService;
   final Connectivity _connectivity;
 
-  SurgeriesRemoteDataSourceImpl(
-    this._firebaseAuth,
-    this._firestore,
-    this._storage,
-    this._connectivity,
-  );
+  SurgeriesRemoteDataSourceImpl({
+    FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firestore,
+    required SupabaseStorageService storageService,
+    Connectivity? connectivity,
+  }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _storageService = storageService,
+       _connectivity = connectivity ?? Connectivity();
 
   String _getUserId() {
     final userId = _firebaseAuth.currentUser?.uid;
@@ -81,50 +86,87 @@ class SurgeriesRemoteDataSourceImpl implements SurgeriesRemoteDataSource {
     await _checkConnectivity();
     final userId = _getUserId();
 
-    final docRef = _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('surgeries')
-        .doc();
+    final List<String> successfullyUploadedPaths = [];
 
-    final docId = docRef.id;
-    final List<String> uploadedAttachments = [];
+    try {
+      final docRef = _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('surgeries')
+          .doc();
 
-    for (final attachmentPath in surgery.attachments) {
-      if (attachmentPath.startsWith('http://') ||
-          attachmentPath.startsWith('https://')) {
-        uploadedAttachments.add(attachmentPath);
-      } else {
-        final file = File(attachmentPath);
-        if (await file.exists()) {
-          final fileName = attachmentPath.split('/').last.split('\\').last;
-          final storagePath =
-              'users/$userId/surgeries/$docId/attachments/$fileName';
-          final storageRef = _storage.ref().child(storagePath);
-          final uploadTask = await storageRef.putFile(file);
-          final downloadUrl = await uploadTask.ref.getDownloadURL();
-          uploadedAttachments.add(downloadUrl);
-        } else {
-          uploadedAttachments.add(attachmentPath);
+      final docId = docRef.id;
+      final List<SurgeryAttachmentEntity> finalAttachments = [];
+      final List<String> finalImagePaths = [];
+
+      for (final attachment in surgery.attachments) {
+        if (attachment.localPath != null && attachment.localPath!.isNotEmpty) {
+          final file = File(attachment.localPath!);
+          if (await file.exists()) {
+            final safeName = attachment.fileName.replaceAll(
+              RegExp(r'[^a-zA-Z0-9._-]'),
+              '_',
+            );
+            final uniqueFileName =
+                '${DateTime.now().millisecondsSinceEpoch}_$safeName';
+            final storagePath = '$userId/$docId/$uniqueFileName';
+
+            await _storageService.uploadImage(
+              bucket: SupabaseConfig.surgeryImagesBucket,
+              path: storagePath,
+              file: file,
+            );
+
+            successfullyUploadedPaths.add(storagePath);
+            finalImagePaths.add(storagePath);
+
+            finalAttachments.add(
+              SurgeryAttachmentEntity(
+                id: attachment.id,
+                fileName: attachment.fileName,
+                fileUrl: storagePath,
+                fileType: 'image',
+                fileSize: attachment.fileSize,
+                localPath: attachment.localPath,
+              ),
+            );
+          }
+        } else if (attachment.fileUrl != null &&
+            attachment.fileUrl!.isNotEmpty) {
+          finalAttachments.add(attachment);
+          finalImagePaths.add(attachment.fileUrl!);
         }
       }
+
+      final finalModel = SurgeryModel(
+        id: docId,
+        surgeryName: surgery.surgeryName,
+        specialty: surgery.specialty,
+        surgeryDate: surgery.surgeryDate,
+        doctorName: surgery.doctorName,
+        hospitalName: surgery.hospitalName,
+        diagnosis: surgery.diagnosis,
+        // anesthesiaType: surgery.anesthesiaType,
+        notes: surgery.notes,
+        attachments: finalAttachments,
+        imagePaths: finalImagePaths,
+        createdAt: DateTime.now(),
+      );
+
+      await docRef.set(finalModel.toFirestore());
+    } catch (e) {
+      if (successfullyUploadedPaths.isNotEmpty) {
+        try {
+          await _storageService.deleteImages(
+            bucket: SupabaseConfig.surgeryImagesBucket,
+            paths: successfullyUploadedPaths,
+          );
+        } catch (_) {
+          // Best-effort cleanup
+        }
+      }
+      rethrow;
     }
-
-    final finalModel = SurgeryModel(
-      id: docId,
-      surgeryName: surgery.surgeryName,
-      specialty: surgery.specialty,
-      surgeryDate: surgery.surgeryDate,
-      doctorName: surgery.doctorName,
-      hospitalName: surgery.hospitalName,
-      diagnosis: surgery.diagnosis,
-      // anesthesiaType: surgery.anesthesiaType,
-      notes: surgery.notes,
-      attachments: uploadedAttachments,
-      createdAt: DateTime.now(),
-    );
-
-    await docRef.set(finalModel.toFirestore());
   }
 
   @override
@@ -137,48 +179,85 @@ class SurgeriesRemoteDataSourceImpl implements SurgeriesRemoteDataSource {
     }
 
     final docId = surgery.id;
-    final List<String> uploadedAttachments = [];
+    final List<String> successfullyUploadedPaths = [];
 
-    for (final attachmentPath in surgery.attachments) {
-      if (attachmentPath.startsWith('http://') ||
-          attachmentPath.startsWith('https://')) {
-        uploadedAttachments.add(attachmentPath);
-      } else {
-        final file = File(attachmentPath);
-        if (await file.exists()) {
-          final fileName = attachmentPath.split('/').last.split('\\').last;
-          final storagePath =
-              'users/$userId/surgeries/$docId/attachments/$fileName';
-          final storageRef = _storage.ref().child(storagePath);
-          final uploadTask = await storageRef.putFile(file);
-          final downloadUrl = await uploadTask.ref.getDownloadURL();
-          uploadedAttachments.add(downloadUrl);
-        } else {
-          uploadedAttachments.add(attachmentPath);
+    try {
+      final List<SurgeryAttachmentEntity> finalAttachments = [];
+      final List<String> finalImagePaths = [];
+
+      for (final attachment in surgery.attachments) {
+        if (attachment.localPath != null && attachment.localPath!.isNotEmpty) {
+          final file = File(attachment.localPath!);
+          if (await file.exists()) {
+            final safeName = attachment.fileName.replaceAll(
+              RegExp(r'[^a-zA-Z0-9._-]'),
+              '_',
+            );
+            final uniqueFileName =
+                '${DateTime.now().millisecondsSinceEpoch}_$safeName';
+            final storagePath = '$userId/$docId/$uniqueFileName';
+
+            await _storageService.uploadImage(
+              bucket: SupabaseConfig.surgeryImagesBucket,
+              path: storagePath,
+              file: file,
+            );
+
+            successfullyUploadedPaths.add(storagePath);
+            finalImagePaths.add(storagePath);
+
+            finalAttachments.add(
+              SurgeryAttachmentEntity(
+                id: attachment.id,
+                fileName: attachment.fileName,
+                fileUrl: storagePath,
+                fileType: 'image',
+                fileSize: attachment.fileSize,
+                localPath: attachment.localPath,
+              ),
+            );
+          }
+        } else if (attachment.fileUrl != null &&
+            attachment.fileUrl!.isNotEmpty) {
+          finalAttachments.add(attachment);
+          finalImagePaths.add(attachment.fileUrl!);
         }
       }
+
+      final finalModel = SurgeryModel(
+        id: docId,
+        surgeryName: surgery.surgeryName,
+        specialty: surgery.specialty,
+        surgeryDate: surgery.surgeryDate,
+        doctorName: surgery.doctorName,
+        hospitalName: surgery.hospitalName,
+        diagnosis: surgery.diagnosis,
+        // anesthesiaType: surgery.anesthesiaType,
+        notes: surgery.notes,
+        attachments: finalAttachments,
+        imagePaths: finalImagePaths,
+        createdAt: surgery.createdAt ?? DateTime.now(),
+      );
+
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('surgeries')
+          .doc(docId)
+          .set(finalModel.toFirestore(), SetOptions(merge: true));
+    } catch (e) {
+      if (successfullyUploadedPaths.isNotEmpty) {
+        try {
+          await _storageService.deleteImages(
+            bucket: SupabaseConfig.surgeryImagesBucket,
+            paths: successfullyUploadedPaths,
+          );
+        } catch (_) {
+          // Best-effort cleanup
+        }
+      }
+      rethrow;
     }
-
-    final finalModel = SurgeryModel(
-      id: docId,
-      surgeryName: surgery.surgeryName,
-      specialty: surgery.specialty,
-      surgeryDate: surgery.surgeryDate,
-      doctorName: surgery.doctorName,
-      hospitalName: surgery.hospitalName,
-      diagnosis: surgery.diagnosis,
-      // anesthesiaType: surgery.anesthesiaType,
-      notes: surgery.notes,
-      attachments: uploadedAttachments,
-      createdAt: surgery.createdAt ?? DateTime.now(),
-    );
-
-    await _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('surgeries')
-        .doc(docId)
-        .set(finalModel.toFirestore(), SetOptions(merge: true));
   }
 
   @override
@@ -190,11 +269,107 @@ class SurgeriesRemoteDataSourceImpl implements SurgeriesRemoteDataSource {
       throw Exception('Surgery ID cannot be empty for deletion.');
     }
 
+    // Cascade delete: remove all files from Supabase Storage first
+    try {
+      final docSnapshot = await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('surgeries')
+          .doc(surgeryId)
+          .get();
+
+      if (docSnapshot.exists && docSnapshot.data() != null) {
+        final data = docSnapshot.data()!;
+        final List<String> pathsToDelete = [];
+
+        if (data['imagePaths'] is List) {
+          pathsToDelete.addAll(
+            (data['imagePaths'] as List).map((e) => e.toString()),
+          );
+        }
+
+        if (data['attachments'] is List) {
+          for (final item in (data['attachments'] as List)) {
+            if (item is Map &&
+                item['fileUrl'] is String &&
+                (item['fileUrl'] as String).isNotEmpty) {
+              final path = item['fileUrl'] as String;
+              if (!pathsToDelete.contains(path) && !path.startsWith('http')) {
+                pathsToDelete.add(path);
+              }
+            } else if (item is String &&
+                item.isNotEmpty &&
+                !item.startsWith('http') &&
+                !pathsToDelete.contains(item)) {
+              pathsToDelete.add(item);
+            }
+          }
+        }
+
+        if (pathsToDelete.isNotEmpty) {
+          await _storageService.deleteImages(
+            bucket: SupabaseConfig.surgeryImagesBucket,
+            paths: pathsToDelete,
+          );
+        }
+      }
+    } catch (_) {
+      // Continue with Firestore deletion so user is not blocked
+    }
+
+    // Delete Firestore document
     await _firestore
         .collection('users')
         .doc(userId)
         .collection('surgeries')
         .doc(surgeryId)
         .delete();
+  }
+
+  @override
+  Future<void> deleteSurgeryImage({
+    required String surgeryId,
+    required String storagePath,
+  }) async {
+    await _checkConnectivity();
+    final userId = _getUserId();
+
+    // 1. Delete file from Supabase Storage
+    try {
+      await _storageService.deleteImage(
+        bucket: SupabaseConfig.surgeryImagesBucket,
+        path: storagePath,
+      );
+    } catch (_) {
+      // Best-effort storage deletion
+    }
+
+    // 2. Remove references from Firestore surgery document
+    final docRef = _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('surgeries')
+        .doc(surgeryId);
+
+    final docSnapshot = await docRef.get();
+    if (docSnapshot.exists && docSnapshot.data() != null) {
+      final data = docSnapshot.data()!;
+
+      final List<dynamic> imagePaths = List.from(data['imagePaths'] ?? []);
+      imagePaths.remove(storagePath);
+
+      final List<dynamic> attachments = List.from(data['attachments'] ?? []);
+      attachments.removeWhere(
+        (att) =>
+            (att is Map &&
+                (att['fileUrl'] == storagePath || att['id'] == storagePath)) ||
+            (att is String && att == storagePath),
+      );
+
+      await docRef.update({
+        'imagePaths': imagePaths,
+        'attachments': attachments,
+      });
+    }
   }
 }
