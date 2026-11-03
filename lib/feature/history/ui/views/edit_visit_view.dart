@@ -367,11 +367,10 @@ class _EditVisitViewState extends State<EditVisitView> {
                             AppStrings.doctorDiagnosis.tr(),
                           ),
                           hintText: AppStrings.enterDiagnosis.tr(),
-                          validator: (value) => AppValidator.validateRequired(
-                            value,
-                            AppStrings.diagnosisRequired.tr(),
-                          ),
-                          maxLines: 3,
+                          prefixIcon:
+                              const Icon(Icons.health_and_safety_outlined),
+                          maxLines: 2,
+                          validator: AppValidator.validateRequired,
                         ),
                         SizedBox(height: 16.h),
 
