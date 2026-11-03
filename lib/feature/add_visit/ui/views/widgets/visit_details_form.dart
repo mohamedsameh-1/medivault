@@ -2,8 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/core/utils/app_colors.dart';
+import 'package:medivault/core/utils/app_strings.dart';
 import 'package:medivault/core/utils/app_styles.dart';
+import 'package:medivault/core/widgets/custom_elevate_btn.dart';
 import 'package:medivault/core/widgets/custom_text_field.dart';
+import 'package:medivault/core/widgets/image_preview_dialog.dart';
+import 'package:medivault/core/widgets/media_source_bottom_sheet.dart';
 import 'package:medivault/feature/add_visit/ui/viewmodel/visit_details_cubit.dart';
 import '../models/specialty_model.dart';
 import 'attachment_card_widget.dart';
@@ -274,63 +278,121 @@ class VisitDetailsForm extends StatelessWidget {
                   ),
                   SizedBox(height: 16.h),
 
-                  // Action Buttons: Take Photo & Choose File
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: isLoading
-                              ? null
-                              : cubit.pickImageFromCamera,
-                          icon: Icon(
-                            Icons.camera_alt_outlined,
-                            size: 18.r,
-                            color: AppColors.primaryTeal,
+                  // Action Buttons: Take Photo & Select Image / Files
+                  Center(
+                    child: SizedBox(
+                      width: 200.w,
+                      child: ElevatedButton.icon(
+                        onPressed: isLoading
+                            ? null
+                            : () async {
+                                final source =
+                                    await MediaSourceBottomSheet.show(context);
+                                if (source == MediaSourceType.camera) {
+                                  cubit.pickImageFromCamera();
+                                } else if (source == MediaSourceType.gallery) {
+                                  cubit.pickImagesFromGallery();
+                                }
+                                // else if (source == MediaSourceType.file) {
+                                //   cubit.pickFile();
+                                // }
+                              },
+                        icon: Icon(
+                          Icons.attachment_outlined,
+                          size: 20.r,
+                          color: AppColors.white,
+                        ),
+                        label: Text(
+                          AppStrings.selectImage.tr(),
+                          style: AppStyles.w600S14PrimaryTeal.copyWith(
+                            color: AppColors.white,
                           ),
-                          label: Text(
-                            'take_photo'.tr(),
-                            style: AppStyles.w600S14PrimaryTeal.copyWith(
-                              fontSize: 13.sp,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.bannerBg,
-                            elevation: 0,
-                            padding: EdgeInsets.symmetric(vertical: 14.h),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryTeal,
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                            side: BorderSide(color: AppColors.fieldBorder),
                           ),
                         ),
                       ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: isLoading ? null : cubit.pickFile,
-                          icon: Icon(
-                            Icons.note_add_outlined,
-                            size: 18.r,
-                            color: AppColors.primaryTeal,
-                          ),
-                          label: Text(
-                            'choose_file'.tr(),
-                            style: AppStyles.w600S14PrimaryTeal.copyWith(
-                              fontSize: 13.sp,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.bannerBg,
-                            elevation: 0,
-                            padding: EdgeInsets.symmetric(vertical: 14.h),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
 
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: ElevatedButton.icon(
+                  //         onPressed: isLoading
+                  //             ? null
+                  //             : cubit.pickImageFromCamera,
+                  //         icon: Icon(
+                  //           Icons.camera_alt_outlined,
+                  //           size: 18.r,
+                  //           color: AppColors.primaryTeal,
+                  //         ),
+                  //         label: Text(
+                  //           'take_photo'.tr(),
+                  //           style: AppStyles.w600S14PrimaryTeal.copyWith(
+                  //             fontSize: 13.sp,
+                  //           ),
+                  //         ),
+                  //         style: ElevatedButton.styleFrom(
+                  //           backgroundColor: AppColors.bannerBg,
+                  //           elevation: 0,
+                  //           padding: EdgeInsets.symmetric(vertical: 14.h),
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(12.r),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 12.w),
+                  //     Expanded(
+                  //       child: ElevatedButton.icon(
+                  //         onPressed: isLoading
+                  //             ? null
+                  //             : () async {
+                  //                 final source =
+                  //                     await MediaSourceBottomSheet.show(
+                  //                       context,
+                  //                     );
+                  //                 if (source == MediaSourceType.camera) {
+                  //                   cubit.pickImageFromCamera();
+                  //                 } else if (source ==
+                  //                     MediaSourceType.gallery) {
+                  //                   cubit.pickImagesFromGallery();
+                  //                 } else if (source == MediaSourceType.file) {
+                  //                   cubit.pickFile();
+                  //                 }
+                  //               },
+                  //         icon: Icon(
+                  //           Icons.attachment_outlined,
+                  //           size: 20.r,
+                  //           color: AppColors.white,
+                  //         ),
+                  //         label: Text(
+                  //           AppStrings.selectImage.tr(),
+                  //           style: AppStyles.w600S14PrimaryTeal.copyWith(
+                  //             color: AppColors.white,
+                  //           ),
+                  //         ),
+                  //         style: ElevatedButton.styleFrom(
+                  //           backgroundColor: AppColors.primaryTeal,
+                  //           elevation: 0,
+                  //           padding: EdgeInsets.symmetric(vertical: 14.h),
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(12.r),
+                  //             side: BorderSide(color: AppColors.fieldBorder),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+
+                  //   ],
+                  // ),
                   if (cubit.attachments.isNotEmpty) ...[
                     SizedBox(height: 16.h),
                     ListView.separated(
@@ -347,6 +409,15 @@ class VisitDetailsForm extends StatelessWidget {
                           onDelete: isLoading
                               ? () {}
                               : () => cubit.removeAttachment(index),
+                          onTap:
+                              item.localPath != null &&
+                                  item.fileType.toLowerCase() == 'image'
+                              ? () => ImagePreviewDialog.show(
+                                  context: context,
+                                  localPath: item.localPath,
+                                  title: item.fileName,
+                                )
+                              : null,
                         );
                       },
                     ),
@@ -355,7 +426,7 @@ class VisitDetailsForm extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 24.h),
+            SizedBox(height: 26.h),
           ],
         ),
       ),

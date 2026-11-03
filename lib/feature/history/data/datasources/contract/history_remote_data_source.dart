@@ -15,4 +15,10 @@ abstract class HistoryRemoteDataSource {
 
   /// Permanently deletes a visit document and its storage attachments.
   Future<void> deleteVisit(String visitId);
+
+  /// Deletes a specific image attachment from Supabase Storage and updates the visit document.
+  Future<void> deleteVisitImage({
+    required String visitId,
+    required String storagePath,
+  });
 }

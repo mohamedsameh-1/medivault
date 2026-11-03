@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:medivault/core/utils/app_router.dart';
 import 'package:medivault/firebase_options.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/config/supabase_config.dart';
 import 'core/di/di.dart';
 import 'core/utils/app_routes.dart';
 import 'core/utils/app_theme.dart';
@@ -14,6 +16,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (SupabaseConfig.isConfigured) {
+    try {
+      await Supabase.initialize(
+        url: SupabaseConfig.supabaseUrl,
+        publishableKey: SupabaseConfig.supabasePublishableKey,
+      );
+    } catch (e) {
+      debugPrint('Supabase initialization error: $e');
+    }
+  }
   Bloc.observer = MyBlocObserver();
   configureDependencies();
 

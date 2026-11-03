@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
+import 'package:medivault/core/services/media_picker_service.dart';
 
 import '../../domain/entities/visit_attachment_entity.dart';
 import '../../domain/entities/visit_entity.dart';
@@ -12,42 +12,38 @@ import 'visit_details_state.dart';
 @injectable
 class VisitDetailsCubit extends Cubit<VisitDetailsState> {
   final SaveVisitUseCase _saveVisitUseCase;
-  final ImagePicker _imagePicker;
+  final MediaPickerService _mediaPickerService;
 
   final List<VisitAttachmentEntity> attachments = [];
 
   VisitDetailsCubit(
     this._saveVisitUseCase,
-    this._imagePicker,
+    this._mediaPickerService,
   ) : super(VisitDetailsInitialState());
 
+  /// Captures a photo using the device camera
   Future<void> pickImageFromCamera() async {
     try {
-      final XFile? pickedFile = await _imagePicker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 85,
+      final File? file = await _mediaPickerService.pickImageFromCamera();
+
+      if (isClosed || file == null) return;
+
+      final int size = await file.length();
+      final String rawName = file.path.split(Platform.pathSeparator).last;
+      final String fileName = rawName.isNotEmpty
+          ? rawName
+          : 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      final attachment = VisitAttachmentEntity(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        fileName: fileName,
+        fileType: 'image',
+        fileSize: size,
+        localPath: file.path,
       );
 
-      if (isClosed) return;
-
-      if (pickedFile != null) {
-        final File file = File(pickedFile.path);
-        final int size = await file.length();
-        final String fileName = pickedFile.name.isNotEmpty
-            ? pickedFile.name
-            : 'photo_${DateTime.now().millisecondsSinceEpoch}.jpg';
-
-        final attachment = VisitAttachmentEntity(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          fileName: fileName,
-          fileType: 'image',
-          fileSize: size,
-          localPath: pickedFile.path,
-        );
-
-        attachments.add(attachment);
-        emit(VisitDetailsAttachmentsChangedState(List.from(attachments)));
-      }
+      attachments.add(attachment);
+      emit(VisitDetailsAttachmentsChangedState(List.from(attachments)));
     } catch (e) {
       if (!isClosed) {
         emit(VisitDetailsValidationFailureState('failed_to_pick_image'));
@@ -55,6 +51,41 @@ class VisitDetailsCubit extends Cubit<VisitDetailsState> {
     }
   }
 
+  /// Selects one or multiple images from the gallery
+  Future<void> pickImagesFromGallery() async {
+    try {
+      final List<File> files =
+          await _mediaPickerService.pickImagesFromGallery();
+
+      if (isClosed || files.isEmpty) return;
+
+      for (final file in files) {
+        final int size = await file.length();
+        final String rawName = file.path.split(Platform.pathSeparator).last;
+        final String fileName = rawName.isNotEmpty
+            ? rawName
+            : 'image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+        final attachment = VisitAttachmentEntity(
+          id: '${DateTime.now().millisecondsSinceEpoch}_${attachments.length}',
+          fileName: fileName,
+          fileType: 'image',
+          fileSize: size,
+          localPath: file.path,
+        );
+
+        attachments.add(attachment);
+      }
+
+      emit(VisitDetailsAttachmentsChangedState(List.from(attachments)));
+    } catch (e) {
+      if (!isClosed) {
+        emit(VisitDetailsValidationFailureState('failed_to_pick_image'));
+      }
+    }
+  }
+
+  /// Picks a document or image file using FilePicker
   Future<void> pickFile() async {
     try {
       final dynamic picker = FilePicker.platform;
@@ -66,14 +97,17 @@ class VisitDetailsCubit extends Cubit<VisitDetailsState> {
 
       if (isClosed) return;
 
-      if (result != null && result.files != null && (result.files as List).isNotEmpty) {
+      if (result != null &&
+          result.files != null &&
+          (result.files as List).isNotEmpty) {
         final dynamic platformFile = (result.files as List).first;
         final String path = platformFile.path?.toString() ?? '';
 
         if (path.isNotEmpty) {
           final File file = File(path);
           final int size = await file.exists() ? await file.length() : 0;
-          final String ext = platformFile.extension?.toString().toLowerCase() ?? '';
+          final String ext =
+              platformFile.extension?.toString().toLowerCase() ?? '';
           final isPdf = ext == 'pdf';
 
           final attachment = VisitAttachmentEntity(

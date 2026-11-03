@@ -8,7 +8,8 @@ abstract class HistoryRepo {
 
   /// Fetches all visits for a specific specialty, ordered newest first.
   Future<Either<Failure, List<VisitEntity>>> getVisitsBySpecialty(
-      String specialtyId);
+    String specialtyId,
+  );
 
   /// Fetches detailed information for a single visit by its ID.
   Future<Either<Failure, VisitEntity>> getVisitDetails(String visitId);
@@ -18,4 +19,10 @@ abstract class HistoryRepo {
 
   /// Permanently deletes a visit record by its ID.
   Future<Either<Failure, Unit>> deleteVisit(String visitId);
+
+  /// Deletes a specific image attachment from Supabase Storage and updates the visit document.
+  Future<Either<Failure, Unit>> deleteVisitImage({
+    required String visitId,
+    required String storagePath,
+  });
 }

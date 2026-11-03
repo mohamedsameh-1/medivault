@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_entity.dart';
+import '../../domain/usecase/delete_visit_image_use_case.dart';
 import '../../domain/usecase/get_visit_counts_use_case.dart';
 import '../../domain/usecase/get_visit_details_use_case.dart';
 import '../../domain/usecase/get_visits_by_specialty_use_case.dart';
@@ -15,6 +16,7 @@ class HistoryCubit extends Cubit<HistoryState> {
   final GetVisitDetailsUseCase _getVisitDetailsUseCase;
   final UpdateVisitUseCase _updateVisitUseCase;
   final DeleteVisitUseCase _deleteVisitUseCase;
+  final DeleteVisitImageUseCase _deleteVisitImageUseCase;
 
   List<VisitEntity> _visits = [];
   List<VisitEntity> get visits => List.unmodifiable(_visits);
@@ -25,6 +27,7 @@ class HistoryCubit extends Cubit<HistoryState> {
     this._getVisitDetailsUseCase,
     this._updateVisitUseCase,
     this._deleteVisitUseCase,
+    this._deleteVisitImageUseCase,
   ) : super(HistoryInitialState());
 
   /// Fetches visit counts grouped by specialty ID for History Home
@@ -54,25 +57,6 @@ class HistoryCubit extends Cubit<HistoryState> {
       );
     });
   }
-
-  /// Removes a deleted visit record from the in-memory specialty list
-  // void removeVisitFromList(String visitId) {
-  //   _visits.removeWhere((v) => v.id == visitId);
-  //   emit(HistoryVisitsBySpecialtySuccessState(
-  //     visits: List.unmodifiable(_visits),
-  //   ));
-  // }
-
-  /// Updates an existing visit record in the in-memory specialty list
-  // void updateVisitInList(VisitEntity updatedVisit) {
-  //   final index = _visits.indexWhere((v) => v.id == updatedVisit.id);
-  //   if (index != -1) {
-  //     _visits[index] = updatedVisit;
-  //     emit(HistoryVisitsBySpecialtySuccessState(
-  //       visits: List.unmodifiable(_visits),
-  //     ));
-  //   }
-  // }
 
   /// Fetches full details for a single visit document ID
   Future<void> loadVisitDetails(String visitId) async {
@@ -105,5 +89,48 @@ class HistoryCubit extends Cubit<HistoryState> {
       _visits.removeWhere((v) => v.id == visitId);
       emit(DeleteVisitSuccessState(deletedVisitId: visitId));
     });
+  }
+
+  /// Deletes a specific image attachment from Supabase Storage and Firestore
+  Future<void> deleteVisitImage({
+    required String visitId,
+    required String storagePath,
+  }) async {
+    emit(DeleteVisitImageLoadingState(storagePath: storagePath));
+    final result = await _deleteVisitImageUseCase(
+      visitId: visitId,
+      storagePath: storagePath,
+    );
+    if (isClosed) return;
+    result.fold(
+      (failure) => emit(HistoryFailureState(failure: failure)),
+      (_) {
+        final visitIndex = _visits.indexWhere((v) => v.id == visitId);
+        if (visitIndex != -1) {
+          final current = _visits[visitIndex];
+          final updatedAttachments = current.attachments
+              .where((a) => a.fileUrl != storagePath && a.id != storagePath)
+              .toList();
+          final updatedImagePaths = current.imagePaths
+              .where((p) => p != storagePath)
+              .toList();
+          _visits[visitIndex] = VisitEntity(
+            id: current.id,
+            specialtyId: current.specialtyId,
+            visitDate: current.visitDate,
+            doctorName: current.doctorName,
+            clinicHospital: current.clinicHospital,
+            symptoms: current.symptoms,
+            diagnosis: current.diagnosis,
+            advisoryNotes: current.advisoryNotes,
+            prescriptions: current.prescriptions,
+            createdAt: current.createdAt,
+            attachments: updatedAttachments,
+            imagePaths: updatedImagePaths,
+          );
+        }
+        emit(DeleteVisitImageSuccessState(storagePath: storagePath));
+      },
+    );
   }
 }

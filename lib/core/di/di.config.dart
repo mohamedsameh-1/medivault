@@ -18,6 +18,8 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:medivault/core/di/register_module.dart' as _i33;
+import 'package:medivault/core/services/media_picker_service.dart' as _i701;
+import 'package:medivault/core/services/supabase_storage_service.dart' as _i133;
 import 'package:medivault/core/services/surgery_direct_share_service.dart'
     as _i449;
 import 'package:medivault/core/services/visit_direct_share_service.dart'
@@ -57,6 +59,8 @@ import 'package:medivault/feature/history/data/repo/history_repo_impl.dart'
     as _i320;
 import 'package:medivault/feature/history/domain/repo/history_repo.dart'
     as _i889;
+import 'package:medivault/feature/history/domain/usecase/delete_visit_image_use_case.dart'
+    as _i397;
 import 'package:medivault/feature/history/domain/usecase/delete_visit_use_case.dart'
     as _i86;
 import 'package:medivault/feature/history/domain/usecase/get_visit_counts_use_case.dart'
@@ -143,14 +147,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.singleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
     gh.singleton<_i457.FirebaseStorage>(() => registerModule.storage);
-    gh.factory<_i2.AddVisitRemoteDataSource>(
-      () => _i95.AddVisitRemoteDataSourceImpl(
-        firebaseAuth: gh<_i59.FirebaseAuth>(),
-        firestore: gh<_i974.FirebaseFirestore>(),
-        storage: gh<_i457.FirebaseStorage>(),
-        connectivity: gh<_i895.Connectivity>(),
-      ),
-    );
     gh.factory<_i937.HomeRemoteDataSource>(
       () => _i333.HomeRemoteDataSourceImpl(
         gh<_i59.FirebaseAuth>(),
@@ -166,14 +162,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i895.Connectivity>(),
       ),
     );
-    gh.factory<_i311.HistoryRemoteDataSource>(
-      () => _i58.HistoryRemoteDataSourceImpl(
-        firebaseAuth: gh<_i59.FirebaseAuth>(),
-        firestore: gh<_i974.FirebaseFirestore>(),
-        storage: gh<_i457.FirebaseStorage>(),
-        connectivity: gh<_i895.Connectivity>(),
-      ),
-    );
     gh.factory<_i929.ProfileDataSource>(
       () => _i36.ProfileDataSourceImpl(
         firebaseAuth: gh<_i59.FirebaseAuth>(),
@@ -184,11 +172,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i91.SurgeriesRepo>(
       () => _i189.SurgeriesRepoImpl(gh<_i819.SurgeriesRemoteDataSource>()),
     );
-    gh.factory<_i537.AddVisitRepo>(
-      () => _i74.AddVisitRepoImpl(gh<_i2.AddVisitRemoteDataSource>()),
-    );
-    gh.factory<_i889.HistoryRepo>(
-      () => _i320.HistoryRepoImpl(gh<_i311.HistoryRemoteDataSource>()),
+    gh.factory<_i133.SupabaseStorageService>(
+      () => _i133.SupabaseStorageServiceImpl(
+        firebaseAuth: gh<_i59.FirebaseAuth>(),
+      ),
     );
     gh.factory<_i947.SetupRemoteDataSource>(
       () =>
@@ -209,6 +196,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i18.UpdateSurgeryUseCase>(
       () => _i18.UpdateSurgeryUseCase(gh<_i91.SurgeriesRepo>()),
     );
+    gh.factory<_i701.MediaPickerService>(
+      () => _i701.MediaPickerServiceImpl(picker: gh<_i183.ImagePicker>()),
+    );
     gh.factory<_i729.ProfileRepo>(
       () => _i363.ProfileRepoImpl(gh<_i929.ProfileDataSource>()),
     );
@@ -221,6 +211,14 @@ extension GetItInjectableX on _i174.GetIt {
         connectivity: gh<_i895.Connectivity>(),
       ),
     );
+    gh.factory<_i2.AddVisitRemoteDataSource>(
+      () => _i95.AddVisitRemoteDataSourceImpl(
+        firebaseAuth: gh<_i59.FirebaseAuth>(),
+        firestore: gh<_i974.FirebaseFirestore>(),
+        storageService: gh<_i133.SupabaseStorageService>(),
+        connectivity: gh<_i895.Connectivity>(),
+      ),
+    );
     gh.factory<_i606.SurgeriesCubit>(
       () => _i606.SurgeriesCubit(
         gh<_i456.GetSurgeriesUseCase>(),
@@ -230,8 +228,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i875.DeleteSurgeryUseCase>(),
       ),
     );
-    gh.factory<_i993.SaveVisitUseCase>(
-      () => _i993.SaveVisitUseCase(gh<_i537.AddVisitRepo>()),
+    gh.factory<_i311.HistoryRemoteDataSource>(
+      () => _i58.HistoryRemoteDataSourceImpl(
+        firebaseAuth: gh<_i59.FirebaseAuth>(),
+        firestore: gh<_i974.FirebaseFirestore>(),
+        storageService: gh<_i133.SupabaseStorageService>(),
+        connectivity: gh<_i895.Connectivity>(),
+      ),
     );
     gh.factory<_i59.GetHomeDataUseCase>(
       () => _i59.GetHomeDataUseCase(gh<_i401.HomeRepo>()),
@@ -239,25 +242,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i608.AuthRepo>(
       () => _i595.AuthRepoImpl(gh<_i532.AuthDataSource>()),
     );
-    gh.factory<_i86.DeleteVisitUseCase>(
-      () => _i86.DeleteVisitUseCase(gh<_i889.HistoryRepo>()),
-    );
-    gh.factory<_i194.GetVisitCountsUseCase>(
-      () => _i194.GetVisitCountsUseCase(gh<_i889.HistoryRepo>()),
-    );
-    gh.factory<_i276.GetVisitDetailsUseCase>(
-      () => _i276.GetVisitDetailsUseCase(gh<_i889.HistoryRepo>()),
-    );
-    gh.factory<_i161.GetVisitsBySpecialtyUseCase>(
-      () => _i161.GetVisitsBySpecialtyUseCase(gh<_i889.HistoryRepo>()),
-    );
-    gh.factory<_i1012.UpdateVisitUseCase>(
-      () => _i1012.UpdateVisitUseCase(gh<_i889.HistoryRepo>()),
+    gh.factory<_i537.AddVisitRepo>(
+      () => _i74.AddVisitRepoImpl(gh<_i2.AddVisitRemoteDataSource>()),
     );
     gh.factory<_i165.SetupRepository>(
       () => _i165.SetupRepository(
         remoteDataSource: gh<_i947.SetupRemoteDataSource>(),
       ),
+    );
+    gh.factory<_i889.HistoryRepo>(
+      () => _i320.HistoryRepoImpl(gh<_i311.HistoryRemoteDataSource>()),
     );
     gh.factory<_i313.LoginUseCase>(
       () => _i313.LoginUseCase(gh<_i608.AuthRepo>()),
@@ -283,23 +277,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1062.UpdateProfileUseCase>(
       () => _i1062.UpdateProfileUseCase(gh<_i729.ProfileRepo>()),
     );
-    gh.factory<_i286.HistoryCubit>(
-      () => _i286.HistoryCubit(
-        gh<_i194.GetVisitCountsUseCase>(),
-        gh<_i161.GetVisitsBySpecialtyUseCase>(),
-        gh<_i276.GetVisitDetailsUseCase>(),
-        gh<_i1012.UpdateVisitUseCase>(),
-        gh<_i86.DeleteVisitUseCase>(),
-      ),
-    );
     gh.factory<_i610.HomeCubit>(
       () => _i610.HomeCubit(gh<_i59.GetHomeDataUseCase>()),
     );
-    gh.factory<_i752.VisitDetailsCubit>(
-      () => _i752.VisitDetailsCubit(
-        gh<_i993.SaveVisitUseCase>(),
-        gh<_i183.ImagePicker>(),
-      ),
+    gh.factory<_i993.SaveVisitUseCase>(
+      () => _i993.SaveVisitUseCase(gh<_i537.AddVisitRepo>()),
     );
     gh.factory<_i477.RegisterCubit>(
       () => _i477.RegisterCubit(gh<_i385.RegisterUseCase>()),
@@ -312,8 +294,42 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i733.DeleteAccountUseCase>(),
       ),
     );
+    gh.factory<_i397.DeleteVisitImageUseCase>(
+      () => _i397.DeleteVisitImageUseCase(gh<_i889.HistoryRepo>()),
+    );
+    gh.factory<_i86.DeleteVisitUseCase>(
+      () => _i86.DeleteVisitUseCase(gh<_i889.HistoryRepo>()),
+    );
+    gh.factory<_i194.GetVisitCountsUseCase>(
+      () => _i194.GetVisitCountsUseCase(gh<_i889.HistoryRepo>()),
+    );
+    gh.factory<_i276.GetVisitDetailsUseCase>(
+      () => _i276.GetVisitDetailsUseCase(gh<_i889.HistoryRepo>()),
+    );
+    gh.factory<_i161.GetVisitsBySpecialtyUseCase>(
+      () => _i161.GetVisitsBySpecialtyUseCase(gh<_i889.HistoryRepo>()),
+    );
+    gh.factory<_i1012.UpdateVisitUseCase>(
+      () => _i1012.UpdateVisitUseCase(gh<_i889.HistoryRepo>()),
+    );
     gh.factory<_i114.LoginCubit>(
       () => _i114.LoginCubit(gh<_i313.LoginUseCase>()),
+    );
+    gh.factory<_i286.HistoryCubit>(
+      () => _i286.HistoryCubit(
+        gh<_i194.GetVisitCountsUseCase>(),
+        gh<_i161.GetVisitsBySpecialtyUseCase>(),
+        gh<_i276.GetVisitDetailsUseCase>(),
+        gh<_i1012.UpdateVisitUseCase>(),
+        gh<_i86.DeleteVisitUseCase>(),
+        gh<_i397.DeleteVisitImageUseCase>(),
+      ),
+    );
+    gh.factory<_i752.VisitDetailsCubit>(
+      () => _i752.VisitDetailsCubit(
+        gh<_i993.SaveVisitUseCase>(),
+        gh<_i701.MediaPickerService>(),
+      ),
     );
     return this;
   }

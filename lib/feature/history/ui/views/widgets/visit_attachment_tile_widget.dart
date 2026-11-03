@@ -6,7 +6,7 @@ import 'package:medivault/core/utils/app_colors.dart';
 class VisitAttachmentTileWidget extends StatelessWidget {
   final String name;
   final String type;
-  final bool isImage;
+  // final bool isImage;
   final VoidCallback? onDelete;
   final VoidCallback? onView;
 
@@ -14,7 +14,7 @@ class VisitAttachmentTileWidget extends StatelessWidget {
     super.key,
     required this.name,
     required this.type,
-    required this.isImage,
+    // required this.isImage,
     this.onDelete,
     this.onView,
   });
@@ -24,9 +24,16 @@ class VisitAttachmentTileWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: isImage ? const Color(0xFFEEF2FF) : const Color(0xFFFEF2F2),
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.fieldBorder),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.secondaryGrey.withOpacity(0.3),
+            blurRadius: 4.r,
+            offset: Offset(0, 2.r),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -34,13 +41,13 @@ class VisitAttachmentTileWidget extends StatelessWidget {
             width: 36.r,
             height: 36.r,
             decoration: BoxDecoration(
-              color: isImage ? AppColors.badgeGreenBg : AppColors.red,
+              color: AppColors.primaryTeal,
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
-              isImage ? Icons.image_outlined : Icons.picture_as_pdf_outlined,
+              Icons.image_outlined,
               size: 20.r,
-              color: isImage ? AppColors.primaryTeal : AppColors.white,
+              color: AppColors.white,
             ),
           ),
           SizedBox(width: 12.w),
@@ -70,7 +77,27 @@ class VisitAttachmentTileWidget extends StatelessWidget {
               ],
             ),
           ),
+          // if (onView != null) ...[
+          InkWell(
+            onTap: onView,
+            borderRadius: BorderRadius.circular(16.r),
+            child: Container(
+              width: 32.r,
+              height: 32.r,
+              decoration: const BoxDecoration(
+                color: AppColors.primaryTeal,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.remove_red_eye_outlined,
+                size: 16.r,
+                color: AppColors.white,
+              ),
+            ),
+          ),
+          // ],
           if (onDelete != null) ...[
+            SizedBox(width: 6.w),
             IconButton(
               icon: Icon(
                 Icons.delete_outline_rounded,
@@ -78,27 +105,8 @@ class VisitAttachmentTileWidget extends StatelessWidget {
                 size: 20.r,
               ),
               onPressed: onDelete,
-            ),
-          ] else if (onView != null) ...[
-            SizedBox(width: 8.w),
-            InkWell(
-              onTap: onView,
-              borderRadius: BorderRadius.circular(16.r),
-              child: Container(
-                width: 32.r,
-                height: 32.r,
-                decoration: const BoxDecoration(
-                  color: AppColors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  isImage
-                      ? Icons.remove_red_eye_outlined
-                      : Icons.download_rounded,
-                  size: 16.r,
-                  color: AppColors.secondaryGrey,
-                ),
-              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
             ),
           ],
         ],

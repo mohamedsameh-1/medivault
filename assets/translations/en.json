@@ -302,5 +302,17 @@
   "delete_visit_confirm_message": "Are you sure you want to permanently delete this visit record? This action cannot be undone.",
   "delete_visit_success": "Visit deleted successfully",
   "cancel": "Cancel",
-  "share_surgery_report": "Share Surgery Report"
+  "share_surgery_report": "Share Surgery Report",
+  "select_image": "Select Image",
+  "camera": "Camera",
+  "gallery": "Gallery",
+  "remove_image": "Remove Image",
+  "uploading_images": "Uploading images...",
+  "image_upload_failed": "Failed to upload image",
+  "image_preview": "Image Preview",
+  "delete_image": "Delete Image",
+  "delete_image_confirm_message": "Are you sure you want to permanently delete this image attachment?",
+  "image_deleted_successfully": "Image deleted successfully",
+  "preview": "Preview",
+  "image": "Image"
 }

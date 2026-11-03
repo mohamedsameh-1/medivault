@@ -87,6 +87,19 @@ abstract class AppStrings {
   static const String preparingImages = 'preparing_images';
   static const String loading = 'loading';
 
+  // Visit & Surgery Images Strings
+  static const String selectImage = 'select_image';
+  static const String camera = 'camera';
+  static const String gallery = 'gallery';
+  static const String removeImage = 'remove_image';
+  static const String uploadingImages = 'uploading_images';
+  static const String imageUploadFailed = 'image_upload_failed';
+  static const String imagePreview = 'image_preview';
+  static const String deleteImage = 'delete_image';
+  static const String deleteImageConfirmMessage =
+      'delete_image_confirm_message';
+  static const String imageDeletedSuccessfully = 'image_deleted_successfully';
+
   // Surgeries Strings
   static const String surgeries = 'surgeries';
   static const String surgeriesTrackSubtitle = 'surgeries_track_subtitle';
@@ -140,4 +153,6 @@ abstract class AppStrings {
   static const String noRecentSurgeriesHome = 'no_recent_surgeries_home';
   static const String noRecentVisitsHome = 'no_recent_visits_home';
   static const String shareSurgeryReport = 'share_surgery_report';
+  static const String preview = 'preview';
+  static const String image = 'image';
 }

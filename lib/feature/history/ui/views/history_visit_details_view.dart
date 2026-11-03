@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:medivault/core/config/supabase_config.dart';
 import 'package:medivault/core/di/di.dart';
+import 'package:medivault/core/services/supabase_storage_service.dart';
 import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_routes.dart';
 import 'package:medivault/core/utils/app_strings.dart';
 import 'package:medivault/core/utils/app_styles.dart';
 import 'package:medivault/core/widgets/confirmation_dialog.dart';
 import 'package:medivault/core/widgets/custom_message_dialog.dart';
+import 'package:medivault/core/widgets/custom_snack_bar.dart';
+import 'package:medivault/core/widgets/image_preview_dialog.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_attachment_entity.dart';
 import 'package:medivault/feature/add_visit/domain/entities/visit_entity.dart';
 import 'package:medivault/feature/add_visit/ui/views/models/specialty_model.dart';
@@ -36,10 +40,10 @@ class HistoryVisitDetailsView extends StatefulWidget {
 class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
   late Map<String, dynamic> _visitData;
 
-  ///original data sent to the details view
+  /// Original data sent to the details view
   VisitEntity? _currentVisit;
 
-  /// if updated from edit screen
+  /// Tracks whether visit data was modified (edited or image deleted)
   bool _wasUpdated = false;
 
   @override
@@ -66,10 +70,110 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
         confirmText: AppStrings.delete.tr(),
         confirmColor: AppColors.red,
         onConfirm: () {
-          final visitId = _currentVisit?.id ?? _visitData['visitId'] as String?;
-          if (visitId != null && visitId.isNotEmpty) {
+          final visitId =
+              _currentVisit?.id ?? _visitData['id'] ?? _visitData['visitId'];
+          if (visitId != null && (visitId as String).isNotEmpty) {
             blocContext.read<HistoryCubit>().deleteVisitRecord(visitId);
           }
+        },
+      ),
+    );
+  }
+
+  Future<void> _handleViewAttachment(dynamic item) async {
+    String? storagePathOrUrl;
+    String name = 'Attachment';
+
+    if (item is VisitAttachmentEntity) {
+      storagePathOrUrl = item.fileUrl;
+      name = item.fileName;
+    } else if (item is Map) {
+      storagePathOrUrl = item['fileUrl'] ?? item['path'];
+      name = item['name'] ?? item['fileName'] ?? 'Attachment';
+    }
+
+    if (storagePathOrUrl == null || storagePathOrUrl.isEmpty) {
+      return;
+    }
+
+    // Direct HTTP URL
+    if (storagePathOrUrl.startsWith('http://') ||
+        storagePathOrUrl.startsWith('https://')) {
+      ImagePreviewDialog.show(
+        context: context,
+        imageUrl: storagePathOrUrl,
+        title: name,
+      );
+      return;
+    }
+
+    // Private Supabase Storage path: generate temporary signed URL
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => CustomMessageDialog(
+        message: AppStrings.loading.tr(),
+        type: MessageType.loading,
+      ),
+    );
+
+    try {
+      final storageService = getIt<SupabaseStorageService>();
+      final signedUrl = await storageService.getSignedUrl(
+        bucket: SupabaseConfig.visitImagesBucket,
+        path: storagePathOrUrl,
+      );
+
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // dismiss loading
+        ImagePreviewDialog.show(
+          context: context,
+          imageUrl: signedUrl,
+          title: name,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // dismiss loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          customSnackBar(
+            content: e.toString().replaceFirst('Exception: ', ''),
+            backgroundColor: AppColors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _handleDeleteAttachment(BuildContext blocContext, dynamic item) {
+    String? storagePath;
+
+    if (item is VisitAttachmentEntity) {
+      storagePath = item.fileUrl ?? item.id;
+    } else if (item is Map) {
+      storagePath = item['fileUrl'] ?? item['id'] ?? item['path'];
+    }
+
+    if (storagePath == null || storagePath.isEmpty) return;
+
+    final visitId =
+        _currentVisit?.id ?? _visitData['id'] ?? _visitData['visitId'];
+    if (visitId == null || (visitId as String).isEmpty) return;
+
+    showDialog(
+      context: context,
+      builder: (_) => ConfirmationDialog(
+        icon: Icons.delete_outline,
+        title: AppStrings.deleteImage.tr(),
+        content: AppStrings.deleteImageConfirmMessage.tr(),
+        cancelText: AppStrings.cancel.tr(),
+        confirmText: AppStrings.delete.tr(),
+        confirmColor: AppColors.red,
+        onConfirm: () {
+          blocContext.read<HistoryCubit>().deleteVisitImage(
+            visitId: visitId,
+            storagePath: storagePath!,
+          );
         },
       ),
     );
@@ -116,18 +220,67 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                   ),
                 );
               } else if (state is DeleteVisitSuccessState) {
-                Navigator.of(
-                  context,
-                  rootNavigator: true,
-                ).pop(); // close loading dialog
+                Navigator.of(context, rootNavigator: true).pop();
+                Navigator.of(context).pop(true);
+              } else if (state is DeleteVisitImageLoadingState) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => CustomMessageDialog(
+                    message: AppStrings.loading.tr(),
+                    type: MessageType.loading,
+                  ),
+                );
+              } else if (state is DeleteVisitImageSuccessState) {
+                Navigator.of(context, rootNavigator: true).pop();
+                setState(() {
+                  _wasUpdated = true;
+                  if (_currentVisit != null) {
+                    final updatedAttachments = _currentVisit!.attachments
+                        .where(
+                          (a) =>
+                              a.fileUrl != state.storagePath &&
+                              a.id != state.storagePath,
+                        )
+                        .toList();
+                    final updatedImagePaths = _currentVisit!.imagePaths
+                        .where((p) => p != state.storagePath)
+                        .toList();
+                    _currentVisit = VisitEntity(
+                      id: _currentVisit!.id,
+                      specialtyId: _currentVisit!.specialtyId,
+                      visitDate: _currentVisit!.visitDate,
+                      doctorName: _currentVisit!.doctorName,
+                      clinicHospital: _currentVisit!.clinicHospital,
+                      symptoms: _currentVisit!.symptoms,
+                      diagnosis: _currentVisit!.diagnosis,
+                      advisoryNotes: _currentVisit!.advisoryNotes,
+                      prescriptions: _currentVisit!.prescriptions,
+                      createdAt: _currentVisit!.createdAt,
+                      attachments: updatedAttachments,
+                      imagePaths: updatedImagePaths,
+                    );
+                    _visitData['visit'] = _currentVisit;
+                  } else {
+                    final list = List.from(_visitData['attachments'] ?? []);
+                    list.removeWhere(
+                      (item) =>
+                          item is Map &&
+                          (item['fileUrl'] == state.storagePath ||
+                              item['id'] == state.storagePath),
+                    );
+                    _visitData['attachments'] = list;
+                  }
+                });
 
-                Navigator.of(context).pop(true); // pop details screen
+                ScaffoldMessenger.of(context).showSnackBar(
+                  customSnackBar(
+                    content: AppStrings.imageDeletedSuccessfully.tr(),
+                    backgroundColor: AppColors.primaryTeal,
+                  ),
+                );
               } else if (state is HistoryFailureState) {
-                Navigator.of(
-                  context,
-                  rootNavigator: true,
-                ).pop(); // close loading dialog if open
-
+                Navigator.of(context, rootNavigator: true).pop();
                 showDialog(
                   context: context,
                   builder: (_) => CustomMessageDialog(
@@ -137,7 +290,6 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                 );
               }
             },
-
             builder: (blocContext, _) {
               return Scaffold(
                 backgroundColor: AppColors.screenBg,
@@ -158,7 +310,6 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                     style: AppStyles.w700S24DarkNavy.copyWith(fontSize: 18.sp),
                   ),
                   actions: [
-                    /// delete button
                     IconButton(
                       onPressed: () =>
                           _showDeleteConfirmationDialog(blocContext),
@@ -168,7 +319,6 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                         size: 20.r,
                       ),
                     ),
-                    // Edit Action Button in AppBar
                     Padding(
                       padding: EdgeInsets.only(
                         right: context.locale.languageCode == 'en' ? 16.w : 0,
@@ -240,11 +390,9 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // 1. Specialty Category Card
                         _buildCategoryCard(),
                         SizedBox(height: 20.h),
 
-                        // 2. Consultation Information Header
                         Row(
                           children: [
                             Icon(
@@ -265,7 +413,6 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                         ),
                         SizedBox(height: 12.h),
 
-                        // Consultation Information Content Card
                         Container(
                           width: double.infinity,
                           padding: EdgeInsets.all(16.r),
@@ -330,7 +477,7 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                         ),
                         SizedBox(height: 24.h),
 
-                        // 3. Medical Attachments Section
+                        // Medical Attachments Section
                         if (attachments.isNotEmpty) ...[
                           Row(
                             children: [
@@ -358,13 +505,10 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                             decoration: BoxDecoration(
                               color: AppColors.white,
                               borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(
-                                color: AppColors.fieldBorder,
-                                width: 1,
-                              ),
-                              boxShadow: const [
+                              border: Border.all(color: AppColors.fieldBorder),
+                              boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.darkNavyText,
+                                  color: AppColors.checkboxBorder,
                                   blurRadius: 8,
                                   offset: Offset(0, 2),
                                 ),
@@ -377,24 +521,24 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                                 final item = attachments[index];
                                 String name = '';
                                 String type = '';
-                                bool isImage = true;
+                                // bool isImage = true;
 
                                 if (item is VisitAttachmentEntity) {
                                   name = item.fileName;
-                                  isImage =
-                                      item.fileType.toLowerCase() == 'image' ||
-                                      name.endsWith('.jpg') ||
-                                      name.endsWith('.png') ||
-                                      name.endsWith('.jpeg');
-                                  type = item.fileSize != null
-                                      ? '${(item.fileSize! / 1024).toStringAsFixed(1)} KB • ${isImage ? "Image" : "PDF"}'
-                                      : (isImage
-                                            ? 'Image Attachment'
-                                            : 'PDF Document');
+                                  // isImage =
+                                  //     item.fileType.toLowerCase() == 'image' ||
+                                  //     name.endsWith('.jpg') ||
+                                  //     name.endsWith('.png') ||
+                                  //     name.endsWith('.jpeg');
+                                  type =
+                                      item.fileSize != null &&
+                                          item.fileSize! > 0
+                                      ? '${(item.fileSize! / 1024).toStringAsFixed(1)} KB • ${AppStrings.image.tr()}'
+                                      : 'Image Attachment';
                                 } else if (item is Map) {
-                                  name = item['name'] ?? '';
+                                  name = item['name'] ?? item['fileName'] ?? '';
                                   type = item['type'] ?? '';
-                                  isImage = item['isImage'] ?? true;
+                                  // isImage = item['isImage'] ?? true;
                                 }
 
                                 return Padding(
@@ -406,9 +550,12 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                                   child: VisitAttachmentTileWidget(
                                     name: name,
                                     type: type,
-                                    isImage: isImage,
-                                    onView: () {},
-                                    onDelete: () {},
+                                    // isImage: isImage,
+                                    onView: () => _handleViewAttachment(item),
+                                    onDelete: () => _handleDeleteAttachment(
+                                      blocContext,
+                                      item,
+                                    ),
                                   ),
                                 );
                               }),
@@ -417,7 +564,6 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
                           SizedBox(height: 24.h),
                         ],
 
-                        ///Share visit Details
                         ShareVisitButtonWidget(
                           visitEntity: _currentVisit,
                           visitData: _visitData,
@@ -532,7 +678,7 @@ class _HistoryVisitDetailsViewState extends State<HistoryVisitDetailsView> {
   Widget _buildDivider() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.h),
-      child: Divider(color: AppColors.primaryTeal, height: 1),
+      child: Divider(color: AppColors.checkboxBorder, height: 1),
     );
   }
 }

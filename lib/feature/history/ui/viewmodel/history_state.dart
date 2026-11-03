@@ -43,6 +43,17 @@ class DeleteVisitSuccessState extends HistoryState {
   DeleteVisitSuccessState({this.deletedVisitId});
 }
 
+/// Delete Visit Image States
+class DeleteVisitImageLoadingState extends HistoryState {
+  final String storagePath;
+  DeleteVisitImageLoadingState({required this.storagePath});
+}
+
+class DeleteVisitImageSuccessState extends HistoryState {
+  final String storagePath;
+  DeleteVisitImageSuccessState({required this.storagePath});
+}
+
 /// Error / Failure State
 class HistoryFailureState extends HistoryState {
   final Failure failure;

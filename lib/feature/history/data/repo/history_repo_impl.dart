@@ -31,10 +31,10 @@ class HistoryRepoImpl implements HistoryRepo {
 
   @override
   Future<Either<Failure, List<VisitEntity>>> getVisitsBySpecialty(
-      String specialtyId) async {
+    String specialtyId,
+  ) async {
     try {
-      final visits =
-          await _remoteDataSource.getVisitsBySpecialty(specialtyId);
+      final visits = await _remoteDataSource.getVisitsBySpecialty(specialtyId);
       return Right(visits);
     } on FirebaseException catch (e) {
       return Left(ServerFailure(failureMessage: e.message ?? e.toString()));
@@ -84,6 +84,28 @@ class HistoryRepoImpl implements HistoryRepo {
   Future<Either<Failure, Unit>> deleteVisit(String visitId) async {
     try {
       await _remoteDataSource.deleteVisit(visitId);
+      return const Right(unit);
+    } on FirebaseException catch (e) {
+      return Left(ServerFailure(failureMessage: e.message ?? e.toString()));
+    } catch (e) {
+      final message = e.toString().replaceFirst('Exception: ', '');
+      if (message == 'errors.no_internet_connection') {
+        return Left(NetworkFailure(failureMessage: message));
+      }
+      return Left(ServerFailure(failureMessage: message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteVisitImage({
+    required String visitId,
+    required String storagePath,
+  }) async {
+    try {
+      await _remoteDataSource.deleteVisitImage(
+        visitId: visitId,
+        storagePath: storagePath,
+      );
       return const Right(unit);
     } on FirebaseException catch (e) {
       return Left(ServerFailure(failureMessage: e.message ?? e.toString()));

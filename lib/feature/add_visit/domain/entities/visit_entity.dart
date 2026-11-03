@@ -12,6 +12,7 @@ class VisitEntity {
   final String? prescriptions;
   final DateTime? createdAt;
   final List<VisitAttachmentEntity> attachments;
+  final List<String> imagePaths;
 
   const VisitEntity({
     this.id,
@@ -25,5 +26,6 @@ class VisitEntity {
     this.prescriptions,
     this.createdAt,
     this.attachments = const [],
+    this.imagePaths = const [],
   });
 }
