@@ -11,59 +11,67 @@ class DeleteAccountTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.screenBg,
+    return InkWell(
+      onTap: onTap,
       borderRadius: BorderRadius.circular(8.r),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8.r),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
-          child: Row(
-            children: [
-              Container(
-                width: 32.w,
-                height: 32.w,
-                decoration: BoxDecoration(
-                  color: AppColors.red.withValues(alpha: 0.08),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.person_remove_outlined,
-                  size: 16.sp,
-                  color: AppColors.red,
-                ),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 9.h),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(color: AppColors.fieldBorder),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.checkboxBorder,
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32.w,
+              height: 32.w,
+              decoration: BoxDecoration(
+                color: AppColors.red.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
               ),
-
-              SizedBox(width: 10.w),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'profile.delete_account'.tr(),
-                      style: TextStyle(
-                        fontSize: 9.sp,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.red,
-                      ),
-                    ),
-                    SizedBox(height: 2.h),
-                    Text(
-                      'profile.delete_account_subtitle'.tr(),
-                      style: TextStyle(
-                        fontSize: 8.sp,
-                        color: AppColors.darkNavyText,
-                      ),
-                    ),
-                  ],
-                ),
+              child: Icon(
+                Icons.person_remove_outlined,
+                size: 16.sp,
+                color: AppColors.red,
               ),
+            ),
 
-              Icon(Icons.chevron_right, size: 16.sp, color: Colors.red),
-            ],
-          ),
+            SizedBox(width: 10.w),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'profile.delete_account'.tr(),
+                    style: TextStyle(
+                      fontSize: 9.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.red,
+                    ),
+                  ),
+                  SizedBox(height: 2.h),
+                  Text(
+                    'profile.delete_account_subtitle'.tr(),
+                    style: TextStyle(
+                      fontSize: 8.sp,
+                      color: AppColors.darkNavyText,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Icon(Icons.chevron_right, size: 16.sp, color: Colors.red),
+          ],
         ),
       ),
     );

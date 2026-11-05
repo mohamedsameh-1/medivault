@@ -294,12 +294,17 @@ class _AddSurgeryViewState extends State<AddSurgeryView> {
                               padding: EdgeInsets.all(16.r),
                               decoration: BoxDecoration(
                                 color: AppColors.white,
-                                borderRadius: BorderRadius.circular(16.r),
+                                borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(
-                                  color: AppColors.fieldBorder.withValues(
-                                    alpha: 0.7,
-                                  ),
+                                  color: AppColors.fieldBorder,
                                 ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.checkboxBorder,
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,13 +356,17 @@ class _AddSurgeryViewState extends State<AddSurgeryView> {
                               padding: EdgeInsets.all(16.r),
                               decoration: BoxDecoration(
                                 color: AppColors.white,
-                                borderRadius: BorderRadius.circular(16.r),
+                                borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(
-                                  color: AppColors.fieldBorder.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                  width: 1,
+                                  color: AppColors.fieldBorder,
                                 ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.checkboxBorder,
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,13 +433,17 @@ class _AddSurgeryViewState extends State<AddSurgeryView> {
                               padding: EdgeInsets.all(16.r),
                               decoration: BoxDecoration(
                                 color: AppColors.white,
-                                borderRadius: BorderRadius.circular(16.r),
+                                borderRadius: BorderRadius.circular(10.r),
                                 border: Border.all(
-                                  color: AppColors.fieldBorder.withValues(
-                                    alpha: 0.7,
-                                  ),
-                                  width: 1,
+                                  color: AppColors.fieldBorder,
                                 ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.checkboxBorder,
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
                               child: SurgeryAttachmentsWidget(
                                 attachments: _attachments,

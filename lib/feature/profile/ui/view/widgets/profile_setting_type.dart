@@ -21,76 +21,84 @@ class ProfileSettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.screenBg,
+    return InkWell(
+      onTap: onTap,
       borderRadius: BorderRadius.circular(8.r),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8.r),
-        child: Container(
-          constraints: BoxConstraints(minHeight: 55.h),
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-          child: Row(
-            children: [
-              Container(
-                width: 32.w,
-                height: 32.w,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryTeal,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 16.sp, color: AppColors.white),
+      child: Container(
+        constraints: BoxConstraints(minHeight: 55.h),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(color: AppColors.fieldBorder),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.checkboxBorder,
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        child: Row(
+          children: [
+            Container(
+              width: 32.w,
+              height: 32.w,
+              decoration: BoxDecoration(
+                color: AppColors.primaryTeal,
+                shape: BoxShape.circle,
               ),
+              child: Icon(icon, size: 16.sp, color: AppColors.white),
+            ),
 
-              SizedBox(width: 10.w),
+            SizedBox(width: 10.w),
 
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 9.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.darkNavyText,
+                    ),
+                  ),
+
+                  if (subtitle != null) ...[
+                    SizedBox(height: 2.h),
                     Text(
-                      title,
+                      subtitle!,
                       style: TextStyle(
-                        fontSize: 9.sp,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 8.sp,
                         color: AppColors.darkNavyText,
                       ),
                     ),
-
-                    if (subtitle != null) ...[
-                      SizedBox(height: 2.h),
-                      Text(
-                        subtitle!,
-                        style: TextStyle(
-                          fontSize: 8.sp,
-                          color: AppColors.darkNavyText,
-                        ),
-                      ),
-                    ],
                   ],
+                ],
+              ),
+            ),
+
+            if (trailingText != null)
+              Text(
+                trailingText!,
+                style: TextStyle(
+                  fontSize: 8.sp,
+                  color: AppColors.primaryTeal,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
 
-              if (trailingText != null)
-                Text(
-                  trailingText!,
-                  style: TextStyle(
-                    fontSize: 8.sp,
-                    color: AppColors.primaryTeal,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+            SizedBox(width: 4.w),
 
-              SizedBox(width: 4.w),
-
-              Icon(
-                Icons.chevron_right,
-                size: 16.sp,
-                color: AppColors.darkNavyText,
-              ),
-            ],
-          ),
+            Icon(
+              Icons.chevron_right,
+              size: 16.sp,
+              color: AppColors.darkNavyText,
+            ),
+          ],
         ),
       ),
     );

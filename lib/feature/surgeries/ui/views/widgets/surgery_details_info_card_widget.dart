@@ -72,12 +72,12 @@ class SurgeryDetailsInfoCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.bannerBg, width: 1),
-        boxShadow: const [
+        border: Border.all(color: AppColors.fieldBorder),
+        boxShadow: [
           BoxShadow(
             color: AppColors.checkboxBorder,
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 3),
           ),
         ],
       ),

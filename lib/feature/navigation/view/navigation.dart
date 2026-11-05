@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medivault/core/utils/app_colors.dart';
 import 'package:medivault/core/utils/app_routes.dart';
 import 'package:medivault/feature/history/ui/views/history_view.dart';
 import 'package:medivault/feature/home/ui/views/home_view.dart';
@@ -26,6 +27,7 @@ class _HomeViewState extends State<NavigationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.screenBg,
       body: _pages[_currentIndex],
 
       bottomNavigationBar: CustomBottomNavBar(

@@ -147,9 +147,16 @@ class _InfoItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 12.h),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.primaryTeal.withValues(alpha: 0.1)),
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: AppColors.fieldBorder),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.checkboxBorder,
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
