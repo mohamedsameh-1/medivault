@@ -13,17 +13,17 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     OnboardingItem(
       titleKey: AppStrings.onboarding1Title,
       descKey: AppStrings.onboarding1Desc,
-      svgAsset: AppAssets.onboarding1Svg,
+      image: AppAssets.onboarding1,
     ),
     OnboardingItem(
       titleKey: AppStrings.onboarding2Title,
       descKey: AppStrings.onboarding2Desc,
-      svgAsset: AppAssets.onboarding2Svg,
+      image: AppAssets.onboarding2,
     ),
     OnboardingItem(
       titleKey: AppStrings.onboarding3Title,
       descKey: AppStrings.onboarding3Desc,
-      svgAsset: AppAssets.onboarding3Svg,
+      image: AppAssets.onboarding3,
     ),
   ];
 

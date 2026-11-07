@@ -50,7 +50,6 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
-          title: 'MediVault',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           localizationsDelegates: context.localizationDelegates,

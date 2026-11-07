@@ -24,11 +24,15 @@ class OnboardingPageItem extends StatelessWidget {
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: AppColors.lightTealBg,
+                image: DecorationImage(
+                  image: AssetImage(item.image),
+                  fit: BoxFit.cover,
+                ),
+                // color: AppColors.lightTealBg,
                 borderRadius: BorderRadius.circular(24.r),
               ),
               padding: EdgeInsets.all(16.w),
-              child: SvgPicture.asset(item.svgAsset, fit: BoxFit.contain),
+              // child: Image.asset(item.image, fit: BoxFit.cover),
             ),
           ),
           SizedBox(height: 24.h),
